@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎩 Roma's Magic Trick Database PRO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 6px;
+            background: transparent;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow: 
+                10vw 10vh 2px #FFD700, 20vw 20vh 4px #FFD700, 30vw 5vh 2px #FFD700,
+                40vw 80vh 4px #FFD700, 50vw 50vh 2px #FFD700, 60vw 30vh 4px #FFD700,
+                70vw 60vh 2px #FFD700, 80vw 15vh 4px #FFD700, 90vw 70vh 2px #FFD700,
+                5vw 25vh 4px #FFD700, 15vw 85vh 2px #FFD700, 25vw 45vh 4px #FFD700,
+                35vw 95vh 2px #FFD700, 45vw 35vh 4px #FFD700, 55vw 75vh 2px #FFD700,
+                65vw 55vh 4px #FFD700, 75vw 90vh 2px #FFD700, 85vw 40vh 4px #FFD700,
+                95vw 65vh 2px #FFD700, 12vw 78vh 4px #FFD700, 22vw 12vh 2px #FFD700,
+                32vw 88vh 4px #FFD700, 42vw 22vh 2px #FFD700, 52vw 42vh 4px #FFD700,
+                62vw 98vh 2px #FFD700, 72vw 8vh 4px #FFD700, 82vw 58vh 2px #FFD700,
+                92vw 32vh 4px #FFD700, 8vw 62vh 2px #FFD700, 18vw 92vh 4px #FFD700,
+                28vw 18vh 2px #FFD700, 38vw 48vh 4px #FFD700, 48vw 68vh 2px #FFD700,
+                58vw 28vh 4px #FFD700, 68vw 38vh 2px #FFD700, 78vw 82vh 4px #FFD700,
+                88vw 52vh 2px #FFD700, 98vw 72vh 4px #FFD700, 3vw 43vh 2px #FFD700,
+                13vw 63vh 4px #FFD700, 23vw 93vh 2px #FFD700, 33vw 13vh 4px #FFD700,
+                43vw 53vh 2px #FFD700, 53vw 83vh 4px #FFD700, 63vw 23vh 2px #FFD700,
+                73vw 73vh 4px #FFD700, 83vw 3vh 2px #FFD700, 93vw 33vh 4px #FFD700,
+                7vw 17vh 2px #FFD700, 17vw 47vh 4px #FFD700, 27vw 77vh 2px #FFD700,
+                37vw 7vh 4px #FFD700, 47vw 87vh 2px #FFD700, 57vw 37vh 4px #FFD700,
+                67vw 67vh 2px #FFD700, 77vw 27vh 4px #FFD700, 87vw 97vh 2px #FFD700,
+                97vw 57vh 4px #FFD700, 4vw 14vh 2px #FFD700, 14vw 54vh 4px #FFD700,
+                24vw 84vh 2px #FFD700, 34vw 24vh 4px #FFD700, 44vw 44vh 2px #FFD700,
+                54vw 94vh 4px #FFD700, 64vw 4vh 2px #FFD700, 74vw 64vh 4px #FFD700,
+                84vw 34vh 2px #FFD700, 94vw 74vh 4px #FFD700, 11vw 51vh 2px #FFD700,
+                21vw 81vh 4px #FFD700, 31vw 21vh 2px #FFD700, 41vw 61vh 4px #FFD700,
+                51vw 91vh 2px #FFD700, 61vw 11vh 4px #FFD700, 71vw 41vh 2px #FFD700,
+                81vw 71vh 4px #FFD700, 91vw 31vh 2px #FFD700, 6vw 86vh 4px #FFD700,
+                16vw 56vh 2px #FFD700, 26vw 16vh 4px #FFD700, 36vw 76vh 2px #FFD700,
+                46vw 96vh 4px #FFD700, 56vw 6vh 2px #FFD700, 66vw 46vh 4px #FFD700,
+                76vw 86vh 2px #FFD700, 86vw 26vh 4px #FFD700, 96vw 66vh 2px #FFD700;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .reminder-banner {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .reminder-banner.hidden {
+            display: none;
+        }
+        
+        .reminder-text {
+            flex: 1;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .reminder-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #FFD700;
+        }
+        
+        .reminder-icon {
+            font-size: 24px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .add-trick-form h2,
+        .tricks-list h2 {
+            margin-bottom: 20px;
+            color: #7e22ce;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #7e22ce;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #7e22ce, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(126, 34, 206, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .search-bar {
+            margin-bottom: 20px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #7e22ce;
+            background: white;
+            color: #7e22ce;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .filter-btn.active {
+            background: #7e22ce;
+            color: white;
+        }
+        
+        .random-btn {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            padding: 15px 30px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .trick-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 5px solid #7e22ce;
+            transition: transform 0.2s;
+        }
+        
+        .trick-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .trick-card.highlight {
+            animation: highlight 1s ease-in-out;
+            border-left-width: 8px;
+        }
+        
+        @keyframes highlight {
+            0%, 100% { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+            50% { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
+        }
+        
+        .trick-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .trick-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .difficulty {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .difficulty.easy {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .difficulty.medium {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .difficulty.hard {
+            background: #f56565;
+            color: white;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .status-badge.learning {
+            background: #60a5fa;
+            color: white;
+        }
+        
+        .status-badge.practice {
+            background: #fbbf24;
+            color: white;
+        }
+        
+        .status-badge.ready {
+            background: #10b981;
+            color: white;
+        }
+        
+        .partner-badge {
+            background: #ec4899;
+            color: white;
+        }
+        
+        .trick-meta {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        
+        .practice-counter {
+            background: rgba(126, 34, 206, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #7e22ce;
+        }
+        
+        .trick-description {
+            margin: 10px 0;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        
+        .trick-notes {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        .performances {
+            background: rgba(236, 72, 153, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .performance-item {
+            font-size: 0.9em;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .performance-item:last-child {
+            border-bottom: none;
+        }
+        
+        .trick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            width: auto;
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+        }
+        
+        .btn-practice {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .btn-perform {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #7e22ce;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .spectator-toggle {
+            margin-top: 15px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .spectator-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .spectator-toggle.active {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        /* Hide sensitive info in spectator mode */
+        body.spectator-mode .add-trick-form,
+        body.spectator-mode .random-btn,
+        body.spectator-mode .trick-meta,
+        body.spectator-mode .trick-description,
+        body.spectator-mode .trick-notes,
+        body.spectator-mode .performances,
+        body.spectator-mode .trick-actions,
+        body.spectator-mode .practice-counter,
+        body.spectator-mode .search-bar,
+        body.spectator-mode .filters,
+        body.spectator-mode .status-badge,
+        body.spectator-mode .partner-badge {
+            display: none !important;
+        }
+        
+        body.spectator-mode .stats {
+            display: none !important;
+        }
+        
+        body.spectator-mode .main-content {
+            grid-template-columns: 1fr;
+        }
+        
+        body.spectator-mode .subtitle {
+            opacity: 0.7;
+            font-style: italic;
+        }
+        
+        body.spectator-mode .trick-card {
+            padding: 15px 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="reminderBanner" class="reminder-banner">
+            <span class="reminder-icon">🔔</span>
+            <span class="reminder-text">Reminder: Buy Theory11 magic tricks</span>
+            <input type="checkbox" class="reminder-checkbox" onchange="dismissReminder()" title="Check to dismiss">
+        </div>
+        
+        <header>
+            <h1>🎩 Magic Trick Database PRO</h1>
+            <p class="subtitle">Track, Practice, and Perform Like a Pro!</p>
+            <button id="spectatorToggle" class="spectator-toggle" onclick="toggleSpectatorMode()">
+                👁️ Spectator Mode: OFF
+            </button>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalTricks">0</div>
+                <div class="stat-label">Total Tricks</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="readyCount">0</div>
+                <div class="stat-label">Performance Ready</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="practiceCount">0</div>
+                <div class="stat-label">Practicing</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="learningCount">0</div>
+                <div class="stat-label">Learning</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="partnerCount">0</div>
+                <div class="stat-label">Partner Knows</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="card add-trick-form">
+                <h2>✨ Add New Trick</h2>
+                <form id="trickForm">
+                    <div class="form-group">
+                        <label for="trickName">Trick Name *</label>
+                        <input type="text" id="trickName" required placeholder="e.g., Four Ace Production">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="Card">🃏 Card Tricks</option>
+                            <option value="Coin">🪙 Coin Tricks</option>
+                            <option value="Mentalism">🧠 Mentalism</option>
+                            <option value="Rope">🪢 Rope Magic</option>
+                            <option value="Cups">🥤 Cups & Balls</option>
+                            <option value="Other">✨ Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty</label>
+                        <select id="difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">Practice Status</label>
+                        <select id="status">
+                            <option value="learning">🌱 Learning</option>
+                            <option value="practice">📚 Practice</option>
+                            <option value="ready">⭐ Performance Ready</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="partnerKnows">
+                            <label for="partnerKnows" style="margin-bottom: 0;">👥 Partner knows this trick</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="props">Props Needed</label>
+                        <input type="text" id="props" placeholder="e.g., Deck of cards, table">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" placeholder="What happens in this trick?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Practice Notes</label>
+                        <textarea id="notes" placeholder="Tips, things to remember, practice points..."></textarea>
+                    </div>
+                    
+                    <button type="submit">🎩 Add Trick</button>
+                </form>
+            </div>
+            
+            <div class="card tricks-list">
+                <h2>📚 Your Tricks</h2>
+                
+                <button class="random-btn" onclick="randomTrick()">🎲 Pick Random Trick to Practice!</button>
+                
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 Search tricks...">
+                </div>
+                
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all" data-type="category">All</button>
+                    <button class="filter-btn" data-filter="Card" data-type="category">🃏 Cards</button>
+                    <button class="filter-btn" data-filter="Coin" data-type="category">🪙 Coins</button>
+                    <button class="filter-btn" data-filter="Mentalism" data-type="category">🧠 Mentalism</button>
+                    <button class="filter-btn" data-filter="Rope" data-type="category">🪢 Rope</button>
+                    <button class="filter-btn" data-filter="partner" data-type="special">👥 Partner Knows</button>
+                    <button class="filter-btn" data-filter="ready" data-type="status">⭐ Ready</button>
+                </div>
+                
+                <div id="tricksContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎩</div>
+                        <h3>No tricks yet!</h3>
+                        <p>Add your first trick to get started</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Log Performance Modal -->
+    <div id="performModal" class="modal">
+        <div class="modal-content">
+            <h3>🎪 Log Performance</h3>
+            <div class="form-group">
+                <label>Where did you perform?</label>
+                <input type="text" id="performLocation" placeholder="e.g., School talent show, Birthday party">
+            </div>
+            <div class="form-group">
+                <label>How did it go?</label>
+                <textarea id="performReaction" placeholder="Audience reaction, what worked, what didn't..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="savePerformance()">Save</button>
+                <button onclick="closeModal()" style="background: #6b7280;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tricks = JSON.parse(localStorage.getItem('magicTricks')) || [];
+        let currentFilter = { type: 'category', value: 'all' };
+        let currentPerformTrick = null;
+        let spectatorMode = false;
+        
+        // Check if reminder was dismissed
+        function checkReminder() {
+            const dismissed = localStorage.getItem('reminderDismissed');
+            if (dismissed === 'true') {
+                document.getElementById('reminderBanner').classList.add('hidden');
+            }
+        }
+        
+        function dismissReminder() {
+            localStorage.setItem('reminderDismissed', 'true');
+            const banner = document.getElementById('reminderBanner');
+            banner.style.animation = 'slideDown 0.3s ease-out reverse';
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 300);
+        }
+        
+        function toggleSpectatorMode() {
+            spectatorMode = !spectatorMode;
+            const btn = document.getElementById('spectatorToggle');
+            const subtitle = document.querySelector('.subtitle');
+            
+            if (spectatorMode) {
+                document.body.classList.add('spectator-mode');
+                btn.classList.add('active');
+                btn.textContent = '🔒 Spectator Mode: ON';
+                subtitle.textContent = 'Viewing as spectator - secrets hidden!';
+            } else {
+                document.body.classList.remove('spectator-mode');
+                btn.classList.remove('active');
+                btn.textContent = '👁️ Spectator Mode: OFF';
+                subtitle.textContent = 'Track, Practice, and Perform Like a Pro!';
+            }
+        }
+        
+        // Migrate old tricks to new format
+        tricks = tricks.map(trick => ({
+            ...trick,
+            status: trick.status || 'learning',
+            practiceCount: trick.practiceCount || 0,
+            partnerKnows: trick.partnerKnows || false,
+            performances: trick.performances || []
+        }));
+        
+        // Category emoji map
+        const categoryEmoji = {
+            'Card': '🃏',
+            'Coin': '🪙',
+            'Mentalism': '🧠',
+            'Rope': '🪢',
+            'Cups': '🥤',
+            'Other': '✨'
+        };
+        
+        const statusEmoji = {
+            'learning': '🌱',
+            'practice': '📚',
+            'ready': '⭐'
+        };
+        
+        function saveTricks() {
+            localStorage.setItem('magicTricks', JSON.stringify(tricks));
+            updateStats();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalTricks').textContent = tricks.length;
+            document.getElementById('readyCount').textContent = tricks.filter(t => t.status === 'ready').length;
+            document.getElementById('practiceCount').textContent = tricks.filter(t => t.status === 'practice').length;
+            document.getElementById('learningCount').textContent = tricks.filter(t => t.status === 'learning').length;
+            document.getElementById('partnerCount').textContent = tricks.filter(t => t.partnerKnows).length;
+        }
+        
+        function renderTricks(tricksToRender = null) {
+            const container = document.getElementById('tricksContainer');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let displayTricks = tricksToRender || tricks;
+            
+            // Apply filter
+            if (currentFilter.type === 'category' && currentFilter.value !== 'all') {
+                displayTricks = displayTricks.filter(t => t.category === currentFilter.value);
+            } else if (currentFilter.type === 'special' && currentFilter.value === 'partner') {
+                displayTricks = displayTricks.filter(t => t.partnerKnows);
+            } else if (currentFilter.type === 'status') {
+                displayTricks = displayTricks.filter(t => t.status === currentFilter.value);
+            }
+            
+            // Apply search
+            if (searchTerm) {
+                displayTricks = displayTricks.filter(t => 
+                    t.name.toLowerCase().includes(searchTerm) ||
+                    (t.description && t.description.toLowerCase().includes(searchTerm)) ||
+                    (t.props && t.props.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (displayTricks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>No tricks found</h3>
+                        <p>Try a different search or filter</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = displayTricks.map((trick, index) => {
+                const originalIndex = tricks.indexOf(trick);
+                return `
+                <div class="trick-card" id="trick-${originalIndex}">
+                    <div class="trick-header">
+                        <div class="trick-name">${categoryEmoji[trick.category]} ${trick.name}</div>
+                        <div class="badges">
+                            <div class="difficulty ${trick.difficulty}">${trick.difficulty.toUpperCase()}</div>
+                            <div class="status-badge ${trick.status}">${statusEmoji[trick.status]} ${trick.status.toUpperCase()}</div>
+                            ${trick.partnerKnows ? '<div class="badge partner-badge">👥 Partner</div>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="trick-meta">
+                        <div class="meta-item">
+                            <strong>Category:</strong> ${trick.category}
+                        </div>
+                        ${trick.props ? `
+                        <div class="meta-item">
+                            <strong>Props:</strong> ${trick.props}
+                        </div>
+                        ` : ''}
+                        <div class="practice-counter">
+                            🎯 Practiced ${trick.practiceCount} time${trick.practiceCount !== 1 ? 's' : ''}
+                        </div>
+                    </div>
+                    
+                    ${trick.description ? `
+                    <div class="trick-description">${trick.description}</div>
+                    ` : ''}
+                    
+                    ${trick.notes ? `
+                    <div class="trick-notes">
+                        <strong>📝 Notes:</strong> ${trick.notes}
+                    </div>
+                    ` : ''}
+                    
+                    ${trick.performances && trick.performances.length > 0 ? `
+                    <div class="performances">
+                        <strong>🎪 Performances (${trick.performances.length}):</strong>
+                        ${trick.performances.slice(-3).map(p => `
+                            <div class="performance-item">
+                                <strong>${p.location}</strong> - ${new Date(p.date).toLocaleDateString()}<br>
+                                ${p.reaction}
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+                    
+                    <div class="trick-actions">
+                        <button class="btn-small btn-practice" onclick="logPractice(${originalIndex})">
+                            ✅ Log Practice
+                        </button>
+                        <button class="btn-small btn-perform" onclick="openPerformModal(${originalIndex})">
+                            🎪 Log Performance
+                        </button>
+                        <select onchange="changeStatus(${originalIndex}, this.value)" style="padding: 8px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                            <option value="learning" ${trick.status === 'learning' ? 'selected' : ''}>🌱 Learning</option>
+                            <option value="practice" ${trick.status === 'practice' ? 'selected' : ''}>📚 Practice</option>
+                            <option value="ready" ${trick.status === 'ready' ? 'selected' : ''}>⭐ Ready</option>
+                        </select>
+                        <button class="btn-small" onclick="togglePartner(${originalIndex})" style="background: ${trick.partnerKnows ? '#ec4899' : '#6b7280'};">
+                            👥 ${trick.partnerKnows ? 'Partner ✓' : 'Add Partner'}
+                        </button>
+                        <button class="btn-small btn-delete" onclick="deleteTrick(${originalIndex})">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+        
+        function deleteTrick(index) {
+            if (confirm('Are you sure you want to delete this trick?')) {
+                tricks.splice(index, 1);
+                saveTricks();
+                renderTricks();
+            }
+        }
+        
+        function logPractice(index) {
+            tricks[index].practiceCount++;
+            saveTricks();
+            renderTricks();
+            
+            // Show feedback
+            const card = document.getElementById(`trick-${index}`);
+            card.classList.add('highlight');
+            setTimeout(() => card.classList.remove('highlight'), 1000);
+        }
+        
+        function changeStatus(index, newStatus) {
+            tricks[index].status = newStatus;
+            saveTricks();
+            renderTricks();
+        }
+        
+        function togglePartner(index) {
+            tricks[index].partnerKnows = !tricks[index].partnerKnows;
+            saveTricks();
+            renderTricks();
+        }
+        
+        function openPerformModal(index) {
+            currentPerformTrick = index;
+            document.getElementById('performModal').classList.add('show');
+            document.getElementById('performLocation').value = '';
+            document.getElementById('performReaction').value = '';
+        }
+        
+        function closeModal() {
+            document.getElementById('performModal').classList.remove('show');
+            currentPerformTrick = null;
+        }
+        
+        function savePerformance() {
+            const location = document.getElementById('performLocation').value;
+            const reaction = document.getElementById('performReaction').value;
+            
+            if (!location || !reaction) {
+                alert('Please fill in both fields!');
+                return;
+            }
+            
+            tricks[currentPerformTrick].performances.push({
+                date: new Date().toISOString(),
+                location: location,
+                reaction: reaction
+            });
+            
+            saveTricks();
+            renderTricks();
+            closeModal();
+        }
+        
+        function randomTrick() {
+            if (tricks.length === 0) {
+                alert('Add some tricks first!');
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * tricks.length);
+            const trick = tricks[randomIndex];
+            
+            // Scroll to trick and highlight it
+            renderTricks();
+            setTimeout(() => {
+                const card = document.getElementById(`trick-${randomIndex}`);
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.add('highlight');
+                setTimeout(() => card.classList.remove('highlight'), 2000);
+            }, 100);
+            
+            alert(`🎲 Practice this: ${trick.name}!\n\n${categoryEmoji[trick.category]} ${trick.category} | ${trick.difficulty}`);
+        }
+        
+        // Form submission
+        document.getElementById('trickForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newTrick = {
+                name: document.getElementById('trickName').value,
+                category: document.getElementById('category').value,
+                difficulty: document.getElementById('difficulty').value,
+                status: document.getElementById('status').value,
+                partnerKnows: document.getElementById('partnerKnows').checked,
+                props: document.getElementById('props').value,
+                description: document.getElementById('description').value,
+                notes: document.getElementById('notes').value,
+                practiceCount: 0,
+                performances: [],
+                dateAdded: new Date().toISOString()
+            };
+            
+            tricks.unshift(newTrick);
+            saveTricks();
+            renderTricks();
+            
+            // Reset form
+            e.target.reset();
+            
+            // Show success feedback
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = '✨ Added!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 1500);
+        });
+        
+        // Search
+        document.getElementById('searchInput').addEventListener('input', () => {
+            renderTricks();
+        });
+        
+        // Filters
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = {
+                    type: btn.dataset.type,
+                    value: btn.dataset.filter
+                };
+                renderTricks();
+            });
+        });
+        
+        // Initial render
+        renderTricks();
+        updateStats();
+        checkReminder();
+        
+        // Add Roma's tricks if they don't exist yet
+        const trickNames = tricks.map(t => t.name);
+        
+        // Force add The Prediction if it doesn't exist
+        if (!trickNames.includes("The Prediction")) {
+            tricks.push({
+                name: "The Prediction",
+                category: "Mentalism",
+                difficulty: "medium",
+                status: "practice",
+                partnerKnows: false,
+                props: "Two medallions (circle and square), wallets with prediction, deck of cards (4 of hearts and 3 of clubs on top)",
+                description: "Prediction trick using medallions and wallets.",
+                notes: "Remember deck setup: 4 of hearts on top, 3 of clubs second.",
+                practiceCount: 0,
+                performances: [],
+                dateAdded: new Date().toISOString()
+            });
+            saveTricks();
+        }
+        
+        const starterTricks = [
+                {
+                    name: "Ash on Arm",
+                    category: "Card",
+                    difficulty: "medium",
+                    status: "ready",
+                    partnerKnows: false,
+                    props: "Deck of cards, chapstick, ash (or dirt)",
+                    description: "Force the 7 of hearts as top card. Secretly draw a 7 of hearts shape with chapstick on your arm beforehand. After forcing the card, rub ash/dirt on your arm - it sticks only to the chapstick, revealing their chosen card!",
+                    notes: "Make sure chapstick drawing is subtle. Practice the force smoothly. Keep ash handy (can use actual ash or fine dirt). One of Roma's best tricks!",
+                    practiceCount: 0,
+                    performances: [],
+                    dateAdded: new Date().toISOString()
+                },
+                {
+                    name: "The Prediction",
+                    category: "Mentalism",
+                    difficulty: "medium",
+                    status: "practice",
+                    partnerKnows: false,
+                    props: "Two medallions (circle and square), wallets with prediction, deck of cards (4 of hearts and 3 of clubs on top)",
+                    description: "Prediction trick using medallions and wallets.",
+                    notes: "Remember deck setup: 4 of hearts on top, 3 of clubs second.",
+                    practiceCount: 0,
+                    performances: [],
+                    dateAdded: new Date().toISOString()
+                }
+            ];
+        
+        // Add tricks that don't already exist
+        starterTricks.forEach(newTrick => {
+            if (!trickNames.includes(newTrick.name)) {
+                tricks.push(newTrick);
+            }
+        });
+        
+        if (starterTricks.some(t => !trickNames.includes(t.name))) {
+            saveTricks();
+            renderTricks();
+        }
+    </script>
+</body>
+</html>

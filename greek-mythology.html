@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Roma's Greek Mythology Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+                radial-gradient(circle at 20% 50%, #1e3a8a 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, #000000 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, #f8fafc 0%, transparent 50%),
+                radial-gradient(circle at 90% 30%, #3b82f6 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, #1e293b 0%, transparent 50%),
+                radial-gradient(circle at 60% 60%, #e0e7ff 0%, transparent 50%),
+                #0f172a;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀⚡🔱💀';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 30px;
+            line-height: 2.5;
+            word-wrap: break-word;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            color: #fbbf24;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            color: #e0e7ff;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .tab-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card h2 {
+            color: #1e40af;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .character-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #3b82f6;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .character-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .character-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .character-title {
+            font-style: italic;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        
+        .character-domain {
+            background: #3b82f6;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .power-rating {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .power-bar {
+            background: #e5e7eb;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .power-fill {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            height: 100%;
+            transition: width 0.5s;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .achievement {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .achievement.unlocked {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-color: #fbbf24;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        .achievement-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            filter: grayscale(100%);
+        }
+        
+        .achievement.unlocked .achievement-icon {
+            filter: grayscale(0%);
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .achievement-name {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            font-size: 0.85em;
+            color: #6b7280;
+        }
+        
+        .myth-story {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #fbbf24;
+        }
+        
+        .myth-title {
+            font-size: 1.8em;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .myth-category {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+        }
+        
+        .myth-content {
+            line-height: 1.8;
+            color: #374151;
+        }
+        
+        .journey-map {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            min-height: 400px;
+        }
+        
+        .journey-step {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .journey-number {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #3b82f6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .journey-location {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 5px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-rank {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .stat-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1e40af;
+            margin: 10px 0;
+        }
+        
+        .stat-value {
+            color: #6b7280;
+            font-size: 0.95em;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-title {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .progress-track {
+            background: #e5e7eb;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            height: 100%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        button.action-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        button.action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Greek Mythology Hub ⚡</h1>
+            <p class="subtitle">Explore the Gods, Heroes, and Legends of Ancient Greece</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress-title">🏆 Your Mythology Journey</div>
+            <div class="progress-track">
+                <div class="progress-fill" id="overallProgress" style="width: 0%;">0%</div>
+            </div>
+        </div>
+        
+        <div class="card" style="background: linear-gradient(135deg, #fef3c7, #fde68a); margin-bottom: 20px; text-align: center;">
+            <h3 style="color: #92400e; margin-bottom: 10px;">✨ Myth of the Day ✨</h3>
+            <p id="mythOfDay" style="color: #78350f; font-size: 1.1em; font-style: italic;">Loading...</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('gods')">⚡ Gods & Goddesses</button>
+            <button class="tab-btn" onclick="switchTab('heroes')">🗡️ Heroes</button>
+            <button class="tab-btn" onclick="switchTab('monsters')">👹 Monsters</button>
+            <button class="tab-btn" onclick="switchTab('stories')">📖 Myths & Stories</button>
+            <button class="tab-btn" onclick="switchTab('journey')">🗺️ Journey Tracker</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📊 Stats & Rankings</button>
+            <button class="tab-btn" onclick="switchTab('games')">🎮 Games</button>
+            <button class="tab-btn" onclick="switchTab('create')">🎨 Create</button>
+            <button class="tab-btn" onclick="switchTab('reference')">📚 Reference</button>
+            <button class="tab-btn" onclick="switchTab('achievements')">🏆 Achievements</button>
+        </div>
+        
+        <!-- Gods & Goddesses Tab -->
+        <div id="gods" class="tab-content active">
+            <div class="card">
+                <h2>⚡ The Olympian Gods</h2>
+                <div class="grid" id="godsGrid"></div>
+            </div>
+        </div>
+        
+        <!-- Heroes Tab -->
+        <div id="heroes" class="tab-content">
+            <div class="card">
+                <h2>🗡️ Legendary Heroes</h2>
+                <div class="grid" id="heroesGrid"></div>
+            </div>
+        </div>
+        
+        <!-- Monsters Tab -->
+        <div id="monsters" class="tab-content">
+            <div class="card">
+                <h2>👹 Fearsome Monsters</h2>
+                <div class="grid" id="monstersGrid"></div>
+            </div>
+        </div>
+        
+        <!-- Stories Tab -->
+        <div id="stories" class="tab-content">
+            <div class="card">
+                <h2>📖 Myths & Stories</h2>
+                <button class="action-btn" onclick="showRandomMyth()">🎲 Random Myth</button>
+                <div id="storiesContainer"></div>
+            </div>
+        </div>
+        
+        <!-- Journey Tracker Tab -->
+        <div id="journey" class="tab-content">
+            <div class="card">
+                <h2>🗺️ Hero Journey Tracker</h2>
+                <div style="margin-bottom: 20px;">
+                    <button class="action-btn" onclick="loadJourney('odysseus')">Odysseus's Journey</button>
+                    <button class="action-btn" onclick="loadJourney('hercules')">Hercules' 12 Labors</button>
+                    <button class="action-btn" onclick="loadJourney('perseus')">Perseus's Quest</button>
+                </div>
+                <div class="journey-map" id="journeyMap"></div>
+            </div>
+        </div>
+        
+        <!-- Stats Tab -->
+        <div id="stats" class="tab-content">
+            <div class="card">
+                <h2>📊 Power Rankings & Stats</h2>
+                <h3 style="margin: 20px 0;">⚡ Most Powerful Gods</h3>
+                <div class="stats-grid" id="godStats"></div>
+                
+                <h3 style="margin: 20px 0;">👹 Most Dangerous Monsters</h3>
+                <div class="stats-grid" id="monsterStats"></div>
+            </div>
+        </div>
+        
+        <!-- Games Tab -->
+        <div id="games" class="tab-content">
+            <div class="card">
+                <h2>🎮 Mythology Games</h2>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">⚡ God Symbol Match</h3>
+                <p style="margin-bottom: 15px; color: #6b7280;">Match the god to their symbol!</p>
+                <div id="matchGame" style="margin-bottom: 40px;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;" id="matchCards"></div>
+                    <button class="action-btn" onclick="startMatchGame()" style="margin-top: 15px;">🎲 New Game</button>
+                </div>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">❓ Quick Quiz</h3>
+                <div id="quizGame">
+                    <div id="quizQuestion" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                        <p style="font-size: 1.2em; font-weight: bold; margin-bottom: 15px; color: #1e40af;" id="quizQ"></p>
+                        <div id="quizOptions" style="display: grid; gap: 10px;"></div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <span style="font-weight: bold; color: #1e40af;">Score: </span><span id="quizScore">0</span> / <span id="quizTotal">0</span>
+                        <button class="action-btn" onclick="nextQuiz()" style="margin-left: 15px;">Next Question ➡️</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Create Tab -->
+        <div id="create" class="tab-content">
+            <div class="card">
+                <h2>🎨 Create Your Own</h2>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">⚡ Demigod Creator</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Your Name:</label>
+                        <input type="text" id="demigodName" placeholder="Enter your demigod name" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Godly Parent:</label>
+                        <select id="demigodParent" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                            <option value="">Choose...</option>
+                            <option value="Zeus">⚡ Zeus (Sky & Thunder)</option>
+                            <option value="Poseidon">🔱 Poseidon (Sea & Earthquakes)</option>
+                            <option value="Athena">🦉 Athena (Wisdom & Strategy)</option>
+                            <option value="Apollo">☀️ Apollo (Sun & Music)</option>
+                            <option value="Artemis">🏹 Artemis (Hunt & Moon)</option>
+                            <option value="Ares">⚔️ Ares (War)</option>
+                            <option value="Aphrodite">💕 Aphrodite (Love & Beauty)</option>
+                            <option value="Hephaestus">🔨 Hephaestus (Forge & Fire)</option>
+                            <option value="Hermes">🪽 Hermes (Speed & Trickery)</option>
+                            <option value="Demeter">🌾 Demeter (Harvest)</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Special Power:</label>
+                        <input type="text" id="demigodPower" placeholder="e.g., Control water, Super strength" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Weapon:</label>
+                        <input type="text" id="demigodWeapon" placeholder="e.g., Celestial bronze sword" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                    </div>
+                    <button class="action-btn" onclick="generateDemigod()">✨ Create Demigod!</button>
+                    <div id="demigodResult" style="margin-top: 20px;"></div>
+                </div>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">📝 Write Your Own Myth</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Myth Title:</label>
+                        <input type="text" id="mythTitle" placeholder="The Tale of..." style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Your Story:</label>
+                        <textarea id="mythStory" placeholder="Write your myth here..." style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px; min-height: 150px;"></textarea>
+                    </div>
+                    <button class="action-btn" onclick="saveMyth()">💾 Save My Myth</button>
+                    <div id="savedMyths" style="margin-top: 20px;"></div>
+                </div>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">👹 Monster Designer</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Monster Name:</label>
+                        <input type="text" id="monsterName" placeholder="The terrible..." style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Head:</label>
+                        <select id="monsterHead" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                            <option value="Lion">🦁 Lion</option>
+                            <option value="Dragon">🐉 Dragon</option>
+                            <option value="Snake">🐍 Snake</option>
+                            <option value="Bull">🐂 Bull</option>
+                            <option value="Eagle">🦅 Eagle</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Body:</label>
+                        <select id="monsterBody" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                            <option value="Goat">🐐 Goat</option>
+                            <option value="Horse">🐴 Horse</option>
+                            <option value="Serpent">🐍 Serpent</option>
+                            <option value="Human">👤 Human</option>
+                            <option value="Lizard">🦎 Lizard</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; color: #1e40af;">Special Ability:</label>
+                        <input type="text" id="monsterAbility" placeholder="e.g., Breathes fire" style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid #3b82f6; margin-top: 5px;">
+                    </div>
+                    <button class="action-btn" onclick="createMonster()">👹 Create Monster!</button>
+                    <div id="monsterResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reference Tab -->
+        <div id="reference" class="tab-content">
+            <div class="card">
+                <h2>📚 Reference Tools</h2>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">🏛️ Greek vs Roman Names</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                        <div><strong>Zeus</strong> → Jupiter</div>
+                        <div><strong>Poseidon</strong> → Neptune</div>
+                        <div><strong>Hades</strong> → Pluto</div>
+                        <div><strong>Hera</strong> → Juno</div>
+                        <div><strong>Athena</strong> → Minerva</div>
+                        <div><strong>Apollo</strong> → Apollo</div>
+                        <div><strong>Artemis</strong> → Diana</div>
+                        <div><strong>Ares</strong> → Mars</div>
+                        <div><strong>Aphrodite</strong> → Venus</div>
+                        <div><strong>Hephaestus</strong> → Vulcan</div>
+                        <div><strong>Hermes</strong> → Mercury</div>
+                        <div><strong>Demeter</strong> → Ceres</div>
+                        <div><strong>Dionysus</strong> → Bacchus</div>
+                        <div><strong>Heracles</strong> → Hercules</div>
+                        <div><strong>Odysseus</strong> → Ulysses</div>
+                    </div>
+                </div>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">🗣️ Pronunciation Guide</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+                        <div><strong>Zeus:</strong> ZOOSS</div>
+                        <div><strong>Poseidon:</strong> poh-SY-dun</div>
+                        <div><strong>Hades:</strong> HAY-deez</div>
+                        <div><strong>Athena:</strong> uh-THEE-nuh</div>
+                        <div><strong>Heracles:</strong> HAIR-uh-kleez</div>
+                        <div><strong>Aphrodite:</strong> af-roh-DY-tee</div>
+                        <div><strong>Persephone:</strong> per-SEF-oh-nee</div>
+                        <div><strong>Dionysus:</strong> dy-oh-NY-sus</div>
+                        <div><strong>Prometheus:</strong> proh-MEE-thee-us</div>
+                        <div><strong>Odysseus:</strong> oh-DIS-ee-us</div>
+                        <div><strong>Medusa:</strong> meh-DOO-suh</div>
+                        <div><strong>Cerberus:</strong> SER-ber-us</div>
+                    </div>
+                </div>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">🔱 God Symbols & Domains</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <div style="display: grid; gap: 15px;">
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>⚡ Zeus:</strong> Thunder, lightning bolt, eagle, oak tree | King of gods, sky, weather
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>🔱 Poseidon:</strong> Trident, horse, dolphin, bull | Sea, earthquakes, horses
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>💀 Hades:</strong> Helmet of invisibility, Cerberus, cypress | Underworld, death, wealth
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>🦉 Athena:</strong> Owl, olive tree, shield (aegis) | Wisdom, war strategy, crafts
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>☀️ Apollo:</strong> Lyre, bow, laurel wreath, sun chariot | Sun, music, prophecy, healing
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>🏹 Artemis:</strong> Bow and arrow, deer, moon | Hunt, moon, animals, childbirth
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>⚔️ Ares:</strong> Sword, spear, helmet, vulture | War, violence, bloodlust
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>💕 Aphrodite:</strong> Dove, rose, shell, mirror | Love, beauty, desire
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>🔨 Hephaestus:</strong> Hammer, anvil, tongs, fire | Forge, fire, metalwork
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>🪽 Hermes:</strong> Winged sandals, caduceus (staff) | Travel, thieves, commerce, messages
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>🌾 Demeter:</strong> Wheat, cornucopia, torch | Harvest, agriculture, seasons
+                        </div>
+                        <div style="padding: 10px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+                            <strong>👑 Hera:</strong> Peacock, cow, crown, pomegranate | Marriage, family, queen of gods
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="color: #1e40af; margin: 20px 0;">📖 Quick Reference Cards</h3>
+                <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 20px; border-radius: 12px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
+                        <div style="padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #fbbf24;">
+                            <h4 style="color: #92400e; margin-bottom: 8px;">The Big Three</h4>
+                            <p style="font-size: 0.9em; color: #374151;">Zeus (Sky), Poseidon (Sea), Hades (Underworld) - The three most powerful gods who divided the world after defeating the Titans.</p>
+                        </div>
+                        <div style="padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #3b82f6;">
+                            <h4 style="color: #1e40af; margin-bottom: 8px;">The 12 Olympians</h4>
+                            <p style="font-size: 0.9em; color: #374151;">Zeus, Hera, Poseidon, Demeter, Athena, Apollo, Artemis, Ares, Aphrodite, Hephaestus, Hermes, and either Hestia or Dionysus (depends on the source!).</p>
+                        </div>
+                        <div style="padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #10b981;">
+                            <h4 style="color: #065f46; margin-bottom: 8px;">The Titans</h4>
+                            <p style="font-size: 0.9em; color: #374151;">The older generation of gods who ruled before the Olympians. Led by Kronos. Defeated in the Titanomachy and imprisoned in Tartarus.</p>
+                        </div>
+                        <div style="padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #ef4444;">
+                            <h4 style="color: #991b1b; margin-bottom: 8px;">Mount Olympus</h4>
+                            <p style="font-size: 0.9em; color: #374151;">The home of the gods! The highest mountain in Greece. The gods live in palaces at the summit, above the clouds.</p>
+                        </div>
+                        <div style="padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #8b5cf6;">
+                            <h4 style="color: #5b21b6; margin-bottom: 8px;">Tartarus</h4>
+                            <p style="font-size: 0.9em; color: #374151;">The deepest pit of the Underworld. A prison for the worst villains and the defeated Titans. So deep it would take 9 days to fall to the bottom!</p>
+                        </div>
+                        <div style="padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; border-left: 4px solid #ec4899;">
+                            <h4 style="color: #831843; margin-bottom: 8px;">The Fates</h4>
+                            <p style="font-size: 0.9em; color: #374151;">Three sisters who control destiny: Clotho (spins the thread of life), Lachesis (measures it), Atropos (cuts it). Even gods can't change fate!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Achievements Tab -->
+        <div id="achievements" class="tab-content">
+            <div class="card">
+                <h2>🏆 Your Achievements</h2>
+                <p style="margin-bottom: 20px; color: #6b7280;">Unlock achievements by exploring myths and learning about the gods!</p>
+                <div class="achievement-grid" id="achievementsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const gods = [
+            { name: "Zeus", title: "King of the Gods", domains: ["Sky", "Thunder", "Lightning"], power: 100, symbol: "⚡", info: "Ruler of Mount Olympus and god of the sky. Wields thunderbolts." },
+            { name: "Poseidon", title: "God of the Sea", domains: ["Oceans", "Earthquakes", "Horses"], power: 95, symbol: "🔱", info: "Brother of Zeus. Controls all waters and causes earthquakes with his trident." },
+            { name: "Hades", title: "God of the Underworld", domains: ["Death", "Underworld", "Wealth"], power: 95, symbol: "💀", info: "Ruler of the dead and the underworld. Often misunderstood - not evil, just doing his job!" },
+            { name: "Athena", title: "Goddess of Wisdom", domains: ["Wisdom", "War Strategy", "Crafts"], power: 90, symbol: "🦉", info: "Born from Zeus's head! Goddess of wisdom, strategic warfare, and crafts." },
+            { name: "Apollo", title: "God of the Sun", domains: ["Sun", "Music", "Prophecy", "Healing"], power: 88, symbol: "☀️", info: "Twin of Artemis. God of light, music, poetry, and prophecy." },
+            { name: "Artemis", title: "Goddess of the Hunt", domains: ["Hunt", "Moon", "Animals"], power: 85, symbol: "🏹", info: "Twin of Apollo. Protector of young women and animals. Expert archer." },
+            { name: "Ares", title: "God of War", domains: ["War", "Violence", "Courage"], power: 85, symbol: "⚔️", info: "God of brutal war and bloodlust. Not very popular even among gods!" },
+            { name: "Aphrodite", title: "Goddess of Love", domains: ["Love", "Beauty", "Desire"], power: 80, symbol: "💕", info: "Born from sea foam. Goddess of love and beauty. More powerful than she seems!" },
+            { name: "Hephaestus", title: "God of the Forge", domains: ["Fire", "Metalwork", "Crafts"], power: 75, symbol: "🔨", info: "Master blacksmith. Created weapons for gods and heroes. Built automatons!" },
+            { name: "Hermes", title: "Messenger of the Gods", domains: ["Travel", "Thieves", "Commerce"], power: 80, symbol: "🪽", info: "Fastest god! Trickster, inventor of the lyre, guide to the underworld." },
+            { name: "Demeter", title: "Goddess of the Harvest", domains: ["Agriculture", "Seasons", "Fertility"], power: 82, symbol: "🌾", info: "Controls the harvest and seasons. Mother of Persephone." },
+            { name: "Hera", title: "Queen of the Gods", domains: ["Marriage", "Family", "Childbirth"], power: 90, symbol: "👑", info: "Wife of Zeus. Queen of the gods. Very powerful and... very jealous!" }
+        ];
+        
+        const heroes = [
+            { name: "Hercules", title: "Strongest Hero", domains: ["Strength", "Courage"], power: 95, symbol: "💪", info: "Son of Zeus. Famous for his 12 impossible labors. Strongest mortal ever!" },
+            { name: "Perseus", title: "Slayer of Medusa", domains: ["Bravery", "Cunning"], power: 85, symbol: "🗡️", info: "Son of Zeus. Killed Medusa using a mirror trick. Founder of Mycenae." },
+            { name: "Theseus", title: "King of Athens", domains: ["Wisdom", "Bravery"], power: 82, symbol: "🧵", info: "Son of Poseidon. Killed the Minotaur using Ariadne's thread." },
+            { name: "Achilles", title: "Greatest Warrior", domains: ["Combat", "Glory"], power: 90, symbol: "🛡️", info: "Nearly invincible warrior. Only weakness: his heel!" },
+            { name: "Odysseus", title: "The Cunning", domains: ["Intelligence", "Strategy"], power: 80, symbol: "🧠", info: "King of Ithaca. Master strategist. Took 10 years to get home from Troy!" },
+            { name: "Jason", title: "Leader of the Argonauts", domains: ["Leadership", "Adventure"], power: 75, symbol: "🏆", info: "Led the quest for the Golden Fleece with his crew, the Argonauts." }
+        ];
+        
+        const monsters = [
+            { name: "Typhon", title: "Father of Monsters", danger: 100, symbol: "🌪️", info: "Most deadly monster. Nearly defeated Zeus! Father of many monsters." },
+            { name: "Medusa", title: "The Gorgon", danger: 85, symbol: "🐍", info: "Turns anyone who looks at her to stone. Killed by Perseus." },
+            { name: "Cerberus", title: "Guardian of Hades", danger: 80, symbol: "🐕", info: "Three-headed dog guarding the underworld. Lets everyone in, no one out!" },
+            { name: "Hydra", title: "The Many-Headed Serpent", danger: 88, symbol: "🐉", info: "Cut off one head, two grow back! Killed by Hercules (one of his 12 labors)." },
+            { name: "Minotaur", title: "Bull-Headed Monster", danger: 75, symbol: "🐂", info: "Half-man, half-bull. Lived in a maze. Killed by Theseus." },
+            { name: "Chimera", title: "The Fire-Breather", danger: 82, symbol: "🔥", info: "Lion head, goat body, snake tail. Breathes fire!" }
+        ];
+        
+        const myths = [
+            { title: "Pandora's Box", category: "Cautionary Tale", content: "Pandora was the first woman, created by the gods. Zeus gave her a box and told her never to open it. But curiosity got the better of her, and she opened it - releasing all the evils into the world: sickness, death, sadness. Only one thing remained in the box: Hope. This myth teaches us about the consequences of curiosity and the importance of hope even in dark times." },
+            { title: "King Midas and the Golden Touch", category: "Cautionary Tale", content: "King Midas was granted a wish by Dionysus - everything he touched would turn to gold. At first, he was thrilled! But then he touched his food, his drink, and worst of all - his daughter. Everything turned to gold. He begged Dionysus to take back the gift. The lesson? Be careful what you wish for, and don't let greed control you." },
+            { title: "Perseus and Medusa", category: "Hero's Quest", content: "Perseus was sent on an impossible quest: bring back the head of Medusa, whose gaze turned people to stone. Using Athena's mirror-shield, he approached Medusa while looking only at her reflection. He cut off her head and used it as a weapon! From Medusa's blood, the winged horse Pegasus was born." },
+            { title: "Theseus and the Minotaur", category: "Hero's Quest", content: "Every year, Athens had to send 7 boys and 7 girls to be eaten by the Minotaur - a monster trapped in a maze. Theseus volunteered to go. King Minos's daughter, Ariadne, fell in love with him and gave him a ball of thread. He tied it at the entrance, killed the Minotaur, and followed the thread back out!" },
+            { title: "Icarus and Daedalus", category: "Cautionary Tale", content: "Daedalus and his son Icarus were trapped in a tower. Daedalus made wings from feathers and wax so they could fly away. He warned Icarus: don't fly too close to the sun, or the wax will melt. But Icarus, excited by flight, flew too high. The wax melted, and he fell into the sea. The lesson? Always listen to wise advice, and don't let pride carry you too far." },
+            { title: "Persephone and the Seasons", category: "Origin Story", content: "Persephone, daughter of Demeter (goddess of harvest), was kidnapped by Hades to be his queen in the underworld. Demeter was so sad that nothing would grow. Zeus made a deal: Persephone would spend half the year with Hades (winter - when nothing grows) and half with her mother (spring and summer - when everything blooms). This is why we have seasons!" },
+            { title: "Heracles Labor 1: Nemean Lion", category: "Hero's Quest", content: "The first of Heracles' (Hercules') 12 labors was to kill the Nemean Lion - a beast with skin so tough that no weapon could pierce it! Heracles tried arrows, swords, even a club - nothing worked. Finally, he wrestled the lion with his bare hands and strangled it! After that, he wore the lion's skin as armor, making him nearly invincible. This shows that sometimes brains and brute strength together are better than weapons!" },
+            { title: "Heracles Labor 2: Lernean Hydra", category: "Hero's Quest", content: "Heracles' second labor was to kill the Lernean Hydra - a giant serpent with multiple heads. Worse yet, when you cut off one head, TWO would grow back! Heracles was stuck until his nephew had a brilliant idea: after Heracles cut off each head, his nephew would burn the neck with fire so new heads couldn't grow. Together they defeated the beast! Teamwork for the win!" },
+            { title: "Heracles Labor 3: Ceryneian Hind", category: "Hero's Quest", content: "The third labor was to capture the Ceryneian Hind - a sacred golden deer of Artemis that was faster than an arrow! Heracles couldn't kill it (it was sacred), so he had to catch it alive. He chased it for an entire YEAR without stopping! Finally, he caught it gently without harming it. When Artemis found out, she was angry at first, but forgave Heracles when she learned it was a labor assigned by the gods." },
+            { title: "Heracles Labor 4: Erymanthian Boar", category: "Hero's Quest", content: "The fourth labor was to capture a giant wild boar alive - the Erymanthian Boar that was terrorizing the countryside. Heracles chased the boar up a mountain into deep snow, where it got tired and stuck. He netted it and carried it back on his shoulders! The king who assigned the labors was so terrified when he saw the massive boar that he hid in a giant jar!" },
+            { title: "Heracles Labor 5: Augean Stables", category: "Hero's Quest", content: "King Augeas had thousands of cattle, and their stables hadn't been cleaned in 30 YEARS - the filth was piled mountain-high! Heracles was told to clean them in a single day. Impossible, right? Wrong! Heracles was clever - he diverted two rivers to flow through the stables, washing away all the filth in one massive flood. Sometimes the smartest solution is the simplest!" },
+            { title: "Heracles Labor 6: Stymphalian Birds", category: "Hero's Quest", content: "The sixth labor was to drive away (or kill) the Stymphalian Birds - man-eating birds with bronze beaks and sharp metallic feathers they could launch like arrows! There were thousands of them. Athena gave Heracles special bronze castanets (loud clappers). He climbed a mountain, made a deafening noise that scared the birds into the air, then shot many of them with arrows. The rest flew away and never came back!" },
+            { title: "Heracles Labor 7: Cretan Bull", category: "Hero's Quest", content: "The seventh labor was to capture the Cretan Bull - a massive, fire-breathing bull that was terrorizing the island of Crete. This was actually the father of the Minotaur! Heracles wrestled the bull into submission with his bare hands (as usual), then carried it across the sea back to Greece. After showing it to the king, he set it free. The bull later ended up near Marathon, where Theseus eventually killed it." },
+            { title: "Heracles Labor 8: Horses of Diomedes", category: "Hero's Quest", content: "The eighth labor was to steal the four horses of King Diomedes - but these weren't normal horses. They were wild, man-eating horses! Diomedes fed them human flesh. Heracles defeated Diomedes' guards, then fed Diomedes himself to his own horses (yikes!). After eating their master, the horses became calm and tame. Heracles brought them back successfully." },
+            { title: "Heracles Labor 9: Belt of Hippolyta", category: "Hero's Quest", content: "The ninth labor was to retrieve the magical belt (girdle) of Hippolyta, Queen of the Amazons - a warrior tribe of women. At first, Hippolyta was friendly and agreed to give Heracles the belt! But Hera (who hated Heracles) disguised herself and spread rumors that Heracles was kidnapping the queen. The Amazons attacked, and in the chaos, Heracles had to fight them and take the belt by force. He felt terrible about it." },
+            { title: "Heracles Labor 10: Cattle of Geryon", category: "Hero's Quest", content: "The tenth labor was to steal the cattle of Geryon - a giant with three bodies, three heads, and six arms! The cattle were guarded by a two-headed dog and a herdsman. Heracles killed all of them and stole the cattle. The journey back took forever - he had to drive cattle all the way across Europe! Along the way, he set up the Pillars of Heracles (Strait of Gibraltar) marking the edge of the known world." },
+            { title: "Heracles Labor 11: Apples of the Hesperides", category: "Hero's Quest", content: "The eleventh labor was to steal the golden apples from the Garden of the Hesperides, guarded by a 100-headed dragon that never slept. No mortal knew where the garden was. Heracles found Atlas (the Titan who holds up the sky) and made a deal: 'I'll hold the sky for you if you get me the apples.' Atlas agreed - finally, a break from holding the sky! But when Atlas came back with the apples, he didn't want to take the sky back. Heracles tricked him: 'Let me adjust the padding on my shoulders first,' then ran away with the apples!" },
+            { title: "Heracles Labor 12: Cerberus", category: "Hero's Quest", content: "The final and hardest labor: capture Cerberus, the three-headed dog that guards the entrance to the Underworld, and bring him to the surface - WITHOUT using weapons! Heracles traveled to the Underworld, and Hades said he could take Cerberus IF he could overpower him with just his strength. Heracles wrestled all three heads and carried the monster to the surface! After showing Cerberus to the terrified king, Heracles returned him to Hades. All 12 labors complete!" },
+            { title: "Jason and the Golden Fleece", category: "Hero's Quest", content: "Jason's uncle stole his throne, but promised to give it back if Jason could retrieve the Golden Fleece - a magical ram's wool guarded by a dragon that never sleeps. Jason assembled a crew of heroes called the Argonauts (including Heracles!). With help from Medea, a sorceress who fell in love with him, Jason put the dragon to sleep and stole the fleece. But he later betrayed Medea... which didn't end well for anyone!" },
+            { title: "Odysseus and the Cyclops", category: "Hero's Quest", content: "Odysseus and his men were trapped in a cave by Polyphemus, a giant one-eyed Cyclops who started eating them! Odysseus came up with a clever plan. He told the Cyclops his name was 'Nobody,' then got him drunk and stabbed out his eye. When the Cyclops screamed for help, yelling 'Nobody is attacking me!', the other Cyclops thought he was crazy and didn't help. Pure genius!" },
+            { title: "Arachne's Challenge", category: "Cautionary Tale", content: "Arachne was an amazing weaver who boasted she was better than Athena, goddess of crafts. Athena gave her a chance to take it back, but Arachne refused. They had a weaving contest - both tapestries were perfect, but Arachne's showed the gods behaving badly. Athena was furious and turned Arachne into a spider, doomed to weave forever. The lesson? Never challenge the gods, and definitely don't insult them!" },
+            { title: "Orpheus and Eurydice", category: "Love Story", content: "Orpheus was a musician so talented he could charm anything - even stones and trees. When his wife Eurydice died from a snake bite, Orpheus traveled to the underworld to get her back. His music moved Hades so much that he agreed to let Eurydice return - but only if Orpheus didn't look back at her until they reached the surface. At the last second, Orpheus looked back... and lost her forever. A heartbreaking tale of love and trust." },
+            { title: "The Trojan Horse", category: "War & Strategy", content: "The Greeks and Trojans fought for 10 years with no winner. Finally, Odysseus came up with a brilliant trick: build a giant wooden horse, hide soldiers inside, and pretend to sail away. The Trojans, thinking they'd won, brought the 'gift' horse inside their walls. That night, the Greek soldiers snuck out, opened the gates, and destroyed Troy. Sometimes the best weapon is cleverness!" },
+            { title: "Prometheus Steals Fire", category: "Origin Story", content: "Prometheus loved humans and felt sorry that they had no fire - they were cold, ate raw food, and had no light. Against Zeus's orders, Prometheus stole fire from Mount Olympus and gave it to humanity. Zeus was FURIOUS and punished Prometheus by chaining him to a rock where an eagle would eat his liver every day (it would grow back each night). Eventually Heracles freed him. Thanks to Prometheus, we have fire, technology, and civilization!" },
+            { title: "Atalanta the Huntress", category: "Hero's Quest", content: "Atalanta was a fierce huntress who could outrun any man. She joined the hunt for the Calydonian Boar (a giant monster boar) and was the first to wound it! Many men wanted to marry her, but she challenged them to a footrace - if they lost, they died. Many tried and failed. Finally, a clever suitor named Hippomenes got help from Aphrodite, who gave him golden apples. He dropped them during the race, and when Atalanta stopped to pick them up, he won! A story of a powerful woman warrior who almost couldn't be beaten." },
+            { title: "Bellerophon and Pegasus", category: "Hero's Quest", content: "Bellerophon was tasked with an impossible mission: kill the Chimera - a fire-breathing monster with a lion's head, goat's body, and serpent's tail. To do this, he needed to tame Pegasus, the winged horse born from Medusa's blood. With Athena's help (she gave him a golden bridle), he tamed Pegasus and flew into the sky to fight the Chimera from above, where its fire couldn't reach him. He shot it with arrows and dropped a lead-tipped spear into its mouth - when the Chimera breathed fire, the lead melted and choked it! But Bellerophon's pride grew too much. He tried to fly to Mount Olympus to join the gods. Zeus sent a gadfly to sting Pegasus, who bucked Bellerophon off. He fell back to earth and lived the rest of his life as a crippled, lonely wanderer. The lesson? Even heroes shouldn't try to become gods!" },
+            { title: "Cadmus and the Dragon Teeth", category: "Hero's Quest", content: "Prince Cadmus was searching for his sister Europa (who Zeus had kidnapped). An oracle told him to stop searching and found a new city instead - Thebes. But first, he needed water from a sacred spring guarded by a dragon (serpent). Cadmus killed the dragon, and Athena told him to plant the dragon's teeth in the ground. When he did, fully armed warriors sprouted from the earth! They immediately attacked Cadmus. Thinking quickly, he threw a stone among them - they thought one of the other warriors threw it and started fighting each other! Only five survived, and they became the founders of Thebes alongside Cadmus. Smart thinking saves the day again!" },
+            { title: "Poseidon vs Athena for Athens", category: "Divine Competition", content: "The city of Athens needed a patron god, and both Poseidon and Athena wanted the honor. The citizens decided to hold a competition - whoever gave the city the best gift would win. Poseidon struck the ground with his trident and created a spring... but it was saltwater, which wasn't very useful for drinking! Athena planted an olive tree, which provided food, oil for lamps, and wood. The citizens chose Athena, and she became the patron of Athens. Poseidon was NOT happy about losing and flooded the nearby plains in anger! This is why Poseidon and Athena never really got along. Sometimes the most practical gift wins!" },
+            { title: "How Poseidon Created Horses", category: "Origin Story", content: "Poseidon fell in love with Demeter, goddess of the harvest. She wasn't interested, so she gave him an impossible task: create the most beautiful animal ever. Poseidon spent months trying - he created many animals, experimenting with different features. He made zebras, donkeys, and many others. Finally, after all that practice, he created the horse - powerful, graceful, and swift! By the time he finished, though, he had fallen out of love with Demeter. But the world gained horses! That's why Poseidon is god of horses as well as the sea, and why horses can be found on beaches and near water. His trident can make horses appear from the ground!" },
+            { title: "Poseidon's Revenge on Odysseus", category: "Divine Wrath", content: "Remember when Odysseus blinded the Cyclops Polyphemus? Well, Polyphemus was Poseidon's SON. When Polyphemus cried out for revenge, Poseidon heard him and vowed to make Odysseus's journey home a nightmare. For TEN YEARS, Poseidon tormented Odysseus with storms, shipwrecks, and detours. He destroyed Odysseus's ships, drowned his crew, and made sure he couldn't reach home. Even when other gods tried to help, Poseidon's anger was so great that he kept interfering. Finally, after Odysseus suffered enough, Poseidon let him go home. This shows how powerful and vengeful Poseidon can be - NEVER anger the god of the sea! Roma's favorite god doesn't forgive easily!" },
+            { title: "Echo and Narcissus", category: "Transformation Tale", content: "Echo was a nymph who talked too much - she distracted Hera with long stories while Zeus snuck around with other women. When Hera discovered the trick, she cursed Echo: she could never speak first and could only repeat the last words others said. Later, Echo fell in love with the beautiful Narcissus, but couldn't tell him because of her curse. When she tried to approach him by repeating his words, he rejected her cruelly. Heartbroken, Echo faded away until only her voice remained. Meanwhile, Nemesis (goddess of revenge) punished Narcissus by making him fall in love with his own reflection in a pool of water. He stared at himself until he died, unable to leave his reflection. From his body, the narcissus flower grew. This is why we have echoes and why someone who loves themselves too much is called a narcissist!" },
+            { title: "Phaethon and the Sun Chariot", category: "Cautionary Tale", content: "Phaethon was the son of Helios, the sun god. His friends didn't believe him, so he went to his father to prove it. Helios swore by the River Styx (an unbreakable oath) to give Phaethon anything he wanted. Phaethon asked to drive the sun chariot across the sky for one day. Helios BEGGED him not to - even Zeus couldn't control those horses! But an oath is an oath. Phaethon took the reins and immediately lost control. The sun scorched too close to Earth, burning deserts and boiling seas. Zeus had no choice - he struck Phaethon with a lightning bolt to save the world. Phaethon fell from the sky into a river. His father mourned, and Phaethon's sisters turned into trees weeping amber tears. The lesson? Don't take on responsibilities you're not ready for, and REALLY don't fly the sun chariot!" },
+            { title: "Daphne and Apollo", category: "Transformation Tale", content: "Apollo, god of the sun, mocked Eros (Cupid), the god of love, for using a bow and arrow. 'Leave the weapons to real warriors!' he said. Eros was offended and decided to teach Apollo a lesson. He shot Apollo with a golden arrow that makes you fall madly in love, and shot the nymph Daphne with a lead arrow that makes you hate love. Apollo immediately fell for Daphne and chased her, declaring his love. Daphne, wanting nothing to do with him, ran away. When Apollo almost caught her, Daphne cried out to her father, a river god, for help. He transformed her into a laurel tree right before Apollo's eyes. Heartbroken, Apollo declared the laurel his sacred tree, and that's why Olympic victors and great poets wear laurel wreaths - it's Apollo's way of honoring Daphne forever." },
+            { title: "The Titanomachy: War of the Titans", category: "Epic War", content: "Before the Olympian gods ruled, the Titans (older gods) controlled the universe, led by Kronos. Kronos had swallowed all his children (except Zeus, who was hidden). When Zeus grew up, he freed his siblings from Kronos's stomach - Hera, Poseidon, Hades, Demeter, and Hestia. Together, they declared war on the Titans! The Titanomachy lasted TEN YEARS. It was the most epic war ever - mountains were thrown, the earth shook, seas boiled! Zeus freed the Cyclopes from prison, and they made him thunderbolts, Poseidon a trident, and Hades a helmet of invisibility. With these weapons and the help of the Hundred-Handed Giants, the Olympians finally won! The Titans were imprisoned in Tartarus (the deepest pit of the Underworld), and the Olympians became the new rulers. This is how Zeus, Poseidon, and Hades came to power and divided the world - Zeus got the sky, Poseidon the sea, and Hades the Underworld!" },
+            { title: "The Gigantomachy: War of the Giants", category: "Epic War", content: "Just when the gods thought they could relax after beating the Titans, Mother Earth (Gaia) was angry that her Titan children were imprisoned. So she created the Giants - enormous warriors born from the blood of Uranus. These weren't normal giants - they were immune to the gods! An oracle said the gods could only win if they fought alongside a mortal hero. The gods recruited Heracles! The battle was INSANE. One giant threw entire mountains at the gods. Another tried to kidnap Hera. Poseidon ripped off part of an island and threw it at a giant (creating a new island!). Heracles shot the giants with arrows, and then the gods could finish them off. Athena crushed one under the island of Sicily! Zeus buried others under volcanoes (that's why volcanoes erupt - the giants are still fighting!). Finally, the gods won, but it proved that even gods need mortal help sometimes!" }
+        ];
+        
+        const journeys = {
+            odysseus: [
+                { location: "Troy", event: "Won the Trojan War with the Trojan Horse trick" },
+                { location: "Land of Lotus Eaters", event: "His men ate lotus flowers and forgot about home" },
+                { location: "Cyclops Island", event: "Blinded Polyphemus (Poseidon's son) - big mistake!" },
+                { location: "Aeolia", event: "Got a bag of winds to sail home, but crew opened it too early" },
+                { location: "Island of Circe", event: "Witch turned his men into pigs, then helped them" },
+                { location: "Underworld", event: "Visited Hades to get prophecy from Tiresias" },
+                { location: "Sirens", event: "Tied himself to mast to hear their song without dying" },
+                { location: "Scylla and Charybdis", event: "Had to sail between two monsters, lost 6 men to Scylla" },
+                { location: "Island of the Sun God", event: "Crew ate sacred cattle - Zeus destroyed their ship" },
+                { location: "Calypso's Island", event: "Trapped for 7 years by a goddess who loved him" },
+                { location: "Ithaca", event: "Finally home! Defeated suitors and reunited with Penelope" }
+            ],
+            hercules: [
+                { location: "Nemean Lion", event: "Killed invulnerable lion with bare hands, wore its skin" },
+                { location: "Lernean Hydra", event: "Defeated multi-headed serpent with help from nephew" },
+                { location: "Ceryneian Hind", event: "Captured sacred deer of Artemis without harming it" },
+                { location: "Erymanthian Boar", event: "Captured giant wild boar alive" },
+                { location: "Augean Stables", event: "Cleaned 30 years of manure in one day by diverting rivers" },
+                { location: "Stymphalian Birds", event: "Scared away man-eating birds with bronze castanets" },
+                { location: "Cretan Bull", event: "Captured the father of the Minotaur" },
+                { location: "Horses of Diomedes", event: "Tamed man-eating horses" },
+                { location: "Belt of Hippolyta", event: "Retrieved Amazon queen's belt" },
+                { location: "Cattle of Geryon", event: "Stole cattle from three-bodied giant" },
+                { location: "Apples of Hesperides", event: "Got golden apples guarded by dragon" },
+                { location: "Cerberus", event: "Captured and returned three-headed guard dog of underworld" }
+            ],
+            perseus: [
+                { location: "Seriphos", event: "King demanded Medusa's head as wedding gift to his mother" },
+                { location: "Mount Olympus", event: "Gods gave him gifts: winged sandals, mirrored shield, sword" },
+                { location: "Graiai Sisters", event: "Forced them to reveal Medusa's location" },
+                { location: "Gorgons' Lair", event: "Killed Medusa using mirror to avoid her gaze" },
+                { location: "Desert", event: "Medusa's blood created poisonous snakes in the sand" },
+                { location: "Ethiopia", event: "Rescued Andromeda from sea monster using Medusa's head" },
+                { location: "Seriphos Return", event: "Turned evil king to stone, freed his mother" }
+            ]
+        };
+        
+        const achievements = [
+            { id: 'first_visit', name: 'Welcome to Olympus', desc: 'Visit the mythology hub', icon: '🏛️', check: () => true },
+            { id: 'meet_12', name: 'Meet the 12 Olympians', desc: 'View all 12 Olympian gods', icon: '⚡', check: () => checkViewed('gods', 12) },
+            { id: 'hero_fan', name: 'Hero Admirer', desc: 'View all heroes', icon: '🗡️', check: () => checkViewed('heroes', 6) },
+            { id: 'monster_hunter', name: 'Monster Expert', desc: 'View all monsters', icon: '👹', check: () => checkViewed('monsters', 6) },
+            { id: 'story_time', name: 'Myth Reader', desc: 'Read 5 myths', icon: '📖', check: () => checkViewed('stories', 5) },
+            { id: 'myth_master', name: 'Mythology Scholar', desc: 'Read 10 myths', icon: '📚', check: () => checkViewed('stories', 10) },
+            { id: 'heracles_fan', name: 'Labor Champion', desc: 'Read all 12 Labors of Heracles', icon: '💪', check: () => checkViewed('stories', 20) },
+            { id: 'epic_reader', name: 'Epic Scholar', desc: 'Read 30 myths', icon: '🏺', check: () => checkViewed('stories', 30) },
+            { id: 'poseidon_scholar', name: 'Trident Master', desc: 'Read all Poseidon myths', icon: '🔱', check: () => {
+                const poseidonMyths = ['Poseidon vs Athena for Athens', 'How Poseidon Created Horses', "Poseidon's Revenge on Odysseus"];
+                return poseidonMyths.every(myth => viewed.stories && viewed.stories.includes(myth));
+            }},
+            { id: 'journey_start', name: 'Journey Begun', desc: 'View a hero journey', icon: '🗺️', check: () => checkViewed('journeys', 1) },
+            { id: 'all_journeys', name: 'Epic Traveler', desc: 'View all hero journeys', icon: '🧭', check: () => checkViewed('journeys', 3) },
+            { id: 'stats_check', name: 'Power Analyst', desc: 'Check the stats page', icon: '📊', check: () => checkViewed('stats', 1) },
+            { id: 'poseidon_fan', name: 'Child of the Sea', desc: 'View Poseidon', icon: '🔱', check: () => checkViewed('poseidon', 1) },
+            { id: 'explorer', name: 'Mythology Explorer', desc: 'Visit all tabs', icon: '🌟', check: () => checkViewed('tabs', 10) },
+            { id: 'gamer', name: 'Game Master', desc: 'Play all games', icon: '🎮', check: () => checkViewed('games', 2) },
+            { id: 'creator', name: 'Myth Creator', desc: 'Create a demigod and write a myth', icon: '🎨', check: () => viewed.created && viewed.created >= 2 },
+            { id: 'easter_egg', name: 'Secret Finder', desc: 'Find the hidden easter egg!', icon: '🥚', check: () => viewed.easterEgg >= 1 }
+        ];
+        
+        const quizQuestions = [
+            { q: "Who is the king of the gods?", options: ["Zeus", "Poseidon", "Hades", "Apollo"], answer: "Zeus" },
+            { q: "What is Poseidon's symbol?", options: ["Lightning bolt", "Trident", "Owl", "Lyre"], answer: "Trident" },
+            { q: "Who killed Medusa?", options: ["Heracles", "Theseus", "Perseus", "Achilles"], answer: "Perseus" },
+            { q: "How many labors did Heracles complete?", options: ["10", "12", "7", "15"], answer: "12" },
+            { q: "Who is the goddess of wisdom?", options: ["Athena", "Aphrodite", "Artemis", "Hera"], answer: "Athena" },
+            { q: "What creature did Theseus kill in the maze?", options: ["Medusa", "Minotaur", "Hydra", "Chimera"], answer: "Minotaur" },
+            { q: "Who gave fire to humans?", options: ["Zeus", "Hermes", "Prometheus", "Apollo"], answer: "Prometheus" },
+            { q: "Who is the god of the sea?", options: ["Poseidon", "Zeus", "Hades", "Hermes"], answer: "Poseidon" },
+            { q: "What did Pandora release from her box?", options: ["Hope", "Evils", "Magic", "Animals"], answer: "Evils" },
+            { q: "Who flew too close to the sun?", options: ["Daedalus", "Icarus", "Perseus", "Bellerophon"], answer: "Icarus" }
+        ];
+        
+        let matchGameCards = [];
+        let matchFlipped = [];
+        let matchMatches = 0;
+        let quizScore = 0;
+        let quizTotal = 0;
+        let currentQuiz = null;
+        
+        const godSymbols = [
+            { god: "⚡ Zeus", symbol: "Thunder" },
+            { god: "🔱 Poseidon", symbol: "Trident" },
+            { god: "🦉 Athena", symbol: "Owl" },
+            { god: "☀️ Apollo", symbol: "Sun" },
+            { god: "🏹 Artemis", symbol: "Bow" },
+            { god: "⚔️ Ares", symbol: "Sword" }
+        ];
+        
+        // State
+        let viewed = JSON.parse(localStorage.getItem('mythologyViewed')) || { gods: [], heroes: [], monsters: [], stories: [], journeys: [], tabs: [], stats: 0, poseidon: 0, games: [], created: 0, easterEgg: 0 };
+        let unlockedAchievements = JSON.parse(localStorage.getItem('mythologyAchievements')) || [];
+        
+        function saveState() {
+            localStorage.setItem('mythologyViewed', JSON.stringify(viewed));
+            localStorage.setItem('mythologyAchievements', JSON.stringify(unlockedAchievements));
+            updateProgress();
+            checkAchievements();
+        }
+        
+        function checkViewed(category, count) {
+            if (category === 'tabs') return viewed.tabs.length >= count;
+            if (category === 'stats') return viewed.stats >= count;
+            if (category === 'poseidon') return viewed.poseidon >= count;
+            return viewed[category] && viewed[category].length >= count;
+        }
+        
+        function markViewed(category, item) {
+            if (!viewed[category]) viewed[category] = [];
+            if (!viewed[category].includes(item)) {
+                viewed[category].push(item);
+            }
+            if (category === 'stats') {
+                viewed.stats = (viewed.stats || 0) + 1;
+            }
+            saveState();
+        }
+        
+        function checkAchievements() {
+            achievements.forEach(ach => {
+                if (!unlockedAchievements.includes(ach.id) && ach.check()) {
+                    unlockedAchievements.push(ach.id);
+                    saveState();
+                }
+            });
+            renderAchievements();
+        }
+        
+        function updateProgress() {
+            const totalPossible = gods.length + heroes.length + monsters.length + myths.length + 3 + 7; // journeys + tabs
+            const totalViewed = (viewed.gods?.length || 0) + (viewed.heroes?.length || 0) + (viewed.monsters?.length || 0) + (viewed.stories?.length || 0) + (viewed.journeys?.length || 0) + (viewed.tabs?.length || 0);
+            const percent = Math.round((totalViewed / totalPossible) * 100);
+            document.getElementById('overallProgress').style.width = percent + '%';
+            document.getElementById('overallProgress').textContent = percent + '%';
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (!viewed.tabs.includes(tab)) {
+                viewed.tabs.push(tab);
+                saveState();
+            }
+        }
+        
+        function renderCharacters(characters, containerId, category) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = characters.map(char => {
+                const powerPercent = char.power || char.danger || 0;
+                return `
+                    <div class="character-card" onclick="markViewed('${category}', '${char.name}'); ${char.name === 'Poseidon' ? 'markPoseidon();' : ''}">
+                        <div class="character-name">${char.symbol} ${char.name}</div>
+                        <div class="character-title">${char.title}</div>
+                        ${char.domains ? char.domains.map(d => `<span class="character-domain">${d}</span>`).join('') : ''}
+                        <div style="margin-top: 10px; color: #4b5563; font-size: 0.9em;">${char.info}</div>
+                        <div class="power-rating">
+                            ${char.power ? 'Power' : 'Danger'}: ${powerPercent}/100
+                            <div class="power-bar">
+                                <div class="power-fill" style="width: ${powerPercent}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function markPoseidon() {
+            viewed.poseidon = (viewed.poseidon || 0) + 1;
+            saveState();
+        }
+        
+        function renderStories() {
+            const container = document.getElementById('storiesContainer');
+            container.innerHTML = myths.map((myth, idx) => `
+                <div class="myth-story" onclick="markViewed('stories', '${myth.title}')">
+                    <div class="myth-title">${myth.title}</div>
+                    <span class="myth-category">${myth.category}</span>
+                    <div class="myth-content">${myth.content}</div>
+                </div>
+            `).join('');
+        }
+        
+        function showRandomMyth() {
+            const randomMyth = myths[Math.floor(Math.random() * myths.length)];
+            const container = document.getElementById('storiesContainer');
+            container.innerHTML = `
+                <div class="myth-story" style="border-color: #fbbf24; box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);">
+                    <div class="myth-title">🎲 ${randomMyth.title}</div>
+                    <span class="myth-category">${randomMyth.category}</span>
+                    <div class="myth-content">${randomMyth.content}</div>
+                </div>
+            `;
+            markViewed('stories', randomMyth.title);
+        }
+        
+        function loadJourney(hero) {
+            const journey = journeys[hero];
+            const heroNames = { odysseus: "Odysseus", hercules: "Hercules", perseus: "Perseus" };
+            const container = document.getElementById('journeyMap');
+            container.innerHTML = `
+                <h3 style="margin-bottom: 20px; color: #1e40af;">${heroNames[hero]}'s Journey</h3>
+                ${journey.map((step, idx) => `
+                    <div class="journey-step">
+                        <div class="journey-number">${idx + 1}</div>
+                        <div class="journey-location">${step.location}</div>
+                        <div style="color: #6b7280;">${step.event}</div>
+                    </div>
+                `).join('')}
+            `;
+            markViewed('journeys', hero);
+        }
+        
+        function renderStats() {
+            const godContainer = document.getElementById('godStats');
+            const sortedGods = [...gods].sort((a, b) => b.power - a.power).slice(0, 6);
+            godContainer.innerHTML = sortedGods.map((god, idx) => `
+                <div class="stat-card">
+                    <div class="stat-rank">#${idx + 1}</div>
+                    <div class="stat-name">${god.symbol} ${god.name}</div>
+                    <div class="stat-value">Power: ${god.power}/100</div>
+                </div>
+            `).join('');
+            
+            const monsterContainer = document.getElementById('monsterStats');
+            const sortedMonsters = [...monsters].sort((a, b) => b.danger - a.danger);
+            monsterContainer.innerHTML = sortedMonsters.map((monster, idx) => `
+                <div class="stat-card">
+                    <div class="stat-rank">#${idx + 1}</div>
+                    <div class="stat-name">${monster.symbol} ${monster.name}</div>
+                    <div class="stat-value">Danger: ${monster.danger}/100</div>
+                </div>
+            `).join('');
+            
+            markViewed('stats', 1);
+        }
+        
+        function renderAchievements() {
+            const container = document.getElementById('achievementsGrid');
+            container.innerHTML = achievements.map(ach => {
+                const unlocked = unlockedAchievements.includes(ach.id);
+                return `
+                    <div class="achievement ${unlocked ? 'unlocked' : ''}">
+                        <div class="achievement-icon">${ach.icon}</div>
+                        <div class="achievement-name">${ach.name}</div>
+                        <div class="achievement-desc">${ach.desc}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Myth of the Day
+        function setMythOfDay() {
+            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+            const mythTitles = myths.map(m => m.title);
+            const todaysMyth = mythTitles[dayOfYear % mythTitles.length];
+            document.getElementById('mythOfDay').textContent = `Today's myth: "${todaysMyth}" - Check the Myths tab to read it!`;
+        }
+        
+        // Match Game
+        function startMatchGame() {
+            const pairs = [...godSymbols, ...godSymbols].map((item, idx) => ({
+                ...item,
+                id: idx,
+                matched: false
+            }));
+            matchGameCards = pairs.sort(() => Math.random() - 0.5);
+            matchFlipped = [];
+            matchMatches = 0;
+            renderMatchGame();
+            markViewed('games', 'match');
+        }
+        
+        function renderMatchGame() {
+            const container = document.getElementById('matchCards');
+            container.innerHTML = matchGameCards.map((card, idx) => `
+                <div onclick="flipCard(${idx})" style="background: ${card.matched ? '#10b981' : matchFlipped.includes(idx) ? '#fbbf24' : '#3b82f6'}; color: white; padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; font-weight: bold; transition: all 0.3s;">
+                    ${card.matched || matchFlipped.includes(idx) ? (card.god || card.symbol) : '?'}
+                </div>
+            `).join('');
+        }
+        
+        function flipCard(idx) {
+            if (matchFlipped.length >= 2 || matchFlipped.includes(idx) || matchGameCards[idx].matched) return;
+            matchFlipped.push(idx);
+            renderMatchGame();
+            
+            if (matchFlipped.length === 2) {
+                const [first, second] = matchFlipped;
+                const firstCard = matchGameCards[first];
+                const secondCard = matchGameCards[second];
+                
+                if ((firstCard.god && secondCard.symbol === firstCard.symbol.replace(/[^\w]/g, '')) || 
+                    (secondCard.god && firstCard.symbol === secondCard.symbol.replace(/[^\w]/g, ''))) {
+                    matchGameCards[first].matched = true;
+                    matchGameCards[second].matched = true;
+                    matchMatches++;
+                    matchFlipped = [];
+                    renderMatchGame();
+                    
+                    if (matchMatches === godSymbols.length) {
+                        setTimeout(() => alert('🎉 You matched them all!'), 300);
+                    }
+                } else {
+                    setTimeout(() => {
+                        matchFlipped = [];
+                        renderMatchGame();
+                    }, 1000);
+                }
+            }
+        }
+        
+        // Quiz Game
+        function nextQuiz() {
+            currentQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+            document.getElementById('quizQ').textContent = currentQuiz.q;
+            document.getElementById('quizOptions').innerHTML = currentQuiz.options.map(opt => `
+                <button class="action-btn" onclick="answerQuiz('${opt}')" style="width: 100%; text-align: left;">
+                    ${opt}
+                </button>
+            `).join('');
+            markViewed('games', 'quiz');
+        }
+        
+        function answerQuiz(answer) {
+            quizTotal++;
+            if (answer === currentQuiz.answer) {
+                quizScore++;
+                alert('✅ Correct!');
+            } else {
+                alert(`❌ Wrong! The answer was: ${currentQuiz.answer}`);
+            }
+            document.getElementById('quizScore').textContent = quizScore;
+            document.getElementById('quizTotal').textContent = quizTotal;
+            nextQuiz();
+        }
+        
+        // Demigod Creator
+        function generateDemigod() {
+            const name = document.getElementById('demigodName').value;
+            const parent = document.getElementById('demigodParent').value;
+            const power = document.getElementById('demigodPower').value;
+            const weapon = document.getElementById('demigodWeapon').value;
+            
+            if (!name || !parent || !power || !weapon) {
+                alert('Fill in all fields!');
+                return;
+            }
+            
+            const result = `
+                <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: #92400e; font-size: 1.5em; margin-bottom: 10px;">⚡ ${name} ⚡</h4>
+                    <p style="color: #78350f;"><strong>Child of:</strong> ${parent}</p>
+                    <p style="color: #78350f;"><strong>Power:</strong> ${power}</p>
+                    <p style="color: #78350f;"><strong>Weapon:</strong> ${weapon}</p>
+                    <p style="color: #78350f; margin-top: 10px; font-style: italic;">"${name}, blessed by ${parent}, wielding ${weapon} and gifted with the power to ${power}. A true hero of Olympus!"</p>
+                </div>
+            `;
+            document.getElementById('demigodResult').innerHTML = result;
+            if (!viewed.created) viewed.created = 0;
+            viewed.created++;
+            saveState();
+        }
+        
+        // Myth Writer
+        function saveMyth() {
+            const title = document.getElementById('mythTitle').value;
+            const story = document.getElementById('mythStory').value;
+            
+            if (!title || !story) {
+                alert('Fill in both title and story!');
+                return;
+            }
+            
+            let myMyths = JSON.parse(localStorage.getItem('myMyths')) || [];
+            myMyths.push({ title, story, date: new Date().toLocaleDateString() });
+            localStorage.setItem('myMyths', JSON.stringify(myMyths));
+            
+            document.getElementById('mythTitle').value = '';
+            document.getElementById('mythStory').value = '';
+            displayMyMyths();
+            
+            if (!viewed.created) viewed.created = 0;
+            viewed.created++;
+            saveState();
+        }
+        
+        function displayMyMyths() {
+            let myMyths = JSON.parse(localStorage.getItem('myMyths')) || [];
+            if (myMyths.length === 0) {
+                document.getElementById('savedMyths').innerHTML = '';
+                return;
+            }
+            document.getElementById('savedMyths').innerHTML = `
+                <h4 style="color: #1e40af; margin-bottom: 10px;">Your Myths:</h4>
+                ${myMyths.map((myth, idx) => `
+                    <div style="background: rgba(255,255,255,0.6); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                        <h5 style="color: #1e40af;">${myth.title}</h5>
+                        <p style="font-size: 0.85em; color: #6b7280; margin-bottom: 5px;">${myth.date}</p>
+                        <p style="color: #374151;">${myth.story}</p>
+                        <button class="action-btn btn-small" onclick="deleteMyth(${idx})" style="margin-top: 10px; background: #ef4444;">Delete</button>
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        function deleteMyth(idx) {
+            let myMyths = JSON.parse(localStorage.getItem('myMyths')) || [];
+            myMyths.splice(idx, 1);
+            localStorage.setItem('myMyths', JSON.stringify(myMyths));
+            displayMyMyths();
+        }
+        
+        // Monster Creator
+        function createMonster() {
+            const name = document.getElementById('monsterName').value;
+            const head = document.getElementById('monsterHead').value;
+            const body = document.getElementById('monsterBody').value;
+            const ability = document.getElementById('monsterAbility').value;
+            
+            if (!name || !ability) {
+                alert('Fill in all fields!');
+                return;
+            }
+            
+            const result = `
+                <div style="background: linear-gradient(135deg, #fee2e2, #fecaca); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: #991b1b; font-size: 1.5em; margin-bottom: 10px;">👹 ${name} 👹</h4>
+                    <p style="color: #7f1d1d;"><strong>Head:</strong> ${head}</p>
+                    <p style="color: #7f1d1d;"><strong>Body:</strong> ${body}</p>
+                    <p style="color: #7f1d1d;"><strong>Ability:</strong> ${ability}</p>
+                    <p style="color: #7f1d1d; margin-top: 10px; font-style: italic;">"Beware the ${name}! With the head of a ${head} and body of a ${body}, it terrorizes all who cross its path with its power to ${ability}!"</p>
+                </div>
+            `;
+            document.getElementById('monsterResult').innerHTML = result;
+        }
+        
+        // Easter Egg (click Poseidon 10 times!)
+        let poseidonClicks = 0;
+        function markPoseidon() {
+            viewed.poseidon = (viewed.poseidon || 0) + 1;
+            poseidonClicks++;
+            if (poseidonClicks === 10 && !viewed.easterEgg) {
+                alert('🥚 SECRET FOUND! You discovered the easter egg by clicking Poseidon 10 times! You are a true Child of the Sea! 🔱');
+                viewed.easterEgg = 1;
+            }
+            saveState();
+        }
+        
+        // Initialize
+        renderCharacters(gods, 'godsGrid', 'gods');
+        renderCharacters(heroes, 'heroesGrid', 'heroes');
+        renderCharacters(monsters, 'monstersGrid', 'monsters');
+        renderStories();
+        renderStats();
+        renderAchievements();
+        updateProgress();
+        checkAchievements();
+        setMythOfDay();
+        startMatchGame();
+        nextQuiz();
+        displayMyMyths();
+        
+        // Mark first visit
+        if (!viewed.tabs.includes('gods')) {
+            viewed.tabs.push('gods');
+            saveState();
+        }
+    </script>
+</body>
+</html>

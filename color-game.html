@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Roma's Color Match Game!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .score {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        
+        .target-color {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        
+        .target-color:hover {
+            transform: scale(1.05);
+        }
+        
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .color-btn {
+            width: 90px;
+            height: 90px;
+            border: 3px solid white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .feedback {
+            margin-top: 30px;
+            font-size: 2em;
+            font-weight: bold;
+            min-height: 40px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            75% { transform: scale(1.2) rotate(10deg); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Color Match!</h1>
+        <div class="score">Score: <span id="score">0</span> | Streak: <span id="streak">0</span> 🔥</div>
+        <p style="margin-bottom: 20px;">Match the color below!</p>
+        <div id="targetColor" class="target-color"></div>
+        <div class="color-options" id="colorOptions"></div>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        let score = 0;
+        let streak = 0;
+        let currentColor;
+        
+        const colors = [
+            '#FF6B6B', '#FF7777', '#FF5555', // Similar reds
+            '#4ECDC4', '#45B7D1', '#3FA9C1', // Similar blues
+            '#FFA07A', '#FF9966', '#FFB088', // Similar oranges
+            '#98D8C8', '#88C8B8', '#A8E8D8', // Similar teals
+            '#F7DC6F', '#F8E080', '#F6D060', // Similar yellows
+            '#BB8FCE', '#CC9FDE', '#AA7FBE', // Similar purples
+            '#52B788', '#62C798', '#42A778', // Similar greens
+            '#E63946', '#D62936', '#F64956', // Similar dark reds
+            '#8338EC', '#9348FC', '#7328DC'  // Similar violets
+        ];
+        
+        function generateRound() {
+            currentColor = colors[Math.floor(Math.random() * colors.length)];
+            document.getElementById('targetColor').style.backgroundColor = currentColor;
+            
+            // Generate options (one correct, five random) - HARD MODE!
+            const options = [currentColor];
+            while (options.length < 6) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                if (!options.includes(randomColor)) {
+                    options.push(randomColor);
+                }
+            }
+            
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+            
+            // Create buttons
+            const container = document.getElementById('colorOptions');
+            container.innerHTML = '';
+            options.forEach(color => {
+                const btn = document.createElement('div');
+                btn.className = 'color-btn';
+                btn.style.backgroundColor = color;
+                btn.onclick = () => checkAnswer(color);
+                container.appendChild(btn);
+            });
+            
+            document.getElementById('feedback').textContent = '';
+        }
+        
+        function checkAnswer(selectedColor) {
+            const feedback = document.getElementById('feedback');
+            const targetEl = document.getElementById('targetColor');
+            
+            if (selectedColor === currentColor) {
+                score += 10 + (streak * 5);
+                streak++;
+                feedback.textContent = '✨ Perfect! ✨';
+                feedback.style.color = '#4ECDC4';
+                targetEl.classList.add('celebrate');
+                setTimeout(() => targetEl.classList.remove('celebrate'), 500);
+            } else {
+                streak = 0;
+                feedback.textContent = '❌ Try again!';
+                feedback.style.color = '#FF6B6B';
+            }
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            
+            setTimeout(generateRound, 1000);
+        }
+        
+        // Start the game
+        generateRound();
+    </script>
+</body>
+</html>
