@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roma's Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3em;
+            color: #764ba2;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+        
+        .projects {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .project-card {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            border-left: 5px solid #764ba2;
+            display: block;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+            border-left-width: 10px;
+        }
+        
+        .project-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .project-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .project-desc {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        footer {
+            margin-top: 40px;
+            color: #9ca3af;
+            font-size: 0.9em;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #764ba2;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Roma's Projects ✨</h1>
+        <p class="subtitle">Welcome to my collection of awesome creations!</p>
+        
+        <div class="projects">
+            <a href="greek-mythology.html" class="project-card">
+                <div class="project-icon">⚡🏛️</div>
+                <div class="project-title">Greek Mythology Hub</div>
+                <div class="project-desc">
+                    Explore 36 myths, all 12 Olympian gods, legendary heroes, and fearsome monsters. 
+                    Play games, create your own demigods, and unlock achievements!
+                </div>
+                <span class="badge">10 Interactive Tabs</span>
+                <span class="badge">36 Full Myths</span>
+            </a>
+            
+            <a href="magic-database.html" class="project-card">
+                <div class="project-icon">🎩✨</div>
+                <div class="project-title">Magic Trick Database</div>
+                <div class="project-desc">
+                    Track your magic tricks, log practice sessions, plan performances, and organize your repertoire. 
+                    Features spectator mode to hide secrets from friends!
+                </div>
+                <span class="badge">Practice Tracker</span>
+                <span class="badge">Performance Logger</span>
+            </a>
+            
+            <a href="color-game.html" class="project-card">
+                <div class="project-icon">🎨🎮</div>
+                <div class="project-title">Color Match Game</div>
+                <div class="project-desc">
+                    Test your color recognition skills! Match the target color from multiple options. 
+                    Build streaks for bonus points and compete for high scores!
+                </div>
+                <span class="badge">Streak Bonuses</span>
+                <span class="badge">Score Tracking</span>
+            </a>
+        </div>
+        
+        <footer>
+            Built with James, my awesome AI assistant! 🤖<br>
+            Created: February 2026
+        </footer>
+    </div>
+</body>
+</html>
