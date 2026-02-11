@@ -1,2 +1,1 @@
-# Romas-magic-database
-Roma’s magic trick database 
+# Roma's Magic Database\n\nMy collection of magic tricks!
