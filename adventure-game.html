@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest of the Hero - Greek Mythology Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #000428 0%, #004e92 25%, #000000 50%, #004e92 75%, #000428 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .symbol {
+            position: fixed;
+            font-size: 40px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            border: 2px solid #4a90e2;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #4a90e2;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            margin-top: 5px;
+        }
+
+        .game-screen {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #4a90e2;
+            min-height: 400px;
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: 2px solid #4a90e2;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-family: 'Georgia', serif;
+        }
+
+        .choice-btn:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #3a72c8 100%);
+            transform: translateX(10px);
+            border-color: #ffd700;
+        }
+
+        .choice-btn:active {
+            transform: scale(0.98);
+        }
+
+        .inventory {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 2px solid #4a90e2;
+        }
+
+        .inventory-title {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item {
+            background: rgba(74, 144, 226, 0.3);
+            padding: 5px 15px;
+            border-radius: 5px;
+            border: 1px solid #4a90e2;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffd700;
+            border: 2px solid #ffd700;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .ending-screen {
+            text-align: center;
+        }
+
+        .ending-title {
+            font-size: 2em;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .ending-text {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .achievements {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #ffd700;
+        }
+
+        .achievement {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(74, 144, 226, 0.3);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .story-text {
+                font-size: 1.1em;
+            }
+            
+            .choice-btn {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Quest of the Hero 🔱</h1>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-label">⚔️ Courage</div>
+                    <div class="stat-value" id="courage">5</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">🦉 Wisdom</div>
+                    <div class="stat-value" id="wisdom">5</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">💪 Strength</div>
+                    <div class="stat-value" id="strength">5</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">⭐ Fame</div>
+                    <div class="stat-value" id="fame">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-screen" id="gameScreen">
+            <div class="story-text" id="storyText"></div>
+            <div class="choices" id="choices"></div>
+        </div>
+
+        <div class="inventory">
+            <div class="inventory-title">🎒 Inventory & Allies</div>
+            <div class="inventory-items" id="inventoryItems">
+                <div class="item">Basic Sword</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="saveGame()">💾 Save Game</button>
+            <button class="control-btn" onclick="loadGame()">📂 Load Game</button>
+            <button class="control-btn" onclick="resetGame()">🔄 Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            currentScene: 'start',
+            courage: 5,
+            wisdom: 5,
+            strength: 5,
+            fame: 0,
+            inventory: ['Basic Sword'],
+            allies: [],
+            choices: [],
+            godsAngered: [],
+            godsFavored: []
+        };
+
+        // Story scenes
+        const scenes = {
+            start: {
+                text: "Thunder rumbles across the sky as you stand at the base of Mount Olympus. You are a young hero from a small village, but last night, you had a dream—or was it a vision? Hermes, messenger of the gods, appeared in golden light and spoke:\n\n\"Mortal, the Olympians have need of you. A great evil stirs in the depths of Tartarus, and the gods cannot intervene directly. Climb the sacred mountain. Your destiny awaits.\"\n\nNow, as dawn breaks, you must decide: Will you heed the call and ascend Olympus, or will you turn back to the safety of your ordinary life?",
+                choices: [
+                    {
+                        text: "⚔️ Ascend Mount Olympus with courage - The gods have chosen me!",
+                        effects: { courage: 2, fame: 1 },
+                        next: 'olympusGates'
+                    },
+                    {
+                        text: "🦉 Climb carefully and observe - I should learn more before committing.",
+                        effects: { wisdom: 2 },
+                        next: 'olympusGates'
+                    },
+                    {
+                        text: "🏃 Return to the village - This is too dangerous for me.",
+                        effects: { courage: -2, wisdom: 1 },
+                        next: 'returnVillage'
+                    }
+                ]
+            },
+
+            olympusGates: {
+                text: "You climb the winding path up Mount Olympus, your legs burning with effort. The air grows thin and electric. Finally, you reach massive golden gates guarded by two enormous bronze automatons—mechanical giants created by Hephaestus himself.\n\nThe automatons' eyes glow red as they speak in unison: \"MORTAL. TO ENTER OLYMPUS, YOU MUST PROVE YOUR WORTH. CHOOSE YOUR TRIAL: THE TEST OF STRENGTH, THE TEST OF WISDOM, OR THE TEST OF COURAGE.\"",
+                choices: [
+                    {
+                        text: "💪 Test of Strength - I will wrestle one of the automatons!",
+                        effects: { strength: 2 },
+                        next: 'strengthTest'
+                    },
+                    {
+                        text: "🦉 Test of Wisdom - I will solve their ancient riddle.",
+                        effects: { wisdom: 2 },
+                        next: 'wisdomTest'
+                    },
+                    {
+                        text: "⚔️ Test of Courage - I will face my greatest fear in the Cavern of Phobos.",
+                        effects: { courage: 2 },
+                        next: 'courageTest'
+                    }
+                ]
+            },
+
+            strengthTest: {
+                text: "You step forward, and one automaton kneels to your level. \"GRAPPLE WITH ME, MORTAL.\" Its bronze hand is cold as you grip it. The wrestling match begins!\n\nYou strain with all your might, muscles screaming. The automaton is incredibly strong, but you notice something—its movements are predictable, mechanical. You can either rely on pure strength or use clever technique to win.",
+                choices: [
+                    {
+                        text: "💪 Use pure strength - I'll overpower it through force!",
+                        effects: { strength: 3, fame: 2 },
+                        items: ['Bronze Gauntlet'],
+                        next: 'throneRoom'
+                    },
+                    {
+                        text: "🦉 Use technique - I'll find its weakness and exploit it!",
+                        effects: { wisdom: 2, strength: 1, fame: 2 },
+                        items: ['Bronze Gauntlet'],
+                        next: 'throneRoom'
+                    }
+                ]
+            },
+
+            wisdomTest: {
+                text: "The automaton speaks: \"ANSWER THIS RIDDLE, MORTAL:\n\n'I am the beginning of eternity, the end of time and space, the beginning of every end, and the end of every place. What am I?'\"\n\nYou think carefully. This is the kind of riddle the gods love—tricky wordplay rather than deep philosophy.",
+                choices: [
+                    {
+                        text: "The letter 'E'",
+                        effects: { wisdom: 3, fame: 2 },
+                        items: ['Athena\'s Owl Feather'],
+                        next: 'throneRoom'
+                    },
+                    {
+                        text: "Death",
+                        effects: { wisdom: -1 },
+                        next: 'riddleFail'
+                    },
+                    {
+                        text: "The void",
+                        effects: { wisdom: -1 },
+                        next: 'riddleFail'
+                    }
+                ]
+            },
+
+            courageTest: {
+                text: "The gates open to reveal a dark cavern. \"ENTER THE CAVERN OF PHOBOS, GOD OF FEAR,\" the automatons command. \"FACE WHAT LIES WITHIN.\"\n\nYou descend into darkness. The cave seems to read your mind, and suddenly, you're confronted by your deepest fear made manifest: a terrifying vision of your village burning while you stand powerless to help. You know it's not real, but it feels real. Your heart pounds.",
+                choices: [
+                    {
+                        text: "⚔️ Face the fear head-on - I will charge into the flames!",
+                        effects: { courage: 4, fame: 2 },
+                        items: ['Cloak of Courage'],
+                        next: 'throneRoom'
+                    },
+                    {
+                        text: "🦉 Recognize the illusion - This is not real. I will not be manipulated by fear.",
+                        effects: { wisdom: 2, courage: 2, fame: 2 },
+                        items: ['Cloak of Courage'],
+                        next: 'throneRoom'
+                    }
+                ]
+            },
+
+            riddleFail: {
+                text: "\"INCORRECT,\" the automaton booms. \"BUT THE GODS ARE MERCIFUL. YOU MAY TRY THE TEST OF STRENGTH INSTEAD.\"\n\nShamed but determined, you face the physical challenge instead.",
+                choices: [
+                    {
+                        text: "Accept the Test of Strength",
+                        effects: { courage: 1 },
+                        next: 'strengthTest'
+                    }
+                ]
+            },
+
+            throneRoom: {
+                text: "The gates swing open with a thunderous sound. You enter the throne room of Olympus, and the sight takes your breath away. Twelve massive thrones tower before you, each radiating divine power. The Olympians themselves sit watching you with eyes that have witnessed the birth and death of civilizations.\n\nZeus speaks, his voice like rolling thunder: \"Mortal hero, we have watched your ascent. A great evil rises from Tartarus—Typhon, Father of Monsters, stirs in his prison. We cannot fight him directly without risking the destruction of the mortal world. You must venture to the Underworld and re-seal his prison before he breaks free.\"\n\nPoseidon leans forward: \"Choose an ally for your quest. You may take one gift from among us.\"\n\nAthena speaks: \"Choose wisely. Your choice will shape your journey.\"",
+                choices: [
+                    {
+                        text: "⚡ Ask Zeus for his lightning bolt - The most powerful weapon!",
+                        effects: { strength: 3, fame: 3, courage: 2 },
+                        items: ['Weakened Lightning Bolt'],
+                        gods: ['zeus'],
+                        next: 'questBegins'
+                    },
+                    {
+                        text: "🦉 Ask Athena for her wisdom and strategy - Knowledge is the greatest weapon.",
+                        effects: { wisdom: 4, fame: 2 },
+                        items: ['Athena\'s Aegis Shield'],
+                        gods: ['athena'],
+                        next: 'questBegins'
+                    },
+                    {
+                        text: "🔱 Ask Poseidon for safe passage - I'll need to cross the River Styx.",
+                        effects: { wisdom: 2, fame: 2 },
+                        items: ['Poseidon\'s Trident Charm'],
+                        gods: ['poseidon'],
+                        next: 'questBegins'
+                    },
+                    {
+                        text: "🏹 Ask Artemis to join as an ally - A skilled huntress would be invaluable.",
+                        effects: { courage: 2, fame: 2 },
+                        allies: ['Artemis'],
+                        items: ['Artemis\'s Silver Bow'],
+                        gods: ['artemis'],
+                        next: 'questBegins'
+                    }
+                ]
+            },
+
+            questBegins: {
+                text: () => {
+                    let gift = gameState.inventory[gameState.inventory.length - 1];
+                    let ally = gameState.allies.length > 0 ? gameState.allies[0] : null;
+                    
+                    let text = `With your gift from the gods${ally ? ' and your divine ally' : ''}, you leave Olympus and journey to the entrance of the Underworld. The cave of Taenarum yawns before you, a gateway to the realm of the dead.\n\n`;
+                    
+                    if (ally === 'Artemis') {
+                        text += `Artemis walks beside you, her silver arrows glinting. "I have hunted many monsters," she says, "but none as dangerous as what awaits us below."\n\n`;
+                    }
+                    
+                    text += `As you descend into darkness, you hear the growling of Cerberus, the three-headed hound who guards the gates of Hades. You must pass him to enter the Underworld.`;
+                    
+                    return text;
+                },
+                choices: () => {
+                    let choices = [
+                        {
+                            text: "🎵 Sing a lullaby - Like Orpheus, I'll charm the beast with music.",
+                            effects: { wisdom: 2, fame: 1 },
+                            next: 'cerberusPass'
+                        },
+                        {
+                            text: "🥩 Offer honey cakes - Cerberus loves sweet treats.",
+                            effects: { wisdom: 3, fame: 1 },
+                            next: 'cerberusPass'
+                        },
+                        {
+                            text: "⚔️ Fight Cerberus - I'll subdue him with force!",
+                            effects: { courage: 2, strength: 1, fame: 1 },
+                            next: 'cerberusFight'
+                        }
+                    ];
+                    
+                    if (gameState.allies.includes('Artemis')) {
+                        choices.push({
+                            text: "🏹 Have Artemis distract Cerberus while you slip past.",
+                            effects: { wisdom: 2 },
+                            next: 'cerberusPass'
+                        });
+                    }
+                    
+                    return choices;
+                }
+            },
+
+            cerberusPass: {
+                text: "Your approach works! Cerberus, charmed by your offering (or distracted by Artemis's arrows), allows you to pass. His massive heads watch you with curiosity rather than hunger. You've made it into the Underworld without violence.\n\nThe realm of the dead stretches before you—a vast cavern of shadows where the souls of the departed wander. The River Styx flows with black water, and across it, you can see the Palace of Hades. But first, you must cross the river.\n\nCharon, the ferryman, poles his boat toward you. His ancient face is hollow and grim. \"Payment,\" he rasps. \"One coin to cross.\"",
+                choices: () => {
+                    let choices = [
+                        {
+                            text: "💰 Pay Charon with a gold coin.",
+                            effects: { fame: 1 },
+                            next: 'crossRiver'
+                        }
+                    ];
+                    
+                    if (gameState.inventory.includes('Poseidon\'s Trident Charm')) {
+                        choices.push({
+                            text: "🔱 Show Poseidon's charm - The lord of waters commands free passage.",
+                            effects: { wisdom: 2, fame: 2 },
+                            next: 'crossRiverFree'
+                        });
+                    }
+                    
+                    choices.push({
+                        text: "💪 Swim across the Styx - I don't need his ferry!",
+                        effects: { courage: 2, strength: 2 },
+                        next: 'swimStyx'
+                    });
+                    
+                    return choices;
+                }
+            },
+
+            cerberusFight: {
+                text: "You draw your weapon and face the three-headed beast! Cerberus is enormous and fearsome, but you fight with the strength and courage of a true hero. The battle is fierce—teeth snap, claws swipe, but you hold your ground!\n\nFinally, exhausted, Cerberus backs down, recognizing your warrior spirit. You pass, but your fight has alerted the Underworld to your presence.",
+                choices: [
+                    {
+                        text: "Continue into the Underworld",
+                        effects: { courage: 2, fame: 2 },
+                        next: 'cerberusPass'
+                    }
+                ]
+            },
+
+            crossRiver: {
+                text: "You hand Charon a gold coin. He accepts it without a word and gestures for you to board his boat. The crossing is silent and eerie, souls drifting past in the mist. Charon drops you on the far shore and disappears back into the gloom.",
+                choices: [
+                    {
+                        text: "Approach Hades' Palace",
+                        next: 'hadespalace'
+                    }
+                ]
+            },
+
+            crossRiverFree: {
+                text: "You hold up Poseidon's trident charm, and it glows with divine sea-blue light. Charon's eyes widen—the first emotion you've seen from him. \"The Lord of Seas grants you passage,\" he says, bowing slightly. \"Board freely.\"\n\nThe crossing is smoother with divine favor. Other spirits in the water part respectfully.",
+                choices: [
+                    {
+                        text: "Approach Hades' Palace",
+                        effects: { fame: 1 },
+                        next: 'hadespalace'
+                    }
+                ]
+            },
+
+            swimStyx: {
+                text: "You dive into the black waters of the Styx! The river is freezing and filled with the sorrows of the dead. Your strength is tested as you fight the current. Memories of pain and loss wash over you—the river tries to drag you down into despair.\n\nBut you push through! Your courage and strength carry you across, though you emerge shivering and haunted by what you felt.",
+                choices: [
+                    {
+                        text: "Shake it off and continue",
+                        effects: { courage: 3, strength: 2, wisdom: -1 },
+                        next: 'hadespalace'
+                    }
+                ]
+            },
+
+            hadespalace: {
+                text: "You stand before the obsidian palace of Hades, Lord of the Dead. The palace is grand but somber, lit by eternal torches that cast no warmth. Hades himself sits on his throne, with Persephone beside him—she is beautiful and kind, but there's sadness in her eyes.\n\nHades regards you with dark, intelligent eyes. \"So, a mortal hero walks my realm. Bold. I know why you've come—Typhon's prison lies deep in Tartarus, beneath even my domain. But I warn you, hero: Tartarus is where the worst of the worst are imprisoned. Even I rarely venture there.\"\n\nPersephone speaks gently: \"The path to Tartarus is through the Fields of Punishment. You must pass the Judges of the Dead first. They will test whether you're worthy to descend further.\"\n\nHades adds: \"Or... you could take a shortcut. There's a back entrance through the Cavern of Eternal Night. Faster, but far more dangerous. The choice is yours.\"",
+                choices: [
+                    {
+                        text: "⚖️ Face the Judges - I'll prove my worth through trial.",
+                        effects: { wisdom: 2, fame: 2 },
+                        next: 'theJudges'
+                    },
+                    {
+                        text: "🌑 Take the dangerous shortcut - Every moment counts!",
+                        effects: { courage: 3 },
+                        next: 'cavern OfNight'
+                    },
+                    {
+                        text: "🌸 Ask Persephone for guidance - She seems kind.",
+                        effects: { wisdom: 3 },
+                        next: 'persephoneHelp'
+                    }
+                ]
+            },
+
+            theJudges: {
+                text: "You enter the Hall of Judgment, where three ancient judges sit: Minos, Rhadamanthus, and Aeacus. They have judged countless souls, and now they turn their gaze upon you.\n\nMinos speaks: \"Living hero, you seek passage to Tartarus. We shall judge your heart. Answer truthfully: What drives you on this quest?\"\n\nYou must answer from your heart.",
+                choices: [
+                    {
+                        text: "⭐ Glory and fame - I want to be remembered as the greatest hero!",
+                        effects: { fame: 3, courage: 2, wisdom: -1 },
+                        next: 'judgesVerdict'
+                    },
+                    {
+                        text: "❤️ To protect the innocent - The mortal world must be saved.",
+                        effects: { wisdom: 3, fame: 2 },
+                        next: 'judgesVerdictGood'
+                    },
+                    {
+                        text: "⚡ Because the gods commanded it - I serve the Olympians.",
+                        effects: { courage: 1, wisdom: 1 },
+                        next: 'judgesVerdict'
+                    },
+                    {
+                        text: "💪 To prove my strength - I must know if I'm truly strong enough.",
+                        effects: { strength: 2, courage: 2 },
+                        next: 'judgesVerdict'
+                    }
+                ]
+            },
+
+            judgesVerdictGood: {
+                text: "The three judges confer, then Rhadamanthus nods approvingly. \"Your heart is pure, hero. You quest not for yourself, but for others. This is the mark of a true hero.\"\n\nAeacus stands: \"We grant you passage to Tartarus. More than that, we grant you this.\" He hands you a golden key. \"The Key of Judgment. It will open any door in the Underworld, including the gates of Typhon's prison.\"\n\nMinos warns: \"But be swift. Even now, Typhon strains against his bonds.\"",
+                choices: [
+                    {
+                        text: "Thank them and descend to Tartarus",
+                        effects: { fame: 3, wisdom: 2 },
+                        items: ['Golden Key of Judgment'],
+                        next: 'tartarus'
+                    }
+                ]
+            },
+
+            judgesVerdict: {
+                text: "The judges deliberate. Finally, Minos speaks: \"Your reasons are... acceptable. You may pass, but you must find the key to Typhon's prison yourself. It is hidden in the Maze of Lamentation, guarded by a Fury. Good luck, hero.\"",
+                choices: [
+                    {
+                        text: "Accept the challenge",
+                        effects: { fame: 1 },
+                        next: 'tartarus'
+                    }
+                ]
+            },
+
+            persephoneHelp: {
+                text: "Persephone smiles warmly—a rare kindness in this dark place. She leans forward and speaks softly so only you can hear:\n\n\"I admire your courage, hero. Few mortals would dare this quest. I will tell you a secret: in Tartarus, you will find the Chains of Adamant—unbreakable bonds forged by the Cyclopes. Use them to bind Typhon. But beware: he will try to bargain with you. Monsters are cunning. Do not listen to his lies.\"\n\nShe presses a pomegranate seed into your hand. \"This seed will grant you one moment of divine protection when you need it most. Use it wisely.\"\n\nHades adds gruffly: \"My wife has a soft spot for heroes. Very well, I'll help too.\" He waves his hand and the throne room's floor opens, revealing a direct passage downward. \"This will take you straight to Tartarus. But once you descend, you're on your own.\"",
+                choices: [
+                    {
+                        text: "Thank them both and descend",
+                        effects: { wisdom: 4, fame: 2 },
+                        items: ['Pomegranate Seed of Protection'],
+                        next: 'tartarus'
+                    }
+                ]
+            },
+
+            cavernOfNight: {
+                text: "You choose the shortcut through the Cavern of Eternal Night. The passage is pitch black—darker than any darkness you've known. You can't see your hand in front of your face.\n\nStrange sounds echo around you: whispers, moans, the flutter of unseen wings. Something brushes past you in the dark. Your courage is tested with every step.\n\nSuddenly, you hear a voice—sweet and alluring: \"Lost, little hero? I can guide you... for a price.\" It's a siren, one of the dangerous creatures that lure mortals to their doom.",
+                choices: [
+                    {
+                        text: "⚔️ Attack where the voice came from!",
+                        effects: { courage: 2, strength: 1 },
+                        next: 'sirenFight'
+                    },
+                    {
+                        text: "🦉 Ignore it and feel your way forward carefully.",
+                        effects: { wisdom: 3 },
+                        next: 'ignoreSiren'
+                    },
+                    {
+                        text: "💬 Negotiate - What price?",
+                        effects: { wisdom: 1 },
+                        next: 'sirenBargain'
+                    }
+                ]
+            },
+
+            sirenFight: {
+                text: "You strike out blindly! Your blade finds something solid, and you hear a shriek of rage. The siren attacks back, and a brutal fight in the darkness ensues. You can't see, but you fight with pure instinct!\n\nFinally, you hear the siren flee, wounded. You've survived, though you're bruised and exhausted.",
+                choices: [
+                    {
+                        text: "Continue through the darkness",
+                        effects: { courage: 2, strength: 1 },
+                        next: 'tartarus'
+                    }
+                ]
+            },
+
+            ignoreSiren: {
+                text: "You steel yourself and keep moving forward, ignoring the siren's calls. The voice grows angry, then desperate, then finally fades away. You emerge from the Cavern of Night into the dim red glow of Tartarus, proud of your self-control.",
+                choices: [
+                    {
+                        text: "Enter Tartarus",
+                        effects: { wisdom: 2, courage: 2 },
+                        next: 'tartarus'
+                    }
+                ]
+            },
+
+            sirenBargain: {
+                text: "The siren laughs. \"Clever mortal. My price is simple: a memory. Give me your happiest memory, and I'll guide you safely to Tartarus.\"\n\nLosing a happy memory would hurt, but it would guarantee safe passage.",
+                choices: [
+                    {
+                        text: "Accept - Give up your happiest memory.",
+                        effects: { wisdom: -2, courage: 1 },
+                        next: 'tartarus'
+                    },
+                    {
+                        text: "Refuse - I need all my memories!",
+                        effects: { wisdom: 2 },
+                        next: 'ignoreSiren'
+                    }
+                ]
+            },
+
+            tartarus: {
+                text: () => {
+                    let text = "You descend into Tartarus, the deepest pit of the Underworld. The air is hot and thick with sulfur. All around you are the Titans and monsters of legend, imprisoned in eternal torment.\n\nYou see Atlas holding up the sky, Sisyphus rolling his boulder, Tantalus reaching for fruit he can never grasp. They watch you pass with hollow eyes.\n\nAnd then you see him: Typhon.\n\nThe Father of Monsters is colossal—a hundred dragon heads, arms that could grasp mountains, serpents for legs. He's bound by massive chains, but even now, the chains are cracking. His hundred eyes fix on you, and he smiles with a hundred mouths.\n\n\"A mortal,\" his voices boom like thunder. \"Come to seal me away again? Foolish. I am TYPHON! Even the Olympians could barely defeat me! What hope do you have?\"\n\n";
+                    
+                    if (gameState.inventory.includes('Pomegranate Seed of Protection')) {
+                        text += "You feel the pomegranate seed warm in your pocket. Persephone's gift is ready if you need it.\n\n";
+                    }
+                    
+                    text += "You must act quickly—the chains are breaking!";
+                    
+                    return text;
+                },
+                choices: () => {
+                    let choices = [];
+                    
+                    if (gameState.inventory.includes('Weakened Lightning Bolt')) {
+                        choices.push({
+                            text: "⚡ Strike him with Zeus's lightning bolt!",
+                            effects: { strength: 3, courage: 3, fame: 5 },
+                            next: 'typhonLightning'
+                        });
+                    }
+                    
+                    if (gameState.inventory.includes('Athena\'s Aegis Shield')) {
+                        choices.push({
+                            text: "🛡️ Use Athena's aegis shield - Its terror will paralyze him!",
+                            effects: { wisdom: 3, courage: 2, fame: 5 },
+                            next: 'typhonAegis'
+                        });
+                    }
+                    
+                    if (gameState.inventory.includes('Golden Key of Judgment')) {
+                        choices.push({
+                            text: "🔑 Use the Golden Key to seal the prison magically!",
+                            effects: { wisdom: 4, fame: 5 },
+                            next: 'typhonKey'
+                        });
+                    }
+                    
+                    choices.push({
+                        text: "💪 Fight him with your own strength and courage!",
+                        effects: { courage: 4, strength: 2 },
+                        next: 'typhonFight'
+                    });
+                    
+                    choices.push({
+                        text: "💬 Try to reason with him - Maybe there's another way.",
+                        effects: { wisdom: 2 },
+                        next: 'typhonReason'
+                    });
+                    
+                    return choices;
+                }
+            },
+
+            typhonLightning: {
+                text: "You raise Zeus's lightning bolt high! Even weakened, it crackles with divine power. Typhon's eyes widen—he knows this weapon.\n\nYou hurl the lightning bolt with all your strength! It strikes Typhon dead center, exploding in a blast of thunder and light. The monster roars in pain and rage, thrashing against his bonds.\n\nThe lightning has weakened him! You rush forward and work quickly to repair the chains, wrapping new bonds of adamantine steel around the stunned creature. The prison seals shut with a sound like a mountain slamming down.\n\nTyphon is sealed once more.",
+                choices: [
+                    {
+                        text: "Victory!",
+                        effects: { fame: 10, strength: 3, courage: 3 },
+                        next: 'victoryZeus'
+                    }
+                ]
+            },
+
+            typhonAegis: {
+                text: "You hold up Athena's aegis shield, and Medusa's face upon it comes to life! The petrifying gaze of the Gorgon shines out at Typhon.\n\nThe monster's hundred heads freeze, turned partially to stone! He cannot move! Using your wisdom and the precious moments you've gained, you repair the prison's seals and bind Typhon with new chains.\n\nThe Father of Monsters roars in fury, but he cannot break free. The prison is sealed.",
+                choices: [
+                    {
+                        text: "Victory!",
+                        effects: { fame: 10, wisdom: 4, courage: 2 },
+                        next: 'victoryAthena'
+                    }
+                ]
+            },
+
+            typhonKey: {
+                text: "You hold up the Golden Key of Judgment! It glows with the authority of the three judges and the will of Hades himself.\n\n\"By the authority of the Underworld,\" you shout, \"I seal this prison!\"\n\nThe key transforms into pure golden light, flowing into the cracks of Typhon's bonds. The chains repair themselves, stronger than ever, and new seals appear—magical wards that would take eons to break.\n\nTyphon roars in rage, but he is powerless against the judgment of the dead. The prison is sealed perfectly.",
+                choices: [
+                    {
+                        text: "Victory!",
+                        effects: { fame: 10, wisdom: 5 },
+                        next: 'victoryJudges'
+                    }
+                ]
+            },
+
+            typhonFight: {
+                text: "With nothing but your courage and your own strength, you charge at the monster! It's insane—you're a mortal fighting the creature that nearly destroyed the gods themselves!\n\nBut sometimes, courage is enough.\n\nYou dodge snapping jaws, duck under crushing arms, and fight with every skill you possess. Typhon is still bound, which limits his movement. You exploit every weakness, every gap in his guard.\n\nIt's brutal. It's exhausting. But slowly, impossibly, you drive him back! Using all your strength, you manage to repair enough of the chains to hold him. The prison seals.",
+                choices: () => {
+                    let choices = [];
+                    
+                    if (gameState.inventory.includes('Pomegranate Seed of Protection')) {
+                        choices.push({
+                            text: "Use Persephone's seed to heal your wounds",
+                            effects: { fame: 10, courage: 5, strength: 3, wisdom: 2 },
+                            next: 'victoryHero'
+                        });
+                    } else {
+                        choices.push({
+                            text: "Victory... but at great cost",
+                            effects: { fame: 10, courage: 5, strength: 3 },
+                            next: 'victoryHeroWounded'
+                        });
+                    }
+                    
+                    return choices;
+                }
+            },
+
+            typhonReason: {
+                text: "You try to speak with Typhon, to reason with the unreasonable. The monster laughs—all hundred mouths mocking you.\n\n\"Reason? REASON?! I am chaos! I am destruction! I am the end of the Olympians! Why would I listen to a mortal insect?\"\n\nHe was just buying time. The chains BREAK!\n\nTyphon rises to his full terrible height, free at last. His hundred dragon heads roar in triumph. You've made a terrible mistake.",
+                choices: [
+                    {
+                        text: "Fight desperately!",
+                        effects: { courage: 2 },
+                        next: 'typhonEscapes'
+                    }
+                ]
+            },
+
+            typhonEscapes: {
+                text: "You fight valiantly, but Typhon is free and at full strength. He swats you aside like an insect. You try to rise, but your body won't respond.\n\nTyphon crashes through Tartarus, through the Underworld, and erupts onto the surface world. The ground shakes. Mortal cities crumble. The Olympians themselves must descend to fight him directly, and the battle devastates the mortal world.\n\nYou survive, but your quest has failed. You tried to reason with a monster, and the world paid the price.",
+                choices: [
+                    {
+                        text: "Face the consequences",
+                        next: 'endingFailure'
+                    }
+                ]
+            },
+
+            victoryZeus: {
+                text: "You return to the surface world, and Zeus himself appears in a blaze of lightning. The King of Gods looks at you with approval.\n\n\"You have wielded my lightning well, mortal. Typhon is sealed, and the world is safe. You have proven yourself not just a hero, but worthy of the gods' respect.\"\n\nZeus touches your forehead, and divine power flows into you. \"I grant you a gift: You shall live as long as the memory of your deeds endures. Be a hero for all ages.\"\n\nYou become legendary—the hero who saved Olympus with the power of Zeus himself.",
+                choices: [
+                    {
+                        text: "Accept your destiny",
+                        next: 'endingLegend'
+                    }
+                ]
+            },
+
+            victoryAthena: {
+                text: "You return to Olympus, where Athena greets you with rare praise. \"You used wisdom and strategy to defeat brute force,\" the goddess says. \"This is the truest form of heroism.\"\n\nAthena offers you a choice: \"I can make you immortal and bring you to Olympus as my champion, or I can send you back to your mortal life with my blessing and the knowledge you've gained. Choose.\"\n\nYou think carefully about what you truly want.",
+                choices: [
+                    {
+                        text: "Accept immortality - Join Athena on Olympus.",
+                        next: 'endingImmortal'
+                    },
+                    {
+                        text: "Return to mortal life - I want to live as a human.",
+                        next: 'endingWise'
+                    }
+                ]
+            },
+
+            victoryJudges: {
+                text: "You return through the Underworld, and Hades himself nods with respect. \"You have done what even the gods struggled to do,\" he says. \"You have proven that mortals, at their best, rival even us.\"\n\nPersephone smiles warmly. \"You deserve a reward beyond fame. Name it, and if it is within our power, it shall be yours.\"\n\nWhat do you desire most?",
+                choices: [
+                    {
+                        text: "⭐ To be remembered forever.",
+                        next: 'endingRemembered'
+                    },
+                    {
+                        text: "❤️ To bring a loved one back from the dead.",
+                        next: 'endingReunited'
+                    },
+                    {
+                        text: "🌍 To heal the mortal world and make it better.",
+                        next: 'endingHealer'
+                    }
+                ]
+            },
+
+            victoryHero: {
+                text: "Battered and bleeding, you press the pomegranate seed to your lips as Persephone instructed. Divine warmth floods through you, healing your wounds!\n\nYou stagger back to the surface world, exhausted but alive. The Olympians appear before you—all twelve together, a sight few mortals ever witness.\n\nZeus speaks for them all: \"You faced Typhon with nothing but your own courage and strength. No divine weapons, no tricks—just the indomitable spirit of a true hero. This is the rarest kind of victory.\"\n\nThe gods debate your reward, and finally, Poseidon speaks: \"Let this mortal choose their own fate. They have earned that right.\"",
+                choices: [
+                    {
+                        text: "Ask to become a constellation - Eternal glory in the stars.",
+                        next: 'endingConstellation'
+                    },
+                    {
+                        text: "Ask to return home - I've had enough of quests.",
+                        next: 'endingHome'
+                    },
+                    {
+                        text: "Ask to continue being a hero - There are more people to save.",
+                        next: 'endingWanderer'
+                    }
+                ]
+            },
+
+            victoryHeroWounded: {
+                text: "You've won, but the cost is high. Your wounds are severe, and you barely make it back to the surface before collapsing.\n\nThe gods heal you, but your body will never fully recover. You've given up your physical strength to save the world.\n\nStill, the gods honor you. You become a counselor and teacher, training future heroes. Your wisdom, earned through suffering, becomes your greatest gift to the world.",
+                choices: [
+                    {
+                        text: "Accept this path",
+                        next: 'endingTeacher'
+                    }
+                ]
+            },
+
+            returnVillage: {
+                text: "You turn away from Mount Olympus and return to your village. That night, you sleep peacefully in your own bed.\n\nBut three days later, the ground shakes. Typhon has broken free, and without a hero to stop him, he rampages across the mortal world. Your village is destroyed. You survive, but you live with the knowledge that you could have made a difference.\n\nSometimes, the safe choice is the worst choice.",
+                choices: [
+                    {
+                        text: "Live with regret",
+                        next: 'endingCoward'
+                    }
+                ]
+            },
+
+            // Ending scenes
+            endingLegend: {
+                text: "You become the greatest hero of your age. Songs are sung of your deeds, temples are built in your honor. You live for centuries, your youth preserved by Zeus's gift, defending humanity from monsters and evil.\n\nWhen you finally choose to lay down your burden, the gods themselves attend your funeral. You are remembered forever as the hero who wielded lightning and saved Olympus.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: Legend of Lightning\nYou chose the path of power and used it nobly.",
+                isEnding: true
+            },
+
+            endingImmortal: {
+                text: "You ascend to Mount Olympus as Athena's champion. You spend eternity in the halls of the gods, serving as Athena's right hand in matters of strategy and wisdom.\n\nYou guide heroes from afar, whisper wisdom to kings, and help maintain the balance between gods and mortals. Your mortal life ends, but your divine purpose is eternal.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: Divine Champion\nYou chose immortality and eternal service to wisdom.",
+                isEnding: true
+            },
+
+            endingWise: {
+                text: "You return to mortal life, but you are changed. The wisdom you gained in the Underworld makes you the greatest counselor and problem-solver in Greece. Kings seek your advice. Philosophers debate your teachings.\n\nYou live a full, rich mortal life—you marry, have children, grow old surrounded by love. When you die naturally, Athena herself guides your soul to the Elysian Fields, where heroes rest in eternal peace.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: The Wise Hero\nYou chose wisdom over glory, mortality over eternity.",
+                isEnding: true
+            },
+
+            endingRemembered: {
+                text: "\"Then remembered you shall be,\" Hades declares. The gods grant you a story that will never be forgotten. Your tale is carved in stone, woven into songs, and told by mothers to their children.\n\nThousands of years later, your name is still spoken. New stories are written about you. You achieve the only immortality that matters—living forever in human memory.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: Eternal Story\nYou became legend itself.",
+                isEnding: true
+            },
+
+            endingReunited: {
+                text: "You name someone you lost—a parent, a friend, someone taken too soon. Persephone's eyes shimmer with tears of compassion.\n\n\"I know the pain of separation,\" she says softly. \"I grant your wish.\"\n\nYour loved one returns to life. Your reunion is tearful and joyous. You give up fame and glory to live quietly with those you love. And that, perhaps, is the greatest happy ending of all.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: Love Conquers Death\nYou chose love over glory.",
+                isEnding: true
+            },
+
+            endingHealer: {
+                text: "\"A selfless wish,\" Hades says, impressed. \"So be it.\"\n\nDivine power flows through you into the world above. Famines end, plagues disappear, crops grow abundant. The mortal world enters a golden age of prosperity and peace.\n\nYou don't receive personal glory, but millions of lives are better because of your choice. When you die, every god votes to bring you to Elysium. You have earned the gratitude of the universe.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: The Selfless Hero\nYou put the world before yourself.",
+                isEnding: true
+            },
+
+            endingConstellation: {
+                text: "The gods gather and raise their hands to the sky. Your mortal body fades as you ascend into the heavens. You become a constellation—stars that will shine forever.\n\nFor all eternity, mortals look up and see you among the stars. Parents point you out to their children. Sailors navigate by you. You are eternal, unchanging, a symbol of heroism for all time.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: Written in the Stars\nYou became eternal light in the darkness.",
+                isEnding: true
+            },
+
+            endingHome: {
+                text: "\"I just want to go home,\" you say simply.\n\nThe gods smile. Zeus nods. \"That may be the wisest answer of all.\"\n\nYou return to your village a hero. Your story is told, but you live a normal life—farming, loving, laughing. You realize that being a hero doesn't mean grand quests and glory. Sometimes it means living well, helping your neighbors, and finding joy in simple things.\n\nYou die old and happy, surrounded by family, having lived the best kind of life.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: The Simple Life\nYou found happiness without glory.",
+                isEnding: true
+            },
+
+            endingWanderer: {
+                text: "\"I want to keep helping people,\" you say.\n\nThe gods grant you gifts: Hermes's winged sandals for speed, a never-empty bag of supplies, and the blessing of safe travel. You become a wandering hero, moving from place to place, solving problems, slaying monsters, saving lives.\n\nYou never settle down, but everywhere you go, you leave things better than you found them. You become a legend—the hero who appears when needed and vanishes when the work is done.\n\nYour adventures never end.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: The Eternal Wanderer\nYour quest never truly ends.",
+                isEnding: true
+            },
+
+            endingTeacher: {
+                text: "You found a school for heroes. Young people come from across Greece to learn from you. You teach them not just fighting and courage, but wisdom, compassion, and when NOT to fight.\n\nYour students go on to become legendary heroes themselves, and they all credit you as their inspiration. You never fought again, but through your teachings, you saved more lives than any warrior could.\n\nYour school endures for generations, shaping heroes for centuries to come.\n\n✨ THE END ✨\n\n🏆 ENDING UNLOCKED: The Teacher\nYou shaped the future through wisdom.",
+                isEnding: true
+            },
+
+            endingFailure: {
+                text: "The world burns. Typhon and the Olympians wage war across the earth, and mortal civilization nearly ends. Eventually, the gods manage to seal Typhon again, but at tremendous cost.\n\nYou survive, but you are marked as the hero who failed. Your name becomes a cautionary tale. You wander, unable to forgive yourself, haunted by what might have been if you'd made different choices.\n\nSome heroes succeed. Some fail. You'll have to live with your failure.\n\n✨ THE END ✨\n\n💔 ENDING UNLOCKED: The Failed Hero\nNot all stories have happy endings.",
+                isEnding: true
+            },
+
+            endingCoward: {
+                text: "Your village is gone. Your family is gone. Everything you loved, destroyed because you were too afraid to answer the call.\n\nYou survive in the ruins of civilization, one of many refugees. Sometimes, late at night, you wonder if you could have made a difference. The answer haunts you until your dying day.\n\nThe gods had chosen you. You chose fear instead.\n\n✨ THE END ✨\n\n💔 ENDING UNLOCKED: The Coward\nThe cost of inaction can be catastrophic.",
+                isEnding: true
+            }
+        };
+
+        // Initialize floating symbols
+        function createSymbols() {
+            const symbols = ['⚡', '🔱', '💀'];
+            const container = document.body;
+            
+            for (let i = 0; i < 20; i++) {
+                const symbol = document.createElement('div');
+                symbol.className = 'symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.top = Math.random() * 100 + '%';
+                symbol.style.animationDuration = (10 + Math.random() * 20) + 's';
+                symbol.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(symbol);
+            }
+        }
+
+        // Update stats display
+        function updateStats() {
+            document.getElementById('courage').textContent = gameState.courage;
+            document.getElementById('wisdom').textContent = gameState.wisdom;
+            document.getElementById('strength').textContent = gameState.strength;
+            document.getElementById('fame').textContent = gameState.fame;
+        }
+
+        // Update inventory display
+        function updateInventory() {
+            const inventoryDiv = document.getElementById('inventoryItems');
+            inventoryDiv.innerHTML = '';
+            
+            gameState.inventory.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item';
+                itemDiv.textContent = item;
+                inventoryDiv.appendChild(itemDiv);
+            });
+            
+            gameState.allies.forEach(ally => {
+                const allyDiv = document.createElement('div');
+                allyDiv.className = 'item';
+                allyDiv.textContent = '👤 ' + ally;
+                allyDiv.style.borderColor = '#ffd700';
+                inventoryDiv.appendChild(allyDiv);
+            });
+        }
+
+        // Display scene
+        function displayScene(sceneId) {
+            const scene = scenes[sceneId];
+            if (!scene) {
+                console.error('Scene not found:', sceneId);
+                return;
+            }
+
+            gameState.currentScene = sceneId;
+            
+            const storyText = typeof scene.text === 'function' ? scene.text() : scene.text;
+            const choices = typeof scene.choices === 'function' ? scene.choices() : scene.choices;
+            
+            document.getElementById('storyText').innerHTML = storyText;
+            
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+            
+            if (scene.isEnding) {
+                const restartBtn = document.createElement('button');
+                restartBtn.className = 'choice-btn';
+                restartBtn.textContent = '🔄 Play Again';
+                restartBtn.onclick = () => resetGame();
+                choicesDiv.appendChild(restartBtn);
+            } else if (choices) {
+                choices.forEach((choice, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.innerHTML = choice.text;
+                    btn.onclick = () => makeChoice(choice);
+                    choicesDiv.appendChild(btn);
+                });
+            }
+            
+            updateStats();
+            updateInventory();
+            saveGameAuto();
+        }
+
+        // Make a choice
+        function makeChoice(choice) {
+            // Apply effects
+            if (choice.effects) {
+                if (choice.effects.courage) gameState.courage += choice.effects.courage;
+                if (choice.effects.wisdom) gameState.wisdom += choice.effects.wisdom;
+                if (choice.effects.strength) gameState.strength += choice.effects.strength;
+                if (choice.effects.fame) gameState.fame += choice.effects.fame;
+            }
+            
+            // Add items
+            if (choice.items) {
+                choice.items.forEach(item => {
+                    if (!gameState.inventory.includes(item)) {
+                        gameState.inventory.push(item);
+                    }
+                });
+            }
+            
+            // Add allies
+            if (choice.allies) {
+                choice.allies.forEach(ally => {
+                    if (!gameState.allies.includes(ally)) {
+                        gameState.allies.push(ally);
+                    }
+                });
+            }
+            
+            // Track gods
+            if (choice.gods) {
+                choice.gods.forEach(god => {
+                    if (!gameState.godsFavored.includes(god)) {
+                        gameState.godsFavored.push(god);
+                    }
+                });
+            }
+            
+            // Track choices for potential branching
+            gameState.choices.push({
+                scene: gameState.currentScene,
+                choice: choice.text
+            });
+            
+            // Go to next scene
+            if (choice.next) {
+                displayScene(choice.next);
+            }
+        }
+
+        // Save game
+        function saveGame() {
+            localStorage.setItem('heroQuestSave', JSON.stringify(gameState));
+            alert('Game saved! ✓');
+        }
+
+        // Auto-save
+        function saveGameAuto() {
+            localStorage.setItem('heroQuestAutoSave', JSON.stringify(gameState));
+        }
+
+        // Load game
+        function loadGame() {
+            const saved = localStorage.getItem('heroQuestSave');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                displayScene(gameState.currentScene);
+                alert('Game loaded! ✓');
+            } else {
+                alert('No saved game found.');
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            if (confirm('Start a new adventure? Your current progress will be lost.')) {
+                gameState = {
+                    currentScene: 'start',
+                    courage: 5,
+                    wisdom: 5,
+                    strength: 5,
+                    fame: 0,
+                    inventory: ['Basic Sword'],
+                    allies: [],
+                    choices: [],
+                    godsAngered: [],
+                    godsFavored: []
+                };
+                displayScene('start');
+            }
+        }
+
+        // Initialize game
+        window.onload = function() {
+            createSymbols();
+            
+            // Try to load autosave
+            const autoSave = localStorage.getItem('heroQuestAutoSave');
+            if (autoSave) {
+                if (confirm('Continue your previous adventure?')) {
+                    gameState = JSON.parse(autoSave);
+                    displayScene(gameState.currentScene);
+                } else {
+                    displayScene('start');
+                }
+            } else {
+                displayScene('start');
+            }
+        };
+    </script>
+</body>
+</html>
