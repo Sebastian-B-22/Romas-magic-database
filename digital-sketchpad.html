@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Sketchpad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toolbar {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-label {
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .color-btn.active {
+            border-width: 5px;
+            border-color: #764ba2;
+        }
+
+        #colorPicker {
+            width: 50px;
+            height: 40px;
+            border: 3px solid #764ba2;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .size-btn {
+            width: 50px;
+            height: 40px;
+            border: 2px solid #764ba2;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #764ba2;
+            transition: all 0.2s;
+        }
+
+        .size-btn:hover {
+            background: #764ba2;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .size-btn.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .eraser-btn {
+            background: #f3f4f6;
+            color: #333;
+            border: 2px solid #333;
+        }
+
+        .eraser-btn:hover {
+            background: #e5e7eb;
+            transform: scale(1.05);
+        }
+
+        .eraser-btn.active {
+            background: #333;
+            color: white;
+        }
+
+        .save-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .undo-btn {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .undo-btn:hover {
+            background: #d97706;
+            transform: scale(1.05);
+        }
+
+        .canvas-container {
+            background: white;
+            border: 5px solid #764ba2;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #drawingCanvas {
+            cursor: crosshair;
+            display: block;
+        }
+
+        .info {
+            text-align: center;
+            margin-top: 15px;
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+
+        .rainbow-mode {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .rainbow-mode:hover {
+            transform: scale(1.05);
+        }
+
+        .rainbow-mode.active {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .toolbar {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Digital Sketchpad 🖌️</h1>
+        
+        <div class="toolbar">
+            <div class="tool-group">
+                <span class="tool-label">Colors:</span>
+                <button class="color-btn active" style="background: #000000;" data-color="#000000"></button>
+                <button class="color-btn" style="background: #ef4444;" data-color="#ef4444"></button>
+                <button class="color-btn" style="background: #f59e0b;" data-color="#f59e0b"></button>
+                <button class="color-btn" style="background: #fbbf24;" data-color="#fbbf24"></button>
+                <button class="color-btn" style="background: #10b981;" data-color="#10b981"></button>
+                <button class="color-btn" style="background: #3b82f6;" data-color="#3b82f6"></button>
+                <button class="color-btn" style="background: #8b5cf6;" data-color="#8b5cf6"></button>
+                <button class="color-btn" style="background: #ec4899;" data-color="#ec4899"></button>
+                <button class="color-btn" style="background: #ffffff; border-color: #999;" data-color="#ffffff"></button>
+                <input type="color" id="colorPicker" value="#000000" title="Custom Color">
+            </div>
+
+            <div class="tool-group">
+                <span class="tool-label">Brush Size:</span>
+                <button class="size-btn" data-size="2">XS</button>
+                <button class="size-btn" data-size="5">S</button>
+                <button class="size-btn active" data-size="10">M</button>
+                <button class="size-btn" data-size="20">L</button>
+                <button class="size-btn" data-size="40">XL</button>
+            </div>
+
+            <div class="tool-group">
+                <button class="action-btn eraser-btn" id="eraserBtn">🧹 Eraser</button>
+                <button class="rainbow-mode" id="rainbowBtn">🌈 Rainbow Mode</button>
+            </div>
+
+            <div class="tool-group">
+                <button class="action-btn undo-btn" id="undoBtn">↩️ Undo</button>
+                <button class="action-btn clear-btn" id="clearBtn">🗑️ Clear All</button>
+                <button class="action-btn save-btn" id="saveBtn">💾 Save Drawing</button>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="drawingCanvas" width="1000" height="600"></canvas>
+        </div>
+
+        <div class="info">
+            💡 Tip: Click and drag to draw! Use rainbow mode for magical colors! 🌈
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Drawing state
+        let isDrawing = false;
+        let currentColor = '#000000';
+        let brushSize = 10;
+        let isEraser = false;
+        let rainbowMode = false;
+        let rainbowHue = 0;
+
+        // History for undo
+        let drawingHistory = [];
+        let historyStep = -1;
+
+        // Save initial blank state
+        saveState();
+
+        // Color buttons
+        const colorButtons = document.querySelectorAll('.color-btn');
+        colorButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentColor = btn.dataset.color;
+                colorButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                isEraser = false;
+                document.getElementById('eraserBtn').classList.remove('active');
+                rainbowMode = false;
+                document.getElementById('rainbowBtn').classList.remove('active');
+            });
+        });
+
+        // Custom color picker
+        const colorPicker = document.getElementById('colorPicker');
+        colorPicker.addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            colorButtons.forEach(b => b.classList.remove('active'));
+            isEraser = false;
+            document.getElementById('eraserBtn').classList.remove('active');
+            rainbowMode = false;
+            document.getElementById('rainbowBtn').classList.remove('active');
+        });
+
+        // Brush size buttons
+        const sizeButtons = document.querySelectorAll('.size-btn');
+        sizeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                brushSize = parseInt(btn.dataset.size);
+                sizeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Eraser button
+        document.getElementById('eraserBtn').addEventListener('click', () => {
+            isEraser = !isEraser;
+            document.getElementById('eraserBtn').classList.toggle('active');
+            if (isEraser) {
+                colorButtons.forEach(b => b.classList.remove('active'));
+                rainbowMode = false;
+                document.getElementById('rainbowBtn').classList.remove('active');
+            }
+        });
+
+        // Rainbow mode button
+        document.getElementById('rainbowBtn').addEventListener('click', () => {
+            rainbowMode = !rainbowMode;
+            document.getElementById('rainbowBtn').classList.toggle('active');
+            if (rainbowMode) {
+                isEraser = false;
+                document.getElementById('eraserBtn').classList.remove('active');
+                colorButtons.forEach(b => b.classList.remove('active'));
+            }
+        });
+
+        // Clear button
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            if (confirm('Clear your entire drawing? This cannot be undone!')) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                saveState();
+            }
+        });
+
+        // Undo button
+        document.getElementById('undoBtn').addEventListener('click', () => {
+            if (historyStep > 0) {
+                historyStep--;
+                const imageData = drawingHistory[historyStep];
+                ctx.putImageData(imageData, 0, 0);
+            }
+        });
+
+        // Save button
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 10);
+            link.download = `my-drawing-${timestamp}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            alert('Drawing saved! Check your Downloads folder! 🎨✨');
+        });
+
+        // Save state to history
+        function saveState() {
+            historyStep++;
+            if (historyStep < drawingHistory.length) {
+                drawingHistory.length = historyStep;
+            }
+            drawingHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            
+            // Limit history to 50 steps to save memory
+            if (drawingHistory.length > 50) {
+                drawingHistory.shift();
+                historyStep--;
+            }
+        }
+
+        // Get mouse/touch position
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            if (e.touches) {
+                return {
+                    x: (e.touches[0].clientX - rect.left) * scaleX,
+                    y: (e.touches[0].clientY - rect.top) * scaleY
+                };
+            }
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        // Start drawing
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getPos(e);
+            
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        // Draw
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const pos = getPos(e);
+            
+            // Set color
+            if (rainbowMode) {
+                rainbowHue = (rainbowHue + 2) % 360;
+                ctx.strokeStyle = `hsl(${rainbowHue}, 100%, 50%)`;
+            } else if (isEraser) {
+                ctx.strokeStyle = '#ffffff';
+            } else {
+                ctx.strokeStyle = currentColor;
+            }
+            
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+
+        // Stop drawing
+        function stopDrawing(e) {
+            if (!isDrawing) return;
+            isDrawing = false;
+            ctx.beginPath();
+            saveState();
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events for mobile
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('touchcancel', stopDrawing);
+
+        // Prevent scrolling when touching the canvas
+        document.body.addEventListener('touchstart', (e) => {
+            if (e.target == canvas) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.body.addEventListener('touchmove', (e) => {
+            if (e.target == canvas) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
