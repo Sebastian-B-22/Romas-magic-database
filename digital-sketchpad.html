@@ -389,8 +389,8 @@
 
             <div class="tool-group opacity-control" id="opacityControl" style="display: none;">
                 <span class="tool-label">Line Opacity:</span>
-                <input type="range" id="opacitySlider" min="20" max="100" value="50">
-                <span id="opacityValue">50%</span>
+                <input type="range" id="opacitySlider" min="20" max="100" value="70">
+                <span id="opacityValue">70%</span>
             </div>
 
             <div class="tool-group">
@@ -664,31 +664,30 @@
                 gray[idx] = Math.floor(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
             }
             
-            // Apply STRONG blur multiple times to remove texture and keep only major features
-            let blurred = new Uint8ClampedArray(gray);
-            
-            // Blur 3 times for stronger smoothing (removes texture, keeps main shapes)
-            for (let blur = 0; blur < 3; blur++) {
-                const temp = new Uint8ClampedArray(processWidth * processHeight);
-                for (let y = 2; y < processHeight - 2; y++) {
-                    for (let x = 2; x < processWidth - 2; x++) {
-                        const idx = y * processWidth + x;
-                        let sum = 0;
-                        // 5x5 blur for stronger effect
-                        for (let dy = -2; dy <= 2; dy++) {
-                            for (let dx = -2; dx <= 2; dx++) {
-                                sum += blurred[(y + dy) * processWidth + (x + dx)];
-                            }
-                        }
-                        temp[idx] = Math.floor(sum / 25);
-                    }
+            // Apply light blur to reduce noise but keep details
+            const blurred = new Uint8ClampedArray(processWidth * processHeight);
+            for (let y = 1; y < processHeight - 1; y++) {
+                for (let x = 1; x < processWidth - 1; x++) {
+                    const idx = y * processWidth + x;
+                    let sum = 0;
+                    // 3x3 Gaussian-like blur
+                    sum += gray[(y-1)*processWidth + (x-1)] * 1;
+                    sum += gray[(y-1)*processWidth + x] * 2;
+                    sum += gray[(y-1)*processWidth + (x+1)] * 1;
+                    sum += gray[y*processWidth + (x-1)] * 2;
+                    sum += gray[y*processWidth + x] * 4;
+                    sum += gray[y*processWidth + (x+1)] * 2;
+                    sum += gray[(y+1)*processWidth + (x-1)] * 1;
+                    sum += gray[(y+1)*processWidth + x] * 2;
+                    sum += gray[(y+1)*processWidth + (x+1)] * 1;
+                    blurred[idx] = Math.floor(sum / 16);
                 }
-                blurred = temp;
             }
             
-            // Sobel edge detection on heavily blurred image
-            const edges = new Uint8ClampedArray(processWidth * processHeight);
-            const threshold = 120; // VERY high threshold = only major features!
+            // Sobel edge detection with gradient direction
+            const magnitude = new Float32Array(processWidth * processHeight);
+            const direction = new Float32Array(processWidth * processHeight);
+            const threshold = 50; // Medium threshold - catches details but not noise
             
             for (let y = 2; y < processHeight - 2; y++) {
                 for (let x = 2; x < processWidth - 2; x++) {
@@ -708,8 +707,46 @@
                     const gx = -p0 - 2*p3 - p6 + p2 + 2*p5 + p8;
                     const gy = -p0 - 2*p1 - p2 + p6 + 2*p7 + p8;
                     
-                    const magnitude = Math.sqrt(gx*gx + gy*gy);
-                    edges[idx] = magnitude > threshold ? 255 : 0;
+                    magnitude[idx] = Math.sqrt(gx*gx + gy*gy);
+                    direction[idx] = Math.atan2(gy, gx);
+                }
+            }
+            
+            // Non-maximum suppression (makes lines thin and clean - single pixel width!)
+            const edges = new Uint8ClampedArray(processWidth * processHeight);
+            for (let y = 2; y < processHeight - 2; y++) {
+                for (let x = 2; x < processWidth - 2; x++) {
+                    const idx = y * processWidth + x;
+                    const mag = magnitude[idx];
+                    
+                    if (mag < threshold) continue;
+                    
+                    // Get gradient direction (0, 45, 90, 135 degrees)
+                    const angle = direction[idx] * 180 / Math.PI;
+                    let angle_rounded = ((angle + 22.5) % 180) / 45;
+                    angle_rounded = Math.floor(angle_rounded) * 45;
+                    
+                    let neighbor1, neighbor2;
+                    
+                    // Check neighbors perpendicular to edge direction
+                    if (angle_rounded === 0 || angle_rounded === 180) {
+                        neighbor1 = magnitude[y*processWidth + (x-1)];
+                        neighbor2 = magnitude[y*processWidth + (x+1)];
+                    } else if (angle_rounded === 45) {
+                        neighbor1 = magnitude[(y-1)*processWidth + (x+1)];
+                        neighbor2 = magnitude[(y+1)*processWidth + (x-1)];
+                    } else if (angle_rounded === 90) {
+                        neighbor1 = magnitude[(y-1)*processWidth + x];
+                        neighbor2 = magnitude[(y+1)*processWidth + x];
+                    } else { // 135
+                        neighbor1 = magnitude[(y-1)*processWidth + (x-1)];
+                        neighbor2 = magnitude[(y+1)*processWidth + (x+1)];
+                    }
+                    
+                    // Keep only if this pixel is the maximum along gradient direction
+                    if (mag >= neighbor1 && mag >= neighbor2) {
+                        edges[idx] = 255;
+                    }
                 }
             }
             
@@ -735,17 +772,17 @@
                 }
             }
             
-            // Create new image with edges (THICKER lines)
+            // Create new image with clean single-width lines
             const edgeData = tempCtx.createImageData(processWidth, processHeight);
             
-            // First pass: draw all edge pixels
+            // Draw all edge pixels (single-width lines)
             for (let y = 0; y < processHeight; y++) {
                 for (let x = 0; x < processWidth; x++) {
                     const idx = y * processWidth + x;
                     const val = cleaned[idx];
                     const pixelIdx = idx * 4;
                     
-                    // Black lines on transparent background
+                    // Solid black lines on transparent background
                     edgeData.data[pixelIdx] = 0;
                     edgeData.data[pixelIdx + 1] = 0;
                     edgeData.data[pixelIdx + 2] = 0;
@@ -753,16 +790,15 @@
                 }
             }
             
-            // Second pass: thicken lines by adding surrounding pixels
+            // Slightly thicken lines (just 1 pixel in direct neighbors for visibility)
             const thickened = new Uint8ClampedArray(edgeData.data);
             for (let y = 1; y < processHeight - 1; y++) {
                 for (let x = 1; x < processWidth - 1; x++) {
                     const idx = y * processWidth + x;
                     if (cleaned[idx] === 255) {
-                        // Add pixels around edge pixels to make lines thicker
+                        // Add only direct neighbors (not diagonals) for clean, thin lines
                         const offsets = [
-                            [0, 1], [0, -1], [1, 0], [-1, 0],  // Direct neighbors
-                            [1, 1], [1, -1], [-1, 1], [-1, -1]  // Diagonals
+                            [0, 1], [0, -1], [1, 0], [-1, 0]  // Up, down, left, right only
                         ];
                         
                         for (const [dx, dy] of offsets) {
@@ -774,7 +810,7 @@
                                     thickened[nIdx] = 0;
                                     thickened[nIdx + 1] = 0;
                                     thickened[nIdx + 2] = 0;
-                                    thickened[nIdx + 3] = 180; // Solid but slightly softer
+                                    thickened[nIdx + 3] = 200; // Slightly transparent for smooth look
                                 }
                             }
                         }
@@ -804,7 +840,7 @@
             traceCtx.drawImage(tempCanvas, rightX, rightY, rightWidth, rightHeight);
             traceCtx.globalAlpha = 1;
             
-            alert('Trace lines ready! Only the main features (eyes, nose, mouth) - easy to copy! ✏️');
+            alert('Trace lines ready! Clean, single lines with all the details - easy to copy! ✏️');
         }
 
         // Clear button
