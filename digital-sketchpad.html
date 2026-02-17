@@ -110,6 +110,30 @@
             color: white;
         }
 
+        .brush-type-btn {
+            width: 80px;
+            height: 40px;
+            border: 2px solid #764ba2;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #764ba2;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+
+        .brush-type-btn:hover {
+            background: #764ba2;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .brush-type-btn.active {
+            background: #764ba2;
+            color: white;
+        }
+
         .action-btn {
             padding: 10px 20px;
             border: none;
@@ -336,7 +360,13 @@
             </div>
 
             <div class="tool-group">
-                <span class="tool-label">Brush Size:</span>
+                <span class="tool-label">Brush:</span>
+                <button class="brush-type-btn active" data-brush="pencil">✏️ Pencil</button>
+                <button class="brush-type-btn" data-brush="marker">🖍️ Marker</button>
+            </div>
+
+            <div class="tool-group">
+                <span class="tool-label">Size:</span>
                 <button class="size-btn" data-size="2">XS</button>
                 <button class="size-btn" data-size="5">S</button>
                 <button class="size-btn active" data-size="10">M</button>
@@ -353,12 +383,12 @@
                 <input type="file" id="imageUpload" accept="image/*">
                 <button class="action-btn upload-btn" id="uploadBtn">📁 Upload Image</button>
                 <button class="action-btn eyedropper-btn" id="eyedropperBtn" disabled>💧 Pick Color</button>
-                <button class="action-btn trace-btn" id="traceBtn" disabled>✏️ Trace Mode</button>
+                <button class="action-btn trace-btn" id="traceBtn" disabled>✏️ Trace Lines</button>
                 <button class="action-btn remove-image-btn" id="removeImageBtn" style="display: none;">❌ Remove Image</button>
             </div>
 
             <div class="tool-group opacity-control" id="opacityControl" style="display: none;">
-                <span class="tool-label">Trace Opacity:</span>
+                <span class="tool-label">Line Opacity:</span>
                 <input type="range" id="opacitySlider" min="10" max="100" value="30">
                 <span id="opacityValue">30%</span>
             </div>
@@ -382,7 +412,7 @@
         </div>
         
         <div class="trace-info" id="traceInfo" style="display: none;">
-            📝 Trace Mode ON: The image is now faded so you can draw over it! Adjust opacity with the slider.
+            📝 Trace Mode ON: Faded outlines appear on the right! Draw over them to practice!
         </div>
     </div>
 
@@ -396,6 +426,7 @@
         let isDrawing = false;
         let currentColor = '#000000';
         let brushSize = 10;
+        let brushType = 'pencil';
         let isEraser = false;
         let rainbowMode = false;
         let rainbowHue = 0;
@@ -438,6 +469,16 @@
             document.getElementById('rainbowBtn').classList.remove('active');
             eyedropperMode = false;
             document.getElementById('eyedropperBtn').classList.remove('active');
+        });
+
+        // Brush type buttons
+        const brushTypeButtons = document.querySelectorAll('.brush-type-btn');
+        brushTypeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                brushType = btn.dataset.brush;
+                brushTypeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
         });
 
         // Brush size buttons
@@ -496,10 +537,10 @@
                         document.getElementById('traceBtn').disabled = false;
                         document.getElementById('removeImageBtn').style.display = 'inline-block';
                         
-                        // Draw the image on trace canvas (takes up half the width)
-                        drawTraceImage(false);
+                        // Draw the image on trace canvas (left side)
+                        drawImageOnLeft();
                         
-                        document.getElementById('infoText').textContent = '✓ Image loaded! It takes up the left half. Use 💧 Pick Color or ✏️ Trace Mode!';
+                        document.getElementById('infoText').textContent = '✓ Image loaded! Use 💧 Pick Color or ✏️ Trace Lines to get outlines on the right!';
                     };
                     img.src = event.target.result;
                 };
@@ -536,10 +577,10 @@
                 rainbowMode = false;
                 document.getElementById('rainbowBtn').classList.remove('active');
                 
-                document.getElementById('infoText').textContent = '💧 Click on the image to pick that color!';
+                document.getElementById('infoText').textContent = '💧 Click on the image (left side) to pick that color!';
             } else {
                 drawingCanvas.style.cursor = 'crosshair';
-                document.getElementById('infoText').textContent = '✓ Image loaded! It takes up the left half. Use 💧 Pick Color or ✏️ Trace Mode!';
+                document.getElementById('infoText').textContent = '✓ Image loaded! Use 💧 Pick Color or ✏️ Trace Lines!';
             }
         });
 
@@ -550,7 +591,11 @@
             document.getElementById('opacityControl').style.display = traceMode ? 'flex' : 'none';
             document.getElementById('traceInfo').style.display = traceMode ? 'block' : 'none';
             
-            drawTraceImage(traceMode);
+            if (traceMode) {
+                detectEdgesAndDraw();
+            } else {
+                drawImageOnLeft();
+            }
         });
 
         // Opacity slider
@@ -558,40 +603,113 @@
             const opacity = e.target.value;
             document.getElementById('opacityValue').textContent = opacity + '%';
             if (traceMode && uploadedImage) {
-                drawTraceImage(true);
+                detectEdgesAndDraw();
             }
         });
 
-        // Draw trace image (takes up left half of canvas)
-        function drawTraceImage(faded) {
+        // Draw image on left side
+        function drawImageOnLeft() {
             if (!uploadedImage) return;
             
             traceCtx.clearRect(0, 0, traceCanvas.width, traceCanvas.height);
             
-            // Calculate size to fit in left half (with some padding)
-            const maxWidth = traceCanvas.width * 0.48; // 48% of canvas width (leaving 2% padding)
-            const maxHeight = traceCanvas.height * 0.95; // 95% of canvas height
+            // Calculate size to fit in left half
+            const maxWidth = traceCanvas.width * 0.48;
+            const maxHeight = traceCanvas.height * 0.95;
             
             const scale = Math.min(maxWidth / uploadedImage.width, maxHeight / uploadedImage.height);
             const width = uploadedImage.width * scale;
             const height = uploadedImage.height * scale;
             
-            // Position in left half, centered vertically
-            const x = (traceCanvas.width * 0.25) - (width / 2); // Center in left half
+            const x = (traceCanvas.width * 0.25) - (width / 2);
             const y = (traceCanvas.height - height) / 2;
             
-            // Store position for color picking
             imagePosition = { x, y, width, height };
             
-            // Set opacity based on trace mode
-            if (faded) {
-                const opacity = document.getElementById('opacitySlider').value / 100;
-                traceCtx.globalAlpha = opacity;
-            } else {
-                traceCtx.globalAlpha = 1;
+            traceCtx.drawImage(uploadedImage, x, y, width, height);
+        }
+
+        // Edge detection and draw on right side
+        function detectEdgesAndDraw() {
+            if (!uploadedImage) return;
+            
+            traceCtx.clearRect(0, 0, traceCanvas.width, traceCanvas.height);
+            
+            // Draw original on left
+            drawImageOnLeft();
+            
+            // Create temporary canvas for edge detection
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Calculate size
+            const maxWidth = traceCanvas.width * 0.48;
+            const maxHeight = traceCanvas.height * 0.95;
+            const scale = Math.min(maxWidth / uploadedImage.width, maxHeight / uploadedImage.height);
+            const width = uploadedImage.width * scale;
+            const height = uploadedImage.height * scale;
+            
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            
+            // Draw scaled image
+            tempCtx.drawImage(uploadedImage, 0, 0, width, height);
+            
+            // Get image data
+            const imageData = tempCtx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+            
+            // Convert to grayscale
+            for (let i = 0; i < data.length; i += 4) {
+                const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                data[i] = data[i + 1] = data[i + 2] = gray;
             }
             
-            traceCtx.drawImage(uploadedImage, x, y, width, height);
+            // Simple edge detection (Sobel-like)
+            const edges = new Uint8ClampedArray(data.length);
+            const w = width;
+            const h = height;
+            
+            for (let y = 1; y < h - 1; y++) {
+                for (let x = 1; x < w - 1; x++) {
+                    const idx = (y * w + x) * 4;
+                    
+                    // Get surrounding pixels
+                    const tl = data[((y - 1) * w + (x - 1)) * 4];
+                    const t = data[((y - 1) * w + x) * 4];
+                    const tr = data[((y - 1) * w + (x + 1)) * 4];
+                    const l = data[(y * w + (x - 1)) * 4];
+                    const r = data[(y * w + (x + 1)) * 4];
+                    const bl = data[((y + 1) * w + (x - 1)) * 4];
+                    const b = data[((y + 1) * w + x) * 4];
+                    const br = data[((y + 1) * w + (x + 1)) * 4];
+                    
+                    // Sobel operator
+                    const gx = -tl - 2 * l - bl + tr + 2 * r + br;
+                    const gy = -tl - 2 * t - tr + bl + 2 * b + br;
+                    const magnitude = Math.sqrt(gx * gx + gy * gy);
+                    
+                    // Threshold
+                    const edge = magnitude > 50 ? 0 : 255;
+                    edges[idx] = edges[idx + 1] = edges[idx + 2] = edge;
+                    edges[idx + 3] = edge === 0 ? 255 : 0; // Alpha
+                }
+            }
+            
+            // Put edge data back
+            for (let i = 0; i < edges.length; i++) {
+                imageData.data[i] = edges[i];
+            }
+            
+            tempCtx.putImageData(imageData, 0, 0);
+            
+            // Draw edges on RIGHT side of trace canvas
+            const rightX = traceCanvas.width * 0.75 - width / 2;
+            const rightY = (traceCanvas.height - height) / 2;
+            
+            const opacity = document.getElementById('opacitySlider').value / 100;
+            traceCtx.globalAlpha = opacity;
+            traceCtx.drawImage(tempCanvas, rightX, rightY);
             traceCtx.globalAlpha = 1;
         }
 
@@ -614,22 +732,18 @@
 
         // Save button
         document.getElementById('saveBtn').addEventListener('click', () => {
-            // Create a temporary canvas to combine both layers
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = drawingCanvas.width;
             tempCanvas.height = drawingCanvas.height;
             const tempCtx = tempCanvas.getContext('2d');
             
-            // White background
             tempCtx.fillStyle = 'white';
             tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
             
-            // Draw trace layer (if image exists, draw at full opacity)
-            if (uploadedImage) {
+            if (uploadedImage && !traceMode) {
                 tempCtx.drawImage(uploadedImage, imagePosition.x, imagePosition.y, imagePosition.width, imagePosition.height);
             }
             
-            // Draw the drawing layer
             tempCtx.drawImage(drawingCanvas, 0, 0);
             
             const link = document.createElement('a');
@@ -648,7 +762,6 @@
             }
             drawingHistory.push(drawCtx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height));
             
-            // Limit history to 50 steps
             if (drawingHistory.length > 50) {
                 drawingHistory.shift();
                 historyStep--;
@@ -677,12 +790,11 @@
         function pickColor(x, y) {
             if (!uploadedImage) return;
             
-            // Check if click is within image bounds
             if (x >= imagePosition.x && x <= imagePosition.x + imagePosition.width &&
                 y >= imagePosition.y && y <= imagePosition.y + imagePosition.height) {
                 
                 const pixel = traceCtx.getImageData(x, y, 1, 1).data;
-                if (pixel[3] > 0) { // If pixel has alpha
+                if (pixel[3] > 0) {
                     const hex = '#' + [pixel[0], pixel[1], pixel[2]].map(x => {
                         const h = x.toString(16);
                         return h.length === 1 ? '0' + h : h;
@@ -701,7 +813,6 @@
             
             const pos = getPos(e);
             
-            // If eyedropper mode, pick color
             if (eyedropperMode) {
                 pickColor(pos.x, pos.y);
                 eyedropperMode = false;
@@ -731,12 +842,23 @@
                 drawCtx.strokeStyle = currentColor;
             }
             
+            // Set brush style
             drawCtx.lineWidth = brushSize;
             drawCtx.lineCap = 'round';
             drawCtx.lineJoin = 'round';
             
-            drawCtx.lineTo(pos.x, pos.y);
-            drawCtx.stroke();
+            if (brushType === 'pencil') {
+                // Pencil: slightly lighter and textured
+                drawCtx.globalAlpha = 0.7;
+                drawCtx.lineTo(pos.x, pos.y);
+                drawCtx.stroke();
+                drawCtx.globalAlpha = 1;
+            } else {
+                // Marker: bold and solid
+                drawCtx.globalAlpha = 1;
+                drawCtx.lineTo(pos.x, pos.y);
+                drawCtx.stroke();
+            }
         }
 
         // Stop drawing
