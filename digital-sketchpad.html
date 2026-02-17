@@ -729,8 +729,10 @@
                 }
             }
             
-            // Create new image with edges (slightly thicker lines)
+            // Create new image with edges (THICKER lines)
             const edgeData = tempCtx.createImageData(processWidth, processHeight);
+            
+            // First pass: draw all edge pixels
             for (let y = 0; y < processHeight; y++) {
                 for (let x = 0; x < processWidth; x++) {
                     const idx = y * processWidth + x;
@@ -742,18 +744,41 @@
                     edgeData.data[pixelIdx + 1] = 0;
                     edgeData.data[pixelIdx + 2] = 0;
                     edgeData.data[pixelIdx + 3] = val;
-                    
-                    // Make lines slightly thicker by adding pixels to the right
-                    if (val === 255 && x < processWidth - 1) {
-                        const nextIdx = (y * processWidth + x + 1) * 4;
-                        if (edgeData.data[nextIdx + 3] === 0) {
-                            edgeData.data[nextIdx] = 0;
-                            edgeData.data[nextIdx + 1] = 0;
-                            edgeData.data[nextIdx + 2] = 0;
-                            edgeData.data[nextIdx + 3] = 200; // Slightly transparent for smoother look
+                }
+            }
+            
+            // Second pass: thicken lines by adding surrounding pixels
+            const thickened = new Uint8ClampedArray(edgeData.data);
+            for (let y = 1; y < processHeight - 1; y++) {
+                for (let x = 1; x < processWidth - 1; x++) {
+                    const idx = y * processWidth + x;
+                    if (cleaned[idx] === 255) {
+                        // Add pixels around edge pixels to make lines thicker
+                        const offsets = [
+                            [0, 1], [0, -1], [1, 0], [-1, 0],  // Direct neighbors
+                            [1, 1], [1, -1], [-1, 1], [-1, -1]  // Diagonals
+                        ];
+                        
+                        for (const [dx, dy] of offsets) {
+                            const nx = x + dx;
+                            const ny = y + dy;
+                            if (nx >= 0 && nx < processWidth && ny >= 0 && ny < processHeight) {
+                                const nIdx = (ny * processWidth + nx) * 4;
+                                if (thickened[nIdx + 3] === 0) {
+                                    thickened[nIdx] = 0;
+                                    thickened[nIdx + 1] = 0;
+                                    thickened[nIdx + 2] = 0;
+                                    thickened[nIdx + 3] = 180; // Solid but slightly softer
+                                }
+                            }
                         }
                     }
                 }
+            }
+            
+            // Copy thickened data back
+            for (let i = 0; i < thickened.length; i++) {
+                edgeData.data[i] = thickened[i];
             }
             
             tempCtx.putImageData(edgeData, 0, 0);
@@ -773,7 +798,7 @@
             traceCtx.drawImage(tempCanvas, rightX, rightY, rightWidth, rightHeight);
             traceCtx.globalAlpha = 1;
             
-            alert('Trace lines ready! Clean outlines on the right - no more specks! ✏️');
+            alert('Trace lines ready! Thick, clear outlines on the right! ✏️');
         }
 
         // Clear button
@@ -896,19 +921,45 @@
             
             const pos = getPos(e);
             
-            // Pencil is ALWAYS grayish, markers use selected color
+            // Determine color to use
+            let drawColor;
+            if (rainbowMode) {
+                rainbowHue = (rainbowHue + 2) % 360;
+                drawColor = `hsl(${rainbowHue}, 100%, 50%)`;
+            } else if (isEraser) {
+                drawColor = '#ffffff';
+            } else {
+                drawColor = currentColor;
+            }
+            
+            // Pencil: sketchy texture (uses picked color!)
             if (brushType === 'pencil' && !isEraser && !rainbowMode) {
-                // Pencil: grayish graphite look with texture
                 const distance = Math.sqrt((pos.x - lastPos.x)**2 + (pos.y - lastPos.y)**2);
                 
                 if (distance > 0.5) {
-                    // Draw multiple strokes for texture
+                    // Parse the current color to add pencil texture
+                    const hexToRgb = (hex) => {
+                        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                        return result ? {
+                            r: parseInt(result[1], 16),
+                            g: parseInt(result[2], 16),
+                            b: parseInt(result[3], 16)
+                        } : {r: 100, g: 100, b: 100};
+                    };
+                    
+                    const rgb = hexToRgb(drawColor);
+                    
+                    // Draw multiple strokes for pencil texture
                     for (let i = 0; i < 3; i++) {
                         drawCtx.beginPath();
                         
-                        // Pencil is always gray (ignore color selection)
-                        const grayValue = 60 + Math.random() * 40; // Range: 60-100 (darker gray)
-                        drawCtx.strokeStyle = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
+                        // Add slight variation to color for texture
+                        const variation = Math.random() * 20 - 10;
+                        const r = Math.max(0, Math.min(255, rgb.r + variation));
+                        const g = Math.max(0, Math.min(255, rgb.g + variation));
+                        const b = Math.max(0, Math.min(255, rgb.b + variation));
+                        
+                        drawCtx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
                         drawCtx.globalAlpha = 0.4 + Math.random() * 0.3;
                         drawCtx.lineWidth = Math.max(0.5, brushSize * 0.5 + Math.random() * 1.5);
                         
@@ -924,18 +975,8 @@
                     drawCtx.globalAlpha = 1;
                 }
             } else {
-                // Marker or eraser or rainbow: smooth and uses selected color
-                let color;
-                if (rainbowMode) {
-                    rainbowHue = (rainbowHue + 2) % 360;
-                    color = `hsl(${rainbowHue}, 100%, 50%)`;
-                } else if (isEraser) {
-                    color = '#ffffff';
-                } else {
-                    color = currentColor;
-                }
-                
-                drawCtx.strokeStyle = color;
+                // Marker or eraser or rainbow: smooth and solid
+                drawCtx.strokeStyle = drawColor;
                 drawCtx.lineWidth = brushSize;
                 drawCtx.lineCap = 'round';
                 drawCtx.lineJoin = 'round';
