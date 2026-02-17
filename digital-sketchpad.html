@@ -664,23 +664,39 @@
                 gray[idx] = Math.floor(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
             }
             
-            // Sobel edge detection
-            const edges = new Uint8ClampedArray(processWidth * processHeight);
-            const threshold = 25;
+            // Apply Gaussian blur to reduce noise
+            const blurred = new Uint8ClampedArray(processWidth * processHeight);
+            for (let y = 2; y < processHeight - 2; y++) {
+                for (let x = 2; x < processWidth - 2; x++) {
+                    const idx = y * processWidth + x;
+                    let sum = 0;
+                    // Simple 3x3 box blur
+                    for (let dy = -1; dy <= 1; dy++) {
+                        for (let dx = -1; dx <= 1; dx++) {
+                            sum += gray[(y + dy) * processWidth + (x + dx)];
+                        }
+                    }
+                    blurred[idx] = Math.floor(sum / 9);
+                }
+            }
             
-            for (let y = 1; y < processHeight - 1; y++) {
-                for (let x = 1; x < processWidth - 1; x++) {
+            // Sobel edge detection on blurred image
+            const edges = new Uint8ClampedArray(processWidth * processHeight);
+            const threshold = 60; // MUCH higher threshold = fewer specks!
+            
+            for (let y = 2; y < processHeight - 2; y++) {
+                for (let x = 2; x < processWidth - 2; x++) {
                     const idx = y * processWidth + x;
                     
-                    // Get 3x3 neighborhood
-                    const p0 = gray[(y-1)*processWidth + (x-1)];
-                    const p1 = gray[(y-1)*processWidth + x];
-                    const p2 = gray[(y-1)*processWidth + (x+1)];
-                    const p3 = gray[y*processWidth + (x-1)];
-                    const p5 = gray[y*processWidth + (x+1)];
-                    const p6 = gray[(y+1)*processWidth + (x-1)];
-                    const p7 = gray[(y+1)*processWidth + x];
-                    const p8 = gray[(y+1)*processWidth + (x+1)];
+                    // Get 3x3 neighborhood from blurred image
+                    const p0 = blurred[(y-1)*processWidth + (x-1)];
+                    const p1 = blurred[(y-1)*processWidth + x];
+                    const p2 = blurred[(y-1)*processWidth + (x+1)];
+                    const p3 = blurred[y*processWidth + (x-1)];
+                    const p5 = blurred[y*processWidth + (x+1)];
+                    const p6 = blurred[(y+1)*processWidth + (x-1)];
+                    const p7 = blurred[(y+1)*processWidth + x];
+                    const p8 = blurred[(y+1)*processWidth + (x+1)];
                     
                     // Sobel kernels
                     const gx = -p0 - 2*p3 - p6 + p2 + 2*p5 + p8;
@@ -691,16 +707,53 @@
                 }
             }
             
-            // Create new image with edges
+            // Remove isolated pixels (noise cleanup)
+            const cleaned = new Uint8ClampedArray(processWidth * processHeight);
+            for (let y = 1; y < processHeight - 1; y++) {
+                for (let x = 1; x < processWidth - 1; x++) {
+                    const idx = y * processWidth + x;
+                    if (edges[idx] === 255) {
+                        // Count edge neighbors
+                        let neighbors = 0;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                if (dx === 0 && dy === 0) continue;
+                                if (edges[(y + dy) * processWidth + (x + dx)] === 255) {
+                                    neighbors++;
+                                }
+                            }
+                        }
+                        // Keep pixel only if it has at least 1 edge neighbor (removes isolated specks)
+                        cleaned[idx] = neighbors >= 1 ? 255 : 0;
+                    }
+                }
+            }
+            
+            // Create new image with edges (slightly thicker lines)
             const edgeData = tempCtx.createImageData(processWidth, processHeight);
-            for (let i = 0; i < edges.length; i++) {
-                const val = edges[i];
-                const idx = i * 4;
-                // Black lines on transparent background
-                edgeData.data[idx] = 0;
-                edgeData.data[idx + 1] = 0;
-                edgeData.data[idx + 2] = 0;
-                edgeData.data[idx + 3] = val;
+            for (let y = 0; y < processHeight; y++) {
+                for (let x = 0; x < processWidth; x++) {
+                    const idx = y * processWidth + x;
+                    const val = cleaned[idx];
+                    const pixelIdx = idx * 4;
+                    
+                    // Black lines on transparent background
+                    edgeData.data[pixelIdx] = 0;
+                    edgeData.data[pixelIdx + 1] = 0;
+                    edgeData.data[pixelIdx + 2] = 0;
+                    edgeData.data[pixelIdx + 3] = val;
+                    
+                    // Make lines slightly thicker by adding pixels to the right
+                    if (val === 255 && x < processWidth - 1) {
+                        const nextIdx = (y * processWidth + x + 1) * 4;
+                        if (edgeData.data[nextIdx + 3] === 0) {
+                            edgeData.data[nextIdx] = 0;
+                            edgeData.data[nextIdx + 1] = 0;
+                            edgeData.data[nextIdx + 2] = 0;
+                            edgeData.data[nextIdx + 3] = 200; // Slightly transparent for smoother look
+                        }
+                    }
+                }
             }
             
             tempCtx.putImageData(edgeData, 0, 0);
@@ -720,7 +773,7 @@
             traceCtx.drawImage(tempCanvas, rightX, rightY, rightWidth, rightHeight);
             traceCtx.globalAlpha = 1;
             
-            alert('Trace lines ready! You can now draw over them on the right side! ✏️');
+            alert('Trace lines ready! Clean outlines on the right - no more specks! ✏️');
         }
 
         // Clear button
