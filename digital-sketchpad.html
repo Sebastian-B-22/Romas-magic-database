@@ -389,8 +389,8 @@
 
             <div class="tool-group opacity-control" id="opacityControl" style="display: none;">
                 <span class="tool-label">Line Opacity:</span>
-                <input type="range" id="opacitySlider" min="10" max="100" value="40">
-                <span id="opacityValue">40%</span>
+                <input type="range" id="opacitySlider" min="20" max="100" value="50">
+                <span id="opacityValue">50%</span>
             </div>
 
             <div class="tool-group">
@@ -412,7 +412,7 @@
         </div>
         
         <div class="trace-info" id="traceInfo" style="display: none;">
-            📝 Trace Mode ON: Faded outlines appear on the right! Draw over them to practice!
+            📝 Trace Mode ON: Black outlines appear on the right! Draw over them to practice!
         </div>
     </div>
 
@@ -541,7 +541,7 @@
                         // Draw the image on trace canvas (left side)
                         drawImageOnLeft();
                         
-                        document.getElementById('infoText').textContent = '✓ Image loaded! Use 💧 Pick Color or ✏️ Trace Lines to get outlines on the right!';
+                        document.getElementById('infoText').textContent = '✓ Image loaded! Click ✏️ Trace Lines to see outlines on the right!';
                     };
                     img.src = event.target.result;
                 };
@@ -581,7 +581,7 @@
                 document.getElementById('infoText').textContent = '💧 Click on the image (left side) to pick that color!';
             } else {
                 drawingCanvas.style.cursor = 'crosshair';
-                document.getElementById('infoText').textContent = '✓ Image loaded! Use 💧 Pick Color or ✏️ Trace Lines!';
+                document.getElementById('infoText').textContent = '✓ Click ✏️ Trace Lines to see outlines!';
             }
         });
 
@@ -593,8 +593,10 @@
             document.getElementById('traceInfo').style.display = traceMode ? 'block' : 'none';
             
             if (traceMode) {
-                console.log('Starting edge detection...');
-                detectEdgesAndDraw();
+                alert('Processing image... This may take a moment!');
+                setTimeout(() => {
+                    detectEdgesAndDraw();
+                }, 100);
             } else {
                 drawImageOnLeft();
             }
@@ -633,105 +635,92 @@
 
         // Edge detection and draw on right side
         function detectEdgesAndDraw() {
-            if (!uploadedImage) {
-                console.log('No uploaded image');
-                return;
-            }
+            if (!uploadedImage) return;
             
-            console.log('Clearing canvas...');
+            // Clear and draw original on left
             traceCtx.clearRect(0, 0, traceCanvas.width, traceCanvas.height);
-            
-            // Draw original on left
             drawImageOnLeft();
             
-            console.log('Creating temp canvas for edge detection...');
-            // Create temporary canvas for edge detection
+            // Create canvas for processing
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
             
-            // Calculate size (smaller for faster processing)
-            const maxDim = 400; // Process at max 400px for speed
-            let width, height;
-            if (uploadedImage.width > uploadedImage.height) {
-                width = Math.min(uploadedImage.width, maxDim);
-                height = (uploadedImage.height / uploadedImage.width) * width;
-            } else {
-                height = Math.min(uploadedImage.height, maxDim);
-                width = (uploadedImage.width / uploadedImage.height) * height;
-            }
+            // Use smaller size for faster processing
+            const processWidth = 300;
+            const processHeight = Math.floor((uploadedImage.height / uploadedImage.width) * processWidth);
             
-            tempCanvas.width = width;
-            tempCanvas.height = height;
+            tempCanvas.width = processWidth;
+            tempCanvas.height = processHeight;
             
-            console.log(`Processing ${width}x${height} image...`);
-            
-            // Draw scaled image
-            tempCtx.drawImage(uploadedImage, 0, 0, width, height);
-            
-            // Get image data
-            const imageData = tempCtx.getImageData(0, 0, width, height);
+            // Draw and get image data
+            tempCtx.drawImage(uploadedImage, 0, 0, processWidth, processHeight);
+            const imageData = tempCtx.getImageData(0, 0, processWidth, processHeight);
             const data = imageData.data;
             
-            console.log('Converting to grayscale...');
             // Convert to grayscale
-            const gray = new Uint8ClampedArray(width * height);
+            const gray = new Uint8ClampedArray(processWidth * processHeight);
             for (let i = 0; i < data.length; i += 4) {
                 const idx = i / 4;
                 gray[idx] = Math.floor(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
             }
             
-            console.log('Detecting edges...');
-            // Edge detection (Sobel)
-            const edges = new Uint8ClampedArray(width * height);
-            const threshold = 30; // Lower = more sensitive
+            // Sobel edge detection
+            const edges = new Uint8ClampedArray(processWidth * processHeight);
+            const threshold = 25;
             
-            for (let y = 1; y < height - 1; y++) {
-                for (let x = 1; x < width - 1; x++) {
-                    const idx = y * width + x;
+            for (let y = 1; y < processHeight - 1; y++) {
+                for (let x = 1; x < processWidth - 1; x++) {
+                    const idx = y * processWidth + x;
+                    
+                    // Get 3x3 neighborhood
+                    const p0 = gray[(y-1)*processWidth + (x-1)];
+                    const p1 = gray[(y-1)*processWidth + x];
+                    const p2 = gray[(y-1)*processWidth + (x+1)];
+                    const p3 = gray[y*processWidth + (x-1)];
+                    const p5 = gray[y*processWidth + (x+1)];
+                    const p6 = gray[(y+1)*processWidth + (x-1)];
+                    const p7 = gray[(y+1)*processWidth + x];
+                    const p8 = gray[(y+1)*processWidth + (x+1)];
                     
                     // Sobel kernels
-                    const gx = 
-                        -gray[(y-1)*width + (x-1)] - 2*gray[y*width + (x-1)] - gray[(y+1)*width + (x-1)] +
-                        gray[(y-1)*width + (x+1)] + 2*gray[y*width + (x+1)] + gray[(y+1)*width + (x+1)];
-                    
-                    const gy = 
-                        -gray[(y-1)*width + (x-1)] - 2*gray[(y-1)*width + x] - gray[(y-1)*width + (x+1)] +
-                        gray[(y+1)*width + (x-1)] + 2*gray[(y+1)*width + x] + gray[(y+1)*width + (x+1)];
+                    const gx = -p0 - 2*p3 - p6 + p2 + 2*p5 + p8;
+                    const gy = -p0 - 2*p1 - p2 + p6 + 2*p7 + p8;
                     
                     const magnitude = Math.sqrt(gx*gx + gy*gy);
                     edges[idx] = magnitude > threshold ? 255 : 0;
                 }
             }
             
-            console.log('Creating edge image...');
-            // Put edges back into imageData
+            // Create new image with edges
+            const edgeData = tempCtx.createImageData(processWidth, processHeight);
             for (let i = 0; i < edges.length; i++) {
                 const val = edges[i];
                 const idx = i * 4;
-                imageData.data[idx] = 0;     // R
-                imageData.data[idx + 1] = 0; // G
-                imageData.data[idx + 2] = 0; // B
-                imageData.data[idx + 3] = val; // Alpha (lines are black, transparent elsewhere)
+                // Black lines on transparent background
+                edgeData.data[idx] = 0;
+                edgeData.data[idx + 1] = 0;
+                edgeData.data[idx + 2] = 0;
+                edgeData.data[idx + 3] = val;
             }
             
-            tempCtx.putImageData(imageData, 0, 0);
+            tempCtx.putImageData(edgeData, 0, 0);
             
-            console.log('Drawing edges on right side...');
-            // Draw edges on RIGHT side of trace canvas
-            const rightWidth = traceCanvas.width * 0.48;
-            const rightHeight = traceCanvas.height * 0.95;
-            const rightScale = Math.min(rightWidth / width, rightHeight / height);
-            const finalWidth = width * rightScale;
-            const finalHeight = height * rightScale;
-            const rightX = traceCanvas.width * 0.75 - finalWidth / 2;
-            const rightY = (traceCanvas.height - finalHeight) / 2;
+            // Calculate position on RIGHT side
+            const rightMaxWidth = traceCanvas.width * 0.48;
+            const rightMaxHeight = traceCanvas.height * 0.95;
+            const rightScale = Math.min(rightMaxWidth / processWidth, rightMaxHeight / processHeight);
+            const rightWidth = processWidth * rightScale;
+            const rightHeight = processHeight * rightScale;
+            const rightX = traceCanvas.width * 0.75 - rightWidth / 2;
+            const rightY = (traceCanvas.height - rightHeight) / 2;
             
+            // Draw edges on right side
             const opacity = document.getElementById('opacitySlider').value / 100;
             traceCtx.globalAlpha = opacity;
-            traceCtx.drawImage(tempCanvas, rightX, rightY, finalWidth, finalHeight);
+            traceCtx.drawImage(tempCanvas, rightX, rightY, rightWidth, rightHeight);
             traceCtx.globalAlpha = 1;
             
-            console.log('Edge detection complete!');
+            alert('Trace lines ready! You can now draw over them on the right side! ✏️');
         }
 
         // Clear button
@@ -854,28 +843,21 @@
             
             const pos = getPos(e);
             
-            // Set color
-            let color;
-            if (rainbowMode) {
-                rainbowHue = (rainbowHue + 2) % 360;
-                color = `hsl(${rainbowHue}, 100%, 50%)`;
-            } else if (isEraser) {
-                color = '#ffffff';
-            } else {
-                color = currentColor;
-            }
-            
-            // Draw based on brush type
-            if (brushType === 'pencil' && !isEraser) {
-                // Pencil: sketchy, textured look with multiple thin lines
+            // Pencil is ALWAYS grayish, markers use selected color
+            if (brushType === 'pencil' && !isEraser && !rainbowMode) {
+                // Pencil: grayish graphite look with texture
                 const distance = Math.sqrt((pos.x - lastPos.x)**2 + (pos.y - lastPos.y)**2);
                 
-                if (distance > 1) {
+                if (distance > 0.5) {
+                    // Draw multiple strokes for texture
                     for (let i = 0; i < 3; i++) {
                         drawCtx.beginPath();
-                        drawCtx.strokeStyle = color;
-                        drawCtx.globalAlpha = 0.3 + Math.random() * 0.3; // Random opacity
-                        drawCtx.lineWidth = Math.max(1, brushSize * 0.6 + Math.random() * 2);
+                        
+                        // Pencil is always gray (ignore color selection)
+                        const grayValue = 60 + Math.random() * 40; // Range: 60-100 (darker gray)
+                        drawCtx.strokeStyle = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
+                        drawCtx.globalAlpha = 0.4 + Math.random() * 0.3;
+                        drawCtx.lineWidth = Math.max(0.5, brushSize * 0.5 + Math.random() * 1.5);
                         
                         // Slight offset for sketchy effect
                         const offsetX = (Math.random() - 0.5) * 2;
@@ -889,7 +871,17 @@
                     drawCtx.globalAlpha = 1;
                 }
             } else {
-                // Marker: smooth and solid
+                // Marker or eraser or rainbow: smooth and uses selected color
+                let color;
+                if (rainbowMode) {
+                    rainbowHue = (rainbowHue + 2) % 360;
+                    color = `hsl(${rainbowHue}, 100%, 50%)`;
+                } else if (isEraser) {
+                    color = '#ffffff';
+                } else {
+                    color = currentColor;
+                }
+                
                 drawCtx.strokeStyle = color;
                 drawCtx.lineWidth = brushSize;
                 drawCtx.lineCap = 'round';
