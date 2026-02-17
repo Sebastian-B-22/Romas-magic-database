@@ -166,6 +166,46 @@
             transform: scale(1.05);
         }
 
+        .upload-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .upload-btn:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .eyedropper-btn {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .eyedropper-btn:hover {
+            background: #7c3aed;
+            transform: scale(1.05);
+        }
+
+        .eyedropper-btn.active {
+            background: #6d28d9;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .trace-btn {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .trace-btn:hover {
+            background: #0891b2;
+            transform: scale(1.05);
+        }
+
+        .trace-btn.active {
+            background: #0e7490;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
         .canvas-container {
             background: white;
             border: 5px solid #764ba2;
@@ -174,11 +214,26 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        #traceCanvas, #drawingCanvas {
+            position: absolute;
+            cursor: crosshair;
+        }
+
+        #traceCanvas {
+            z-index: 1;
         }
 
         #drawingCanvas {
-            cursor: crosshair;
-            display: block;
+            z-index: 2;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 1000px;
+            height: 600px;
         }
 
         .info {
@@ -207,6 +262,30 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
 
+        .opacity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #opacitySlider {
+            width: 100px;
+        }
+
+        #imageUpload {
+            display: none;
+        }
+
+        .trace-info {
+            background: rgba(6, 182, 212, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #0e7490;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -218,6 +297,11 @@
 
             .toolbar {
                 padding: 15px;
+            }
+
+            .canvas-wrapper {
+                width: 100%;
+                height: 400px;
             }
         }
     </style>
@@ -252,28 +336,50 @@
 
             <div class="tool-group">
                 <button class="action-btn eraser-btn" id="eraserBtn">🧹 Eraser</button>
-                <button class="rainbow-mode" id="rainbowBtn">🌈 Rainbow Mode</button>
+                <button class="rainbow-mode" id="rainbowBtn">🌈 Rainbow</button>
+            </div>
+
+            <div class="tool-group">
+                <input type="file" id="imageUpload" accept="image/*">
+                <button class="action-btn upload-btn" id="uploadBtn">📁 Upload Image</button>
+                <button class="action-btn eyedropper-btn" id="eyedropperBtn" disabled>💧 Pick Color</button>
+                <button class="action-btn trace-btn" id="traceBtn" disabled>✏️ Trace Mode</button>
+            </div>
+
+            <div class="tool-group opacity-control" id="opacityControl" style="display: none;">
+                <span class="tool-label">Trace Opacity:</span>
+                <input type="range" id="opacitySlider" min="10" max="100" value="30">
+                <span id="opacityValue">30%</span>
             </div>
 
             <div class="tool-group">
                 <button class="action-btn undo-btn" id="undoBtn">↩️ Undo</button>
-                <button class="action-btn clear-btn" id="clearBtn">🗑️ Clear All</button>
-                <button class="action-btn save-btn" id="saveBtn">💾 Save Drawing</button>
+                <button class="action-btn clear-btn" id="clearBtn">🗑️ Clear</button>
+                <button class="action-btn save-btn" id="saveBtn">💾 Save</button>
             </div>
         </div>
 
         <div class="canvas-container">
-            <canvas id="drawingCanvas" width="1000" height="600"></canvas>
+            <div class="canvas-wrapper">
+                <canvas id="traceCanvas" width="1000" height="600"></canvas>
+                <canvas id="drawingCanvas" width="1000" height="600"></canvas>
+            </div>
         </div>
 
-        <div class="info">
-            💡 Tip: Click and drag to draw! Use rainbow mode for magical colors! 🌈
+        <div class="info" id="infoText">
+            💡 Tip: Upload an image to pick colors from it or trace over it! 🌈
+        </div>
+        
+        <div class="trace-info" id="traceInfo" style="display: none;">
+            📝 Trace Mode: Draw over the faded image below! Adjust opacity with the slider.
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('drawingCanvas');
-        const ctx = canvas.getContext('2d');
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const traceCanvas = document.getElementById('traceCanvas');
+        const drawCtx = drawingCanvas.getContext('2d');
+        const traceCtx = traceCanvas.getContext('2d');
 
         // Drawing state
         let isDrawing = false;
@@ -282,6 +388,9 @@
         let isEraser = false;
         let rainbowMode = false;
         let rainbowHue = 0;
+        let eyedropperMode = false;
+        let traceMode = false;
+        let uploadedImage = null;
 
         // History for undo
         let drawingHistory = [];
@@ -301,6 +410,8 @@
                 document.getElementById('eraserBtn').classList.remove('active');
                 rainbowMode = false;
                 document.getElementById('rainbowBtn').classList.remove('active');
+                eyedropperMode = false;
+                document.getElementById('eyedropperBtn').classList.remove('active');
             });
         });
 
@@ -313,6 +424,8 @@
             document.getElementById('eraserBtn').classList.remove('active');
             rainbowMode = false;
             document.getElementById('rainbowBtn').classList.remove('active');
+            eyedropperMode = false;
+            document.getElementById('eyedropperBtn').classList.remove('active');
         });
 
         // Brush size buttons
@@ -333,6 +446,8 @@
                 colorButtons.forEach(b => b.classList.remove('active'));
                 rainbowMode = false;
                 document.getElementById('rainbowBtn').classList.remove('active');
+                eyedropperMode = false;
+                document.getElementById('eyedropperBtn').classList.remove('active');
             }
         });
 
@@ -344,13 +459,113 @@
                 isEraser = false;
                 document.getElementById('eraserBtn').classList.remove('active');
                 colorButtons.forEach(b => b.classList.remove('active'));
+                eyedropperMode = false;
+                document.getElementById('eyedropperBtn').classList.remove('active');
             }
         });
 
+        // Upload button
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            document.getElementById('imageUpload').click();
+        });
+
+        // Image upload
+        document.getElementById('imageUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        uploadedImage = img;
+                        
+                        // Enable eyedropper and trace buttons
+                        document.getElementById('eyedropperBtn').disabled = false;
+                        document.getElementById('traceBtn').disabled = false;
+                        
+                        // Draw the image on trace canvas
+                        drawTraceImage();
+                        
+                        alert('Image uploaded! ✓\n\n💧 Click "Pick Color" to grab colors from the image\n✏️ Click "Trace Mode" to draw over a faded version');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Eyedropper button
+        document.getElementById('eyedropperBtn').addEventListener('click', () => {
+            eyedropperMode = !eyedropperMode;
+            document.getElementById('eyedropperBtn').classList.toggle('active');
+            
+            if (eyedropperMode) {
+                drawingCanvas.style.cursor = 'crosshair';
+                isEraser = false;
+                document.getElementById('eraserBtn').classList.remove('active');
+                rainbowMode = false;
+                document.getElementById('rainbowBtn').classList.remove('active');
+                
+                // Show info
+                document.getElementById('infoText').textContent = '💧 Click anywhere on the canvas to pick that color!';
+            } else {
+                drawingCanvas.style.cursor = 'crosshair';
+                document.getElementById('infoText').textContent = '💡 Tip: Upload an image to pick colors from it or trace over it! 🌈';
+            }
+        });
+
+        // Trace button
+        document.getElementById('traceBtn').addEventListener('click', () => {
+            traceMode = !traceMode;
+            document.getElementById('traceBtn').classList.toggle('active');
+            document.getElementById('opacityControl').style.display = traceMode ? 'flex' : 'none';
+            document.getElementById('traceInfo').style.display = traceMode ? 'block' : 'none';
+            
+            if (traceMode) {
+                drawTraceImage();
+            } else {
+                traceCtx.clearRect(0, 0, traceCanvas.width, traceCanvas.height);
+            }
+        });
+
+        // Opacity slider
+        document.getElementById('opacitySlider').addEventListener('input', (e) => {
+            const opacity = e.target.value;
+            document.getElementById('opacityValue').textContent = opacity + '%';
+            if (traceMode && uploadedImage) {
+                drawTraceImage();
+            }
+        });
+
+        // Draw trace image
+        function drawTraceImage() {
+            if (!uploadedImage) return;
+            
+            traceCtx.clearRect(0, 0, traceCanvas.width, traceCanvas.height);
+            
+            if (traceMode) {
+                const opacity = document.getElementById('opacitySlider').value / 100;
+                traceCtx.globalAlpha = opacity;
+                
+                // Scale image to fit canvas
+                const scale = Math.min(
+                    traceCanvas.width / uploadedImage.width,
+                    traceCanvas.height / uploadedImage.height
+                );
+                const width = uploadedImage.width * scale;
+                const height = uploadedImage.height * scale;
+                const x = (traceCanvas.width - width) / 2;
+                const y = (traceCanvas.height - height) / 2;
+                
+                traceCtx.drawImage(uploadedImage, x, y, width, height);
+                traceCtx.globalAlpha = 1;
+            }
+        }
+
         // Clear button
         document.getElementById('clearBtn').addEventListener('click', () => {
-            if (confirm('Clear your entire drawing? This cannot be undone!')) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (confirm('Clear your drawing? The trace image will stay.')) {
+                drawCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
                 saveState();
             }
         });
@@ -360,16 +575,28 @@
             if (historyStep > 0) {
                 historyStep--;
                 const imageData = drawingHistory[historyStep];
-                ctx.putImageData(imageData, 0, 0);
+                drawCtx.putImageData(imageData, 0, 0);
             }
         });
 
         // Save button
         document.getElementById('saveBtn').addEventListener('click', () => {
+            // Create a temporary canvas to combine both layers
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = drawingCanvas.width;
+            tempCanvas.height = drawingCanvas.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Draw trace layer first (if visible), then drawing layer
+            if (traceMode) {
+                tempCtx.drawImage(traceCanvas, 0, 0);
+            }
+            tempCtx.drawImage(drawingCanvas, 0, 0);
+            
             const link = document.createElement('a');
             const timestamp = new Date().toISOString().slice(0, 10);
-            link.download = `my-drawing-${timestamp}.png`;
-            link.href = canvas.toDataURL();
+            link.download = `my-artwork-${timestamp}.png`;
+            link.href = tempCanvas.toDataURL();
             link.click();
             alert('Drawing saved! Check your Downloads folder! 🎨✨');
         });
@@ -380,7 +607,7 @@
             if (historyStep < drawingHistory.length) {
                 drawingHistory.length = historyStep;
             }
-            drawingHistory.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            drawingHistory.push(drawCtx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height));
             
             // Limit history to 50 steps to save memory
             if (drawingHistory.length > 50) {
@@ -391,9 +618,9 @@
 
         // Get mouse/touch position
         function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
+            const rect = drawingCanvas.getBoundingClientRect();
+            const scaleX = drawingCanvas.width / rect.width;
+            const scaleY = drawingCanvas.height / rect.height;
             
             if (e.touches) {
                 return {
@@ -407,14 +634,52 @@
             };
         }
 
+        // Pick color from canvas
+        function pickColor(x, y) {
+            // First try to get color from trace canvas if image is loaded
+            if (uploadedImage) {
+                const pixel = traceCtx.getImageData(x, y, 1, 1).data;
+                if (pixel[3] > 0) { // If pixel has alpha (is not transparent)
+                    const hex = '#' + [pixel[0], pixel[1], pixel[2]].map(x => {
+                        const h = x.toString(16);
+                        return h.length === 1 ? '0' + h : h;
+                    }).join('');
+                    currentColor = hex;
+                    colorPicker.value = hex;
+                    colorButtons.forEach(b => b.classList.remove('active'));
+                    return;
+                }
+            }
+            
+            // Otherwise get from drawing canvas
+            const pixel = drawCtx.getImageData(x, y, 1, 1).data;
+            const hex = '#' + [pixel[0], pixel[1], pixel[2]].map(x => {
+                const h = x.toString(16);
+                return h.length === 1 ? '0' + h : h;
+            }).join('');
+            currentColor = hex;
+            colorPicker.value = hex;
+            colorButtons.forEach(b => b.classList.remove('active'));
+        }
+
         // Start drawing
         function startDrawing(e) {
             e.preventDefault();
-            isDrawing = true;
+            
             const pos = getPos(e);
             
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+            // If eyedropper mode, pick color
+            if (eyedropperMode) {
+                pickColor(pos.x, pos.y);
+                eyedropperMode = false;
+                document.getElementById('eyedropperBtn').classList.remove('active');
+                document.getElementById('infoText').textContent = '💡 Color picked! Ready to draw! 🎨';
+                return;
+            }
+            
+            isDrawing = true;
+            drawCtx.beginPath();
+            drawCtx.moveTo(pos.x, pos.y);
         }
 
         // Draw
@@ -427,50 +692,50 @@
             // Set color
             if (rainbowMode) {
                 rainbowHue = (rainbowHue + 2) % 360;
-                ctx.strokeStyle = `hsl(${rainbowHue}, 100%, 50%)`;
+                drawCtx.strokeStyle = `hsl(${rainbowHue}, 100%, 50%)`;
             } else if (isEraser) {
-                ctx.strokeStyle = '#ffffff';
+                drawCtx.strokeStyle = '#ffffff';
             } else {
-                ctx.strokeStyle = currentColor;
+                drawCtx.strokeStyle = currentColor;
             }
             
-            ctx.lineWidth = brushSize;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+            drawCtx.lineWidth = brushSize;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
             
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
+            drawCtx.lineTo(pos.x, pos.y);
+            drawCtx.stroke();
         }
 
         // Stop drawing
         function stopDrawing(e) {
             if (!isDrawing) return;
             isDrawing = false;
-            ctx.beginPath();
+            drawCtx.beginPath();
             saveState();
         }
 
         // Mouse events
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', stopDrawing);
+        drawingCanvas.addEventListener('mouseout', stopDrawing);
 
         // Touch events for mobile
-        canvas.addEventListener('touchstart', startDrawing);
-        canvas.addEventListener('touchmove', draw);
-        canvas.addEventListener('touchend', stopDrawing);
-        canvas.addEventListener('touchcancel', stopDrawing);
+        drawingCanvas.addEventListener('touchstart', startDrawing);
+        drawingCanvas.addEventListener('touchmove', draw);
+        drawingCanvas.addEventListener('touchend', stopDrawing);
+        drawingCanvas.addEventListener('touchcancel', stopDrawing);
 
         // Prevent scrolling when touching the canvas
         document.body.addEventListener('touchstart', (e) => {
-            if (e.target == canvas) {
+            if (e.target == drawingCanvas) {
                 e.preventDefault();
             }
         }, { passive: false });
 
         document.body.addEventListener('touchmove', (e) => {
-            if (e.target == canvas) {
+            if (e.target == drawingCanvas) {
                 e.preventDefault();
             }
         }, { passive: false });
