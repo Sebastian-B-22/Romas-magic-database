@@ -389,8 +389,8 @@
 
             <div class="tool-group opacity-control" id="opacityControl" style="display: none;">
                 <span class="tool-label">Line Opacity:</span>
-                <input type="range" id="opacitySlider" min="10" max="100" value="30">
-                <span id="opacityValue">30%</span>
+                <input type="range" id="opacitySlider" min="10" max="100" value="40">
+                <span id="opacityValue">40%</span>
             </div>
 
             <div class="tool-group">
@@ -434,6 +434,7 @@
         let traceMode = false;
         let uploadedImage = null;
         let imagePosition = { x: 0, y: 0, width: 0, height: 0 };
+        let lastPos = null;
 
         // History for undo
         let drawingHistory = [];
@@ -592,6 +593,7 @@
             document.getElementById('traceInfo').style.display = traceMode ? 'block' : 'none';
             
             if (traceMode) {
+                console.log('Starting edge detection...');
                 detectEdgesAndDraw();
             } else {
                 drawImageOnLeft();
@@ -631,26 +633,37 @@
 
         // Edge detection and draw on right side
         function detectEdgesAndDraw() {
-            if (!uploadedImage) return;
+            if (!uploadedImage) {
+                console.log('No uploaded image');
+                return;
+            }
             
+            console.log('Clearing canvas...');
             traceCtx.clearRect(0, 0, traceCanvas.width, traceCanvas.height);
             
             // Draw original on left
             drawImageOnLeft();
             
+            console.log('Creating temp canvas for edge detection...');
             // Create temporary canvas for edge detection
             const tempCanvas = document.createElement('canvas');
             const tempCtx = tempCanvas.getContext('2d');
             
-            // Calculate size
-            const maxWidth = traceCanvas.width * 0.48;
-            const maxHeight = traceCanvas.height * 0.95;
-            const scale = Math.min(maxWidth / uploadedImage.width, maxHeight / uploadedImage.height);
-            const width = uploadedImage.width * scale;
-            const height = uploadedImage.height * scale;
+            // Calculate size (smaller for faster processing)
+            const maxDim = 400; // Process at max 400px for speed
+            let width, height;
+            if (uploadedImage.width > uploadedImage.height) {
+                width = Math.min(uploadedImage.width, maxDim);
+                height = (uploadedImage.height / uploadedImage.width) * width;
+            } else {
+                height = Math.min(uploadedImage.height, maxDim);
+                width = (uploadedImage.width / uploadedImage.height) * height;
+            }
             
             tempCanvas.width = width;
             tempCanvas.height = height;
+            
+            console.log(`Processing ${width}x${height} image...`);
             
             // Draw scaled image
             tempCtx.drawImage(uploadedImage, 0, 0, width, height);
@@ -659,58 +672,66 @@
             const imageData = tempCtx.getImageData(0, 0, width, height);
             const data = imageData.data;
             
+            console.log('Converting to grayscale...');
             // Convert to grayscale
+            const gray = new Uint8ClampedArray(width * height);
             for (let i = 0; i < data.length; i += 4) {
-                const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                data[i] = data[i + 1] = data[i + 2] = gray;
+                const idx = i / 4;
+                gray[idx] = Math.floor(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
             }
             
-            // Simple edge detection (Sobel-like)
-            const edges = new Uint8ClampedArray(data.length);
-            const w = width;
-            const h = height;
+            console.log('Detecting edges...');
+            // Edge detection (Sobel)
+            const edges = new Uint8ClampedArray(width * height);
+            const threshold = 30; // Lower = more sensitive
             
-            for (let y = 1; y < h - 1; y++) {
-                for (let x = 1; x < w - 1; x++) {
-                    const idx = (y * w + x) * 4;
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    const idx = y * width + x;
                     
-                    // Get surrounding pixels
-                    const tl = data[((y - 1) * w + (x - 1)) * 4];
-                    const t = data[((y - 1) * w + x) * 4];
-                    const tr = data[((y - 1) * w + (x + 1)) * 4];
-                    const l = data[(y * w + (x - 1)) * 4];
-                    const r = data[(y * w + (x + 1)) * 4];
-                    const bl = data[((y + 1) * w + (x - 1)) * 4];
-                    const b = data[((y + 1) * w + x) * 4];
-                    const br = data[((y + 1) * w + (x + 1)) * 4];
+                    // Sobel kernels
+                    const gx = 
+                        -gray[(y-1)*width + (x-1)] - 2*gray[y*width + (x-1)] - gray[(y+1)*width + (x-1)] +
+                        gray[(y-1)*width + (x+1)] + 2*gray[y*width + (x+1)] + gray[(y+1)*width + (x+1)];
                     
-                    // Sobel operator
-                    const gx = -tl - 2 * l - bl + tr + 2 * r + br;
-                    const gy = -tl - 2 * t - tr + bl + 2 * b + br;
-                    const magnitude = Math.sqrt(gx * gx + gy * gy);
+                    const gy = 
+                        -gray[(y-1)*width + (x-1)] - 2*gray[(y-1)*width + x] - gray[(y-1)*width + (x+1)] +
+                        gray[(y+1)*width + (x-1)] + 2*gray[(y+1)*width + x] + gray[(y+1)*width + (x+1)];
                     
-                    // Threshold
-                    const edge = magnitude > 50 ? 0 : 255;
-                    edges[idx] = edges[idx + 1] = edges[idx + 2] = edge;
-                    edges[idx + 3] = edge === 0 ? 255 : 0; // Alpha
+                    const magnitude = Math.sqrt(gx*gx + gy*gy);
+                    edges[idx] = magnitude > threshold ? 255 : 0;
                 }
             }
             
-            // Put edge data back
+            console.log('Creating edge image...');
+            // Put edges back into imageData
             for (let i = 0; i < edges.length; i++) {
-                imageData.data[i] = edges[i];
+                const val = edges[i];
+                const idx = i * 4;
+                imageData.data[idx] = 0;     // R
+                imageData.data[idx + 1] = 0; // G
+                imageData.data[idx + 2] = 0; // B
+                imageData.data[idx + 3] = val; // Alpha (lines are black, transparent elsewhere)
             }
             
             tempCtx.putImageData(imageData, 0, 0);
             
+            console.log('Drawing edges on right side...');
             // Draw edges on RIGHT side of trace canvas
-            const rightX = traceCanvas.width * 0.75 - width / 2;
-            const rightY = (traceCanvas.height - height) / 2;
+            const rightWidth = traceCanvas.width * 0.48;
+            const rightHeight = traceCanvas.height * 0.95;
+            const rightScale = Math.min(rightWidth / width, rightHeight / height);
+            const finalWidth = width * rightScale;
+            const finalHeight = height * rightScale;
+            const rightX = traceCanvas.width * 0.75 - finalWidth / 2;
+            const rightY = (traceCanvas.height - finalHeight) / 2;
             
             const opacity = document.getElementById('opacitySlider').value / 100;
             traceCtx.globalAlpha = opacity;
-            traceCtx.drawImage(tempCanvas, rightX, rightY);
+            traceCtx.drawImage(tempCanvas, rightX, rightY, finalWidth, finalHeight);
             traceCtx.globalAlpha = 1;
+            
+            console.log('Edge detection complete!');
         }
 
         // Clear button
@@ -821,6 +842,7 @@
             }
             
             isDrawing = true;
+            lastPos = pos;
             drawCtx.beginPath();
             drawCtx.moveTo(pos.x, pos.y);
         }
@@ -833,32 +855,51 @@
             const pos = getPos(e);
             
             // Set color
+            let color;
             if (rainbowMode) {
                 rainbowHue = (rainbowHue + 2) % 360;
-                drawCtx.strokeStyle = `hsl(${rainbowHue}, 100%, 50%)`;
+                color = `hsl(${rainbowHue}, 100%, 50%)`;
             } else if (isEraser) {
-                drawCtx.strokeStyle = '#ffffff';
+                color = '#ffffff';
             } else {
-                drawCtx.strokeStyle = currentColor;
+                color = currentColor;
             }
             
-            // Set brush style
-            drawCtx.lineWidth = brushSize;
-            drawCtx.lineCap = 'round';
-            drawCtx.lineJoin = 'round';
-            
-            if (brushType === 'pencil') {
-                // Pencil: slightly lighter and textured
-                drawCtx.globalAlpha = 0.7;
-                drawCtx.lineTo(pos.x, pos.y);
-                drawCtx.stroke();
-                drawCtx.globalAlpha = 1;
+            // Draw based on brush type
+            if (brushType === 'pencil' && !isEraser) {
+                // Pencil: sketchy, textured look with multiple thin lines
+                const distance = Math.sqrt((pos.x - lastPos.x)**2 + (pos.y - lastPos.y)**2);
+                
+                if (distance > 1) {
+                    for (let i = 0; i < 3; i++) {
+                        drawCtx.beginPath();
+                        drawCtx.strokeStyle = color;
+                        drawCtx.globalAlpha = 0.3 + Math.random() * 0.3; // Random opacity
+                        drawCtx.lineWidth = Math.max(1, brushSize * 0.6 + Math.random() * 2);
+                        
+                        // Slight offset for sketchy effect
+                        const offsetX = (Math.random() - 0.5) * 2;
+                        const offsetY = (Math.random() - 0.5) * 2;
+                        
+                        drawCtx.moveTo(lastPos.x + offsetX, lastPos.y + offsetY);
+                        drawCtx.lineTo(pos.x + offsetX, pos.y + offsetY);
+                        drawCtx.lineCap = 'round';
+                        drawCtx.stroke();
+                    }
+                    drawCtx.globalAlpha = 1;
+                }
             } else {
-                // Marker: bold and solid
+                // Marker: smooth and solid
+                drawCtx.strokeStyle = color;
+                drawCtx.lineWidth = brushSize;
+                drawCtx.lineCap = 'round';
+                drawCtx.lineJoin = 'round';
                 drawCtx.globalAlpha = 1;
                 drawCtx.lineTo(pos.x, pos.y);
                 drawCtx.stroke();
             }
+            
+            lastPos = pos;
         }
 
         // Stop drawing
