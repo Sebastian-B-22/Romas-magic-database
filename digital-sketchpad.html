@@ -664,30 +664,36 @@
                 gray[idx] = Math.floor(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
             }
             
-            // Apply light blur to reduce noise but keep details
-            const blurred = new Uint8ClampedArray(processWidth * processHeight);
-            for (let y = 1; y < processHeight - 1; y++) {
-                for (let x = 1; x < processWidth - 1; x++) {
-                    const idx = y * processWidth + x;
-                    let sum = 0;
-                    // 3x3 Gaussian-like blur
-                    sum += gray[(y-1)*processWidth + (x-1)] * 1;
-                    sum += gray[(y-1)*processWidth + x] * 2;
-                    sum += gray[(y-1)*processWidth + (x+1)] * 1;
-                    sum += gray[y*processWidth + (x-1)] * 2;
-                    sum += gray[y*processWidth + x] * 4;
-                    sum += gray[y*processWidth + (x+1)] * 2;
-                    sum += gray[(y+1)*processWidth + (x-1)] * 1;
-                    sum += gray[(y+1)*processWidth + x] * 2;
-                    sum += gray[(y+1)*processWidth + (x+1)] * 1;
-                    blurred[idx] = Math.floor(sum / 16);
+            // Apply moderate blur to smooth out texture and noise
+            let blurred = new Uint8ClampedArray(gray);
+            
+            // Blur twice for smoother result
+            for (let blurPass = 0; blurPass < 2; blurPass++) {
+                const temp = new Uint8ClampedArray(processWidth * processHeight);
+                for (let y = 2; y < processHeight - 2; y++) {
+                    for (let x = 2; x < processWidth - 2; x++) {
+                        const idx = y * processWidth + x;
+                        let sum = 0;
+                        // 3x3 Gaussian-like blur
+                        sum += blurred[(y-1)*processWidth + (x-1)] * 1;
+                        sum += blurred[(y-1)*processWidth + x] * 2;
+                        sum += blurred[(y-1)*processWidth + (x+1)] * 1;
+                        sum += blurred[y*processWidth + (x-1)] * 2;
+                        sum += blurred[y*processWidth + x] * 4;
+                        sum += blurred[y*processWidth + (x+1)] * 2;
+                        sum += blurred[(y+1)*processWidth + (x-1)] * 1;
+                        sum += blurred[(y+1)*processWidth + x] * 2;
+                        sum += blurred[(y+1)*processWidth + (x+1)] * 1;
+                        temp[idx] = Math.floor(sum / 16);
+                    }
                 }
+                blurred = temp;
             }
             
             // Sobel edge detection with gradient direction
             const magnitude = new Float32Array(processWidth * processHeight);
             const direction = new Float32Array(processWidth * processHeight);
-            const threshold = 50; // Medium threshold - catches details but not noise
+            const threshold = 80; // Higher threshold - only strong edges, NO specks!
             
             for (let y = 2; y < processHeight - 2; y++) {
                 for (let x = 2; x < processWidth - 2; x++) {
@@ -750,8 +756,10 @@
                 }
             }
             
-            // Remove isolated pixels (noise cleanup)
+            // AGGRESSIVE noise removal - remove isolated pixels and small specks
             const cleaned = new Uint8ClampedArray(processWidth * processHeight);
+            
+            // First pass: remove completely isolated pixels
             for (let y = 1; y < processHeight - 1; y++) {
                 for (let x = 1; x < processWidth - 1; x++) {
                     const idx = y * processWidth + x;
@@ -766,8 +774,29 @@
                                 }
                             }
                         }
-                        // Keep pixel only if it has at least 1 edge neighbor (removes isolated specks)
-                        cleaned[idx] = neighbors >= 1 ? 255 : 0;
+                        // Need at least 2 neighbors to be part of a line (removes dots and specks)
+                        cleaned[idx] = neighbors >= 2 ? 255 : 0;
+                    }
+                }
+            }
+            
+            // Second pass: remove small disconnected groups (even more aggressive)
+            const finalCleaned = new Uint8ClampedArray(processWidth * processHeight);
+            for (let y = 2; y < processHeight - 2; y++) {
+                for (let x = 2; x < processWidth - 2; x++) {
+                    const idx = y * processWidth + x;
+                    if (cleaned[idx] === 255) {
+                        // Count neighbors in 5x5 area - if very few, it's probably noise
+                        let areaCount = 0;
+                        for (let dy = -2; dy <= 2; dy++) {
+                            for (let dx = -2; dx <= 2; dx++) {
+                                if (cleaned[(y + dy) * processWidth + (x + dx)] === 255) {
+                                    areaCount++;
+                                }
+                            }
+                        }
+                        // Keep only if there's a decent group (removes tiny fragments)
+                        finalCleaned[idx] = areaCount >= 5 ? 255 : 0;
                     }
                 }
             }
@@ -779,7 +808,7 @@
             for (let y = 0; y < processHeight; y++) {
                 for (let x = 0; x < processWidth; x++) {
                     const idx = y * processWidth + x;
-                    const val = cleaned[idx];
+                    const val = finalCleaned[idx];
                     const pixelIdx = idx * 4;
                     
                     // Solid black lines on transparent background
@@ -795,7 +824,7 @@
             for (let y = 1; y < processHeight - 1; y++) {
                 for (let x = 1; x < processWidth - 1; x++) {
                     const idx = y * processWidth + x;
-                    if (cleaned[idx] === 255) {
+                    if (finalCleaned[idx] === 255) {
                         // Add only direct neighbors (not diagonals) for clean, thin lines
                         const offsets = [
                             [0, 1], [0, -1], [1, 0], [-1, 0]  // Up, down, left, right only
@@ -840,7 +869,7 @@
             traceCtx.drawImage(tempCanvas, rightX, rightY, rightWidth, rightHeight);
             traceCtx.globalAlpha = 1;
             
-            alert('Trace lines ready! Clean, single lines with all the details - easy to copy! ✏️');
+            alert('Trace lines ready! Super clean lines, NO specks - all details easy to copy! ✏️');
         }
 
         // Clear button
