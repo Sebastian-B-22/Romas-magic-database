@@ -664,25 +664,31 @@
                 gray[idx] = Math.floor(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
             }
             
-            // Apply Gaussian blur to reduce noise
-            const blurred = new Uint8ClampedArray(processWidth * processHeight);
-            for (let y = 2; y < processHeight - 2; y++) {
-                for (let x = 2; x < processWidth - 2; x++) {
-                    const idx = y * processWidth + x;
-                    let sum = 0;
-                    // Simple 3x3 box blur
-                    for (let dy = -1; dy <= 1; dy++) {
-                        for (let dx = -1; dx <= 1; dx++) {
-                            sum += gray[(y + dy) * processWidth + (x + dx)];
+            // Apply STRONG blur multiple times to remove texture and keep only major features
+            let blurred = new Uint8ClampedArray(gray);
+            
+            // Blur 3 times for stronger smoothing (removes texture, keeps main shapes)
+            for (let blur = 0; blur < 3; blur++) {
+                const temp = new Uint8ClampedArray(processWidth * processHeight);
+                for (let y = 2; y < processHeight - 2; y++) {
+                    for (let x = 2; x < processWidth - 2; x++) {
+                        const idx = y * processWidth + x;
+                        let sum = 0;
+                        // 5x5 blur for stronger effect
+                        for (let dy = -2; dy <= 2; dy++) {
+                            for (let dx = -2; dx <= 2; dx++) {
+                                sum += blurred[(y + dy) * processWidth + (x + dx)];
+                            }
                         }
+                        temp[idx] = Math.floor(sum / 25);
                     }
-                    blurred[idx] = Math.floor(sum / 9);
                 }
+                blurred = temp;
             }
             
-            // Sobel edge detection on blurred image
+            // Sobel edge detection on heavily blurred image
             const edges = new Uint8ClampedArray(processWidth * processHeight);
-            const threshold = 60; // MUCH higher threshold = fewer specks!
+            const threshold = 120; // VERY high threshold = only major features!
             
             for (let y = 2; y < processHeight - 2; y++) {
                 for (let x = 2; x < processWidth - 2; x++) {
@@ -798,7 +804,7 @@
             traceCtx.drawImage(tempCanvas, rightX, rightY, rightWidth, rightHeight);
             traceCtx.globalAlpha = 1;
             
-            alert('Trace lines ready! Thick, clear outlines on the right! ✏️');
+            alert('Trace lines ready! Only the main features (eyes, nose, mouth) - easy to copy! ✏️');
         }
 
         // Clear button
