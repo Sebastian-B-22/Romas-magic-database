@@ -1,0 +1,196 @@
+<svg width="400" height="480" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="silverGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f0f0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#d1d5db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9ca3af;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Shield Background -->
+  <path d="M 200 30 
+           L 340 80 
+           Q 350 90 350 100
+           L 350 250
+           Q 350 300 330 340
+           Q 310 380 280 410
+           Q 250 440 200 460
+           Q 150 440 120 410
+           Q 90 380 70 340
+           Q 50 300 50 250
+           L 50 100
+           Q 50 90 60 80
+           L 200 30 Z"
+        fill="url(#shieldGradient)"
+        stroke="#1a1a1a"
+        stroke-width="4"
+        filter="url(#shadow)"/>
+  
+  <!-- Shield Border Detail -->
+  <path d="M 200 30 
+           L 340 80 
+           Q 350 90 350 100
+           L 350 250
+           Q 350 300 330 340
+           Q 310 380 280 410
+           Q 250 440 200 460
+           Q 150 440 120 410
+           Q 90 380 70 340
+           Q 50 300 50 250
+           L 50 100
+           Q 50 90 60 80
+           L 200 30 Z"
+        fill="none"
+        stroke="url(#goldGradient)"
+        stroke-width="6"
+        opacity="0.4"/>
+  
+  <!-- Inner Shield Glow -->
+  <path d="M 200 50 
+           L 320 90 
+           Q 330 98 330 110
+           L 330 250
+           Q 330 290 315 325
+           Q 295 360 270 390
+           Q 240 420 200 438
+           Q 160 420 130 390
+           Q 105 360 85 325
+           Q 70 290 70 250
+           L 70 110
+           Q 70 98 80 90
+           L 200 50 Z"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="2"
+        opacity="0.2"/>
+  
+  <!-- Sword (Silver) -->
+  <g transform="translate(200, 240) rotate(-45)">
+    <!-- Blade -->
+    <rect x="-8" y="-100" width="16" height="140" fill="url(#silverGradient)" stroke="#1a1a1a" stroke-width="2"/>
+    <!-- Blade tip -->
+    <path d="M -8 -100 L 0 -120 L 8 -100 Z" fill="url(#silverGradient)" stroke="#1a1a1a" stroke-width="2"/>
+    <!-- Blade highlight -->
+    <rect x="-2" y="-100" width="4" height="140" fill="#ffffff" opacity="0.4"/>
+    <!-- Guard -->
+    <rect x="-40" y="35" width="80" height="12" rx="2" fill="url(#goldGradient)" stroke="#1a1a1a" stroke-width="2"/>
+    <!-- Handle -->
+    <rect x="-8" y="47" width="16" height="40" rx="2" fill="#4a5568" stroke="#1a1a1a" stroke-width="2"/>
+    <!-- Pommel -->
+    <circle cx="0" cy="92" r="10" fill="url(#goldGradient)" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  
+  <!-- Quill (Gold) -->
+  <g transform="translate(200, 240) rotate(45)">
+    <!-- Feather shaft -->
+    <path d="M 0 -100 
+             Q -15 -70 -18 -40
+             Q -20 -10 -15 20
+             L -10 40
+             L 0 50
+             L 10 40
+             L 15 20
+             Q 20 -10 18 -40
+             Q 15 -70 0 -100 Z"
+          fill="url(#goldGradient)"
+          stroke="#1a1a1a"
+          stroke-width="2"/>
+    <!-- Feather barbs left -->
+    <path d="M -2 -80 L -20 -75 M -5 -60 L -23 -55 M -8 -40 L -25 -35 M -10 -20 L -24 -15 M -12 0 L -22 5"
+          stroke="url(#goldGradient)"
+          stroke-width="2"
+          fill="none"
+          opacity="0.8"/>
+    <!-- Feather barbs right -->
+    <path d="M 2 -80 L 20 -75 M 5 -60 L 23 -55 M 8 -40 L 25 -35 M 10 -20 L 24 -15 M 12 0 L 22 5"
+          stroke="url(#goldGradient)"
+          stroke-width="2"
+          fill="none"
+          opacity="0.8"/>
+    <!-- Quill tip -->
+    <path d="M -3 45 L 0 60 L 3 45 Z" fill="#1a1a1a"/>
+  </g>
+  
+  <!-- Magic Sparkles at intersection -->
+  <g opacity="0.9">
+    <!-- Center star -->
+    <path d="M 200 240 L 202 235 L 207 233 L 202 231 L 200 226 L 198 231 L 193 233 L 198 235 Z"
+          fill="#ffd700" stroke="#ffffff" stroke-width="1"/>
+    <!-- Small sparkle 1 -->
+    <circle cx="180" cy="220" r="3" fill="#ffffff" opacity="0.8"/>
+    <path d="M 180 215 L 180 225 M 175 220 L 185 220" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+    <!-- Small sparkle 2 -->
+    <circle cx="220" cy="260" r="3" fill="#ffffff" opacity="0.8"/>
+    <path d="M 220 255 L 220 265 M 215 260 L 225 260" stroke="#ffffff" stroke-width="1.5" opacity="0.8"/>
+    <!-- Small sparkle 3 -->
+    <circle cx="210" cy="225" r="2" fill="#ffd700" opacity="0.9"/>
+    <!-- Small sparkle 4 -->
+    <circle cx="190" cy="255" r="2" fill="#ffd700" opacity="0.9"/>
+  </g>
+  
+  <!-- Banner Ribbon -->
+  <g transform="translate(200, 420)">
+    <!-- Ribbon back -->
+    <path d="M -120 0 L -130 30 L -120 35 L -120 0 Z" fill="#4a5568" opacity="0.6"/>
+    <path d="M 120 0 L 130 30 L 120 35 L 120 0 Z" fill="#4a5568" opacity="0.6"/>
+    <!-- Main ribbon -->
+    <path d="M -120 0 
+             Q -125 5 -125 15
+             L -125 25
+             Q -125 35 -120 40
+             L 120 40
+             Q 125 35 125 25
+             L 125 15
+             Q 125 5 120 0
+             Z"
+          fill="url(#goldGradient)"
+          stroke="#1a1a1a"
+          stroke-width="3"/>
+    <!-- Ribbon highlight -->
+    <path d="M -115 5 L 115 5 Q 120 8 120 15 L 120 18 L -120 18 L -120 15 Q -120 8 -115 5"
+          fill="#ffffff"
+          opacity="0.3"/>
+    <!-- Text -->
+    <text x="0" y="28" font-family="serif" font-size="20" font-weight="bold" 
+          text-anchor="middle" fill="#1a1a1a" letter-spacing="2">
+      CHARACTER FORGE
+    </text>
+  </g>
+  
+  <!-- Top Crown Detail (optional embellishment) -->
+  <g transform="translate(200, 45)">
+    <path d="M -15 -5 L -10 -15 L -5 -5 L 0 -18 L 5 -5 L 10 -15 L 15 -5 L 15 0 L -15 0 Z"
+          fill="url(#goldGradient)"
+          stroke="#1a1a1a"
+          stroke-width="1.5"/>
+    <circle cx="-10" cy="-15" r="2" fill="#ffffff" opacity="0.8"/>
+    <circle cx="0" cy="-18" r="2.5" fill="#ffffff" opacity="0.8"/>
+    <circle cx="10" cy="-15" r="2" fill="#ffffff" opacity="0.8"/>
+  </g>
+  
+</svg>

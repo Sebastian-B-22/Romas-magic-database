@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator - Character Forge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: #f9fafb;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .usage {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .usage strong {
+            color: #667eea;
+        }
+
+        /* Main Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .age-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 0.6rem;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .vibe-slider {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .vibe-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 0.3rem;
+        }
+
+        .premium-lock {
+            background: #f0f4ff;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .premium-lock p {
+            font-size: 0.85rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .upgrade-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upgrade-btn:hover {
+            background: #5568d3;
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Results Area */
+        .results {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            min-height: 500px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        /* Character Result */
+        .character-result {
+            display: none;
+        }
+
+        .character-result.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .character-header {
+            text-align: center;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 2rem;
+        }
+
+        .character-header h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .character-subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .character-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .character-section h3 {
+            font-size: 1.3rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .trait-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .trait-tag {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .backstory-text {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: #4a5568;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .action-btn.primary:hover {
+            background: #5568d3;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">⚡ Character Forge</a>
+            <div class="usage">
+                <span class="usage">Characters today: <strong>0/3</strong></span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Character Settings</h2>
+            
+            <div class="form-group">
+                <label for="genre">Genre</label>
+                <select id="genre">
+                    <option>High Fantasy</option>
+                    <option>Urban Fantasy</option>
+                    <option>Sci-Fi (Space Opera)</option>
+                    <option>Sci-Fi (Cyberpunk)</option>
+                    <option>Historical</option>
+                    <option>Modern Day</option>
+                    <option>Horror</option>
+                    <option>Mystery/Thriller</option>
+                    <option>Post-Apocalyptic</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Character Role</label>
+                <select id="role">
+                    <option>Protagonist/Hero</option>
+                    <option>Antagonist/Villain</option>
+                    <option>Sidekick/Companion</option>
+                    <option>Mentor</option>
+                    <option>Love Interest</option>
+                    <option>Anti-Hero</option>
+                    <option>Mysterious Stranger</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Age Range</label>
+                <div class="age-options">
+                    <div class="radio-option">
+                        <input type="radio" name="age" id="age-child" value="child">
+                        <label for="age-child">Child</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="age" id="age-teen" value="teen" checked>
+                        <label for="age-teen">Teen</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="age" id="age-adult" value="adult">
+                        <label for="age-adult">Adult</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="age" id="age-elder" value="elder">
+                        <label for="age-elder">Elder</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="vibe">Character Vibe</label>
+                <input type="range" id="vibe" class="vibe-slider" min="1" max="5" value="3">
+                <div class="vibe-labels">
+                    <span>Dark</span>
+                    <span>Balanced</span>
+                    <span>Light</span>
+                </div>
+            </div>
+
+            <div class="premium-lock">
+                <p>🔒 Unlock Advanced Options</p>
+                <button class="upgrade-btn">Go Premium</button>
+            </div>
+
+            <button class="generate-btn" onclick="generateCharacter()">✨ Generate Character</button>
+        </aside>
+
+        <!-- Results -->
+        <main class="results">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">✨</div>
+                <h3>Ready to create magic?</h3>
+                <p>Choose your settings and click Generate to bring your character to life.</p>
+            </div>
+
+            <div class="character-result" id="characterResult">
+                <div class="character-header">
+                    <h1>Lyra Shadowmend</h1>
+                    <p class="character-subtitle">"The Reluctant Seer"</p>
+                </div>
+
+                <div class="character-section">
+                    <h3><span class="section-icon">📝</span> Basic Info</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value">Lyra Elaine Shadowmend</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Nickname</div>
+                            <div class="info-value">"Shade" to close friends</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Age</div>
+                            <div class="info-value">17 years old</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Pronouns</div>
+                            <div class="info-value">She/Her</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="character-section">
+                    <h3><span class="section-icon">✨</span> Name Meaning</h3>
+                    <div class="backstory-text">
+                        <strong>Lyra</strong> comes from the constellation of the harp, symbolizing her hidden musical talent and destiny written in the stars. <strong>Shadowmend</strong> is a family name carried by healers who work in darkness—those who mend what others cannot see.
+                    </div>
+                </div>
+
+                <div class="character-section">
+                    <h3><span class="section-icon">🎭</span> Personality</h3>
+                    <div class="trait-list">
+                        <span class="trait-tag">Sarcastic</span>
+                        <span class="trait-tag">Loyal</span>
+                        <span class="trait-tag">Curious</span>
+                        <span class="trait-tag">Self-Doubting</span>
+                        <span class="trait-tag">Protective</span>
+                    </div>
+                </div>
+
+                <div class="character-section">
+                    <h3><span class="section-icon">💪</span> Strengths & Flaws</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Strengths</div>
+                            <div class="info-value">Quick thinking, natural magic affinity, fierce protector of loved ones</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Flaws</div>
+                            <div class="info-value">Pushes people away, doesn't trust her own abilities, self-sabotages when happy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="character-section">
+                    <h3><span class="section-icon">📖</span> Backstory</h3>
+                    <div class="backstory-text">
+                        Born under a blood moon, Lyra has always seen glimpses of possible futures—a gift she considers a curse. When she was twelve, she saw her mentor's death but failed to prevent it, leaving her wracked with guilt. Now she attends the Academy of Arcane Arts, trying to live a normal life while avoiding the prophecy that claims she'll either save or destroy the realm. She hides behind sarcasm and keeps everyone at arm's length, terrified that getting close to anyone will only lead to more loss.
+                    </div>
+                </div>
+
+                <div class="character-section">
+                    <h3><span class="section-icon">🎯</span> Desires & Fears</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Greatest Desire</div>
+                            <div class="info-value">To be free from her visions and live without the weight of fate</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Deepest Fear</div>
+                            <div class="info-value">That she'll see someone she loves die and be powerless to stop it</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="action-btn">💾 Save</button>
+                    <button class="action-btn">📥 Export PDF</button>
+                    <button class="action-btn primary" onclick="generateCharacter()">🔄 Generate New</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function generateCharacter() {
+            const emptyState = document.getElementById('emptyState');
+            const result = document.getElementById('characterResult');
+            
+            emptyState.style.display = 'none';
+            result.classList.add('active');
+            
+            // Scroll to top of results
+            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
