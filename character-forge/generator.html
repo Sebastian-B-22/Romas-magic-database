@@ -591,7 +591,7 @@
             
             if (input.value === PASSWORD) {
                 overlay.classList.add('hidden');
-                sessionStorage.setItem('authenticated', 'true');
+                localStorage.setItem('characterforge_premium', 'true');
             } else {
                 error.style.display = 'block';
                 input.value = '';
@@ -599,8 +599,8 @@
             }
         }
 
-        // Check if already authenticated
-        if (sessionStorage.getItem('authenticated') === 'true') {
+        // Check if already authenticated (remembers forever!)
+        if (localStorage.getItem('characterforge_premium') === 'true') {
             document.getElementById('loginOverlay').classList.add('hidden');
         }
 
