@@ -121,6 +121,26 @@
             text-decoration: none;
         }
 
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .saved-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .saved-btn:hover {
+            background: #5568d3;
+        }
+
         .premium-badge {
             background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
             color: #1a1a1a;
@@ -170,7 +190,7 @@
             font-size: 0.9rem;
         }
 
-        select, input, textarea {
+        select, input[type="text"], textarea {
             width: 100%;
             padding: 0.7rem;
             border: 2px solid #e5e7eb;
@@ -186,42 +206,46 @@
             min-height: 80px;
         }
 
-        select:focus, input:focus, textarea:focus {
+        select:focus, input[type="text"]:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
         }
 
-        .age-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
             gap: 0.5rem;
         }
 
-        .radio-option {
-            position: relative;
-        }
-
-        .radio-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .radio-option label {
-            display: block;
-            padding: 0.6rem;
-            text-align: center;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            cursor: pointer;
             font-weight: 500;
         }
 
-        .radio-option input[type="radio"]:checked + label {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+        .age-range-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .age-range-inputs input {
+            padding: 0.6rem;
+            text-align: center;
+        }
+
+        .age-range-display {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .vibe-slider {
@@ -425,6 +449,16 @@
             background: #5568d3;
         }
 
+        .action-btn.save {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .action-btn.save:hover {
+            background: #059669;
+        }
+
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr;
@@ -452,7 +486,10 @@
     <header>
         <nav>
             <a href="index.html" class="logo">⚡ Character Forge</a>
-            <div class="premium-badge">✨ Premium</div>
+            <div class="nav-right">
+                <a href="saved.html" class="saved-btn">💾 Saved Characters</a>
+                <div class="premium-badge">✨ Premium</div>
+            </div>
         </nav>
     </header>
 
@@ -495,24 +532,24 @@
             </div>
 
             <div class="form-group">
-                <label>Age Range</label>
-                <div class="age-options">
-                    <div class="radio-option">
-                        <input type="radio" name="age" id="age-child" value="child">
-                        <label for="age-child">Child</label>
+                <label>Age Range (Exact)</label>
+                <div class="age-range-inputs">
+                    <div>
+                        <input type="number" id="minAge" value="13" min="1" max="100" onchange="updateAgeDisplay()">
+                        <div style="text-align: center; font-size: 0.8rem; color: #6b7280; margin-top: 0.3rem;">Min</div>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" name="age" id="age-teen" value="teen" checked>
-                        <label for="age-teen">Teen</label>
+                    <div>
+                        <input type="number" id="maxAge" value="17" min="1" max="100" onchange="updateAgeDisplay()">
+                        <div style="text-align: center; font-size: 0.8rem; color: #6b7280; margin-top: 0.3rem;">Max</div>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" name="age" id="age-adult" value="adult">
-                        <label for="age-adult">Adult</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" name="age" id="age-elder" value="elder">
-                        <label for="age-elder">Elder</label>
-                    </div>
+                </div>
+                <div class="age-range-display" id="ageDisplay">13-17 years old</div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="includeNickname">
+                    <label for="includeNickname">Include nickname</label>
                 </div>
             </div>
 
@@ -567,6 +604,16 @@
             document.getElementById('loginOverlay').classList.add('hidden');
         }
 
+        // Age display update
+        function updateAgeDisplay() {
+            const min = document.getElementById('minAge').value;
+            const max = document.getElementById('maxAge').value;
+            document.getElementById('ageDisplay').textContent = `${min}-${max} years old`;
+        }
+
+        // Current character (for saving)
+        let currentCharacter = null;
+
         // Character generation data
         const names = {
             fantasy: {
@@ -590,17 +637,6 @@
             negative: ['Impulsive', 'Stubborn', 'Sarcastic', 'Self-Doubting', 'Secretive', 'Reckless', 'Cynical', 'Perfectionist', 'Impatient', 'Guarded']
         };
 
-        const fears = [
-            'losing those they love',
-            'failing when it matters most',
-            'being powerless to help',
-            'never living up to expectations',
-            'being forgotten',
-            'making the wrong choice',
-            'their past catching up with them',
-            'becoming what they fear most'
-        ];
-
         const desires = [
             'to prove themselves worthy',
             'to protect those who cannot protect themselves',
@@ -619,7 +655,9 @@
         function generateCharacter() {
             const genre = document.getElementById('genre').value.toLowerCase();
             const role = document.getElementById('role').value;
-            const age = document.querySelector('input[name="age"]:checked').value;
+            const minAge = parseInt(document.getElementById('minAge').value);
+            const maxAge = parseInt(document.getElementById('maxAge').value);
+            const includeNickname = document.getElementById('includeNickname').checked;
             const storyType = document.getElementById('storyType').value;
 
             // Pick name set based on genre
@@ -629,29 +667,39 @@
 
             const firstName = random(nameSet.first);
             const lastName = random(nameSet.last);
-            const nickname = random(nicknames);
+            const nickname = includeNickname ? random(nicknames) : null;
             const fullName = `${firstName} ${lastName}`;
 
-            // Generate age
-            let ageNum;
-            if (age === 'child') ageNum = Math.floor(Math.random() * 5) + 8;
-            else if (age === 'teen') ageNum = Math.floor(Math.random() * 7) + 13;
-            else if (age === 'adult') ageNum = Math.floor(Math.random() * 25) + 26;
-            else ageNum = Math.floor(Math.random() * 20) + 51;
+            // Generate age within range
+            const ageNum = Math.floor(Math.random() * (maxAge - minAge + 1)) + minAge;
 
             // Generate traits
             const positiveTraits = [random(traits.positive), random(traits.positive), random(traits.positive)];
             const negativeTraits = [random(traits.negative), random(traits.negative)];
             const allTraits = [...positiveTraits, ...negativeTraits];
 
-            const fear = random(fears);
             const desire = random(desires);
 
+            // Store current character for saving
+            currentCharacter = {
+                fullName,
+                nickname,
+                age: ageNum,
+                role,
+                genre,
+                storyType,
+                traits: allTraits,
+                positiveTraits,
+                negativeTraits,
+                desire,
+                timestamp: Date.now()
+            };
+
             // Build HTML
-            const html = `
+            let html = `
                 <div class="character-header">
                     <h1>${fullName}</h1>
-                    <p class="character-subtitle">"${nickname}"</p>
+                    ${nickname ? `<p class="character-subtitle">"${nickname}"</p>` : ''}
                 </div>
 
                 <div class="character-section">
@@ -661,10 +709,12 @@
                             <div class="info-label">Full Name</div>
                             <div class="info-value">${fullName}</div>
                         </div>
+                        ${nickname ? `
                         <div class="info-item">
                             <div class="info-label">Nickname</div>
-                            <div class="info-value">"${nickname}" to close friends</div>
+                            <div class="info-value">"${nickname}"</div>
                         </div>
+                        ` : ''}
                         <div class="info-item">
                             <div class="info-label">Age</div>
                             <div class="info-value">${ageNum} years old</div>
@@ -702,26 +752,19 @@
                     <div class="backstory-text">
                         ${firstName} is a ${ageNum}-year-old ${role.toLowerCase()} in your ${genre.toLowerCase()} story${storyType ? ': ' + storyType : ''}. 
                         Known for being ${positiveTraits[0].toLowerCase()} yet ${negativeTraits[0].toLowerCase()}, they navigate their world with 
-                        ${positiveTraits[1].toLowerCase()} determination. Their journey is shaped by their need ${desire} while wrestling with 
-                        their deepest fear of ${fear}.
+                        ${positiveTraits[1].toLowerCase()} determination. Their journey is shaped by their need ${desire}.
                     </div>
                 </div>
 
                 <div class="character-section">
-                    <h3><span class="section-icon">🎯</span> Desires & Fears</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Greatest Desire</div>
-                            <div class="info-value">${desire.charAt(0).toUpperCase() + desire.slice(1)}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Deepest Fear</div>
-                            <div class="info-value">${fear.charAt(0).toUpperCase() + fear.slice(1)}</div>
-                        </div>
+                    <h3><span class="section-icon">🎯</span> Greatest Desire</h3>
+                    <div class="backstory-text">
+                        ${desire.charAt(0).toUpperCase() + desire.slice(1)}
                     </div>
                 </div>
 
                 <div class="actions">
+                    <button class="action-btn save" onclick="saveCharacter()">💾 Save Character</button>
                     <button class="action-btn" onclick="copyCharacter()">📋 Copy</button>
                     <button class="action-btn" onclick="window.print()">📥 Print</button>
                     <button class="action-btn primary" onclick="generateCharacter()">🔄 Generate New</button>
@@ -737,6 +780,24 @@
             
             // Scroll to top of results
             result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function saveCharacter() {
+            if (!currentCharacter) {
+                alert('No character to save!');
+                return;
+            }
+
+            // Get existing saved characters
+            let saved = JSON.parse(localStorage.getItem('savedCharacters') || '[]');
+            
+            // Add current character
+            saved.push(currentCharacter);
+            
+            // Save back to localStorage
+            localStorage.setItem('savedCharacters', JSON.stringify(saved));
+            
+            alert(`✅ ${currentCharacter.fullName} has been saved!`);
         }
 
         function copyCharacter() {

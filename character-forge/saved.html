@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Characters - Character Forge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: #f9fafb;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+        }
+
+        .count {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        /* Character Cards */
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .character-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .character-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .card-info {
+            margin-bottom: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .info-label {
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .traits-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin: 1rem 0;
+        }
+
+        .trait-mini {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .card-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .card-btn.delete {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .card-btn.delete:hover {
+            background: #fecaca;
+            border-color: #dc2626;
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="generator.html" class="logo">⚡ Character Forge</a>
+            <a href="generator.html" class="back-btn">← Back to Generator</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>💾 Saved Characters</h1>
+        <p class="subtitle">Your character collection</p>
+
+        <div class="actions-bar">
+            <span class="count" id="characterCount">0 characters saved</span>
+            <button class="clear-btn" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+
+        <div id="charactersContainer">
+            <!-- Characters will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        function loadCharacters() {
+            const saved = JSON.parse(localStorage.getItem('savedCharacters') || '[]');
+            const container = document.getElementById('charactersContainer');
+            const count = document.getElementById('characterCount');
+
+            count.textContent = `${saved.length} character${saved.length !== 1 ? 's' : ''} saved`;
+
+            if (saved.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📚</div>
+                        <h3>No saved characters yet</h3>
+                        <p>Generate and save characters from the generator!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'characters-grid';
+
+            saved.forEach((char, index) => {
+                const date = new Date(char.timestamp);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="card-title">${char.fullName}</div>
+                        ${char.nickname ? `<div class="card-subtitle">"${char.nickname}"</div>` : ''}
+                    </div>
+
+                    <div class="card-info">
+                        <div class="info-row">
+                            <span class="info-label">Age:</span>
+                            <span class="info-value">${char.age} years old</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Role:</span>
+                            <span class="info-value">${char.role}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Genre:</span>
+                            <span class="info-value">${char.genre}</span>
+                        </div>
+                    </div>
+
+                    <div class="traits-mini">
+                        ${char.traits.slice(0, 4).map(t => `<span class="trait-mini">${t}</span>`).join('')}
+                    </div>
+
+                    <div style="font-size: 0.9rem; color: #6b7280; line-height: 1.5;">
+                        ${char.desire.charAt(0).toUpperCase() + char.desire.slice(0, 80)}${char.desire.length > 80 ? '...' : ''}
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="card-btn" onclick="viewCharacter(${index})">👁️ View</button>
+                        <button class="card-btn" onclick="copyCharacter(${index})">📋 Copy</button>
+                        <button class="card-btn delete" onclick="deleteCharacter(${index})">🗑️</button>
+                    </div>
+
+                    <div class="timestamp">Saved: ${dateStr}</div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(grid);
+        }
+
+        function viewCharacter(index) {
+            const saved = JSON.parse(localStorage.getItem('savedCharacters') || '[]');
+            const char = saved[index];
+            
+            alert(`📖 Full Character Details:\n\n${char.fullName}${char.nickname ? ' "' + char.nickname + '"' : ''}\n\nAge: ${char.age}\nRole: ${char.role}\nGenre: ${char.genre}\n\nTraits: ${char.traits.join(', ')}\n\nDesire: ${char.desire}\n\n${char.storyType ? 'Story: ' + char.storyType : ''}`);
+        }
+
+        function copyCharacter(index) {
+            const saved = JSON.parse(localStorage.getItem('savedCharacters') || '[]');
+            const char = saved[index];
+            
+            const text = `${char.fullName}${char.nickname ? ' "' + char.nickname + '"' : ''}\n\nAge: ${char.age}\nRole: ${char.role}\nGenre: ${char.genre}\n\nTraits: ${char.traits.join(', ')}\n\nStrengths: ${char.positiveTraits.join(', ')}\nFlaws: ${char.negativeTraits.join(', ')}\n\nDesire: ${char.desire}\n\n${char.storyType ? 'Story: ' + char.storyType : ''}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Character copied to clipboard!');
+            });
+        }
+
+        function deleteCharacter(index) {
+            if (!confirm('Delete this character? This cannot be undone.')) return;
+            
+            let saved = JSON.parse(localStorage.getItem('savedCharacters') || '[]');
+            saved.splice(index, 1);
+            localStorage.setItem('savedCharacters', JSON.stringify(saved));
+            loadCharacters();
+        }
+
+        function clearAll() {
+            if (!confirm('Delete ALL saved characters? This cannot be undone!')) return;
+            
+            localStorage.setItem('savedCharacters', '[]');
+            loadCharacters();
+        }
+
+        // Load on page load
+        loadCharacters();
+    </script>
+</body>
+</html>
