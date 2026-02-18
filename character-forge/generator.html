@@ -617,24 +617,97 @@
         // Character generation data
         const names = {
             fantasy: {
-                first: ['Lyra', 'Kael', 'Aria', 'Theron', 'Zara', 'Dorian', 'Elowen', 'Cassius', 'Nova', 'Riven'],
-                last: ['Shadowmend', 'Stormweaver', 'Nightwhisper', 'Ironheart', 'Moonblade', 'Ashborne', 'Silverwing', 'Darkwood', 'Starfall', 'Embercrest']
+                first: [
+                    // Classic Fantasy
+                    'Lyra', 'Kael', 'Aria', 'Theron', 'Zara', 'Dorian', 'Elowen', 'Cassius', 'Nova', 'Riven',
+                    'Seraphina', 'Alaric', 'Isolde', 'Magnus', 'Celestia', 'Darius', 'Rowena', 'Valerian', 'Elara', 'Thaddeus',
+                    'Morgana', 'Lucian', 'Amara', 'Orion', 'Freya', 'Callum', 'Mira', 'Ezra', 'Luna', 'Rowan',
+                    'Astrid', 'Draven', 'Ilyana', 'Silas', 'Linnea', 'Torin', 'Maeve', 'Caspian', 'Brynn', 'Kieran',
+                    'Nyx', 'Finnian', 'Sable', 'Aldric', 'Evadne', 'Dante', 'Ophelia', 'Garrett', 'Eira', 'Bastian',
+                    'Selene', 'Hadrian', 'Rhiannon', 'Lysander', 'Thalia', 'Ronan', 'Calista', 'Alistair', 'Azura', 'Tristan',
+                    'Vesper', 'Evander', 'Isadora', 'Cedric', 'Elspeth', 'Leander', 'Cordelia', 'Soren', 'Gwyneth', 'Felix',
+                    'Aurora', 'Jasper', 'Liora', 'Nathaniel', 'Octavia', 'Sebastian', 'Vivienne', 'Gideon', 'Rosalind', 'Atticus'
+                ],
+                last: [
+                    'Shadowmend', 'Stormweaver', 'Nightwhisper', 'Ironheart', 'Moonblade', 'Ashborne', 'Silverwing', 'Darkwood', 'Starfall', 'Embercrest',
+                    'Blackthorn', 'Stormborn', 'Frostbane', 'Lightbringer', 'Thornheart', 'Ravencroft', 'Wintermere', 'Dawnforge', 'Shadowend', 'Brightflame',
+                    'Wolfsbane', 'Cinderhall', 'Moonshadow', 'Flameheart', 'Stonebridge', 'Swiftwind', 'Crystalborne', 'Fireforge', 'Mistwood', 'Goldleaf',
+                    'Nightingale', 'Silvermoon', 'Ironwood', 'Stormcrest', 'Bloodmoon', 'Starweaver', 'Thornfield', 'Shadowbrook', 'Winterfall', 'Emberstone',
+                    'Darkwater', 'Brightwood', 'Frostwind', 'Flamebane', 'Moonwhisper', 'Stormridge', 'Ashwood', 'Silverblade', 'Ironforge', 'Nightshade',
+                    'Ravenwood', 'Crystalmere', 'Dawnbringer', 'Shadowheart', 'Winterstone', 'Emberwing', 'Starlight', 'Thornwood', 'Frostborn', 'Firebloom'
+                ]
             },
             scifi: {
-                first: ['Marcus', 'Zara', 'Nova', 'Kai', 'Phoenix', 'Echo', 'Atlas', 'Cipher', 'Neo', 'Raven'],
-                last: ['Chen', 'Reyes', 'Torres', 'Kim', 'Santos', 'Cross', 'Steel', 'Nakamura', 'Voss', 'Quinn']
+                first: [
+                    // Diverse Sci-Fi
+                    'Marcus', 'Zara', 'Nova', 'Kai', 'Phoenix', 'Echo', 'Atlas', 'Cipher', 'Neo', 'Raven',
+                    'Akira', 'Elara', 'Cyrus', 'Sora', 'Orion', 'Luna', 'Jaxon', 'Lyric', 'Vega', 'Axel',
+                    'Miko', 'Cade', 'Indira', 'Rafe', 'Zephyr', 'Iris', 'Knox', 'Solara', 'Dante', 'Kira',
+                    'Juno', 'Rex', 'Amara', 'Blaze', 'Celeste', 'Drake', 'Ember', 'Fox', 'Haven', 'Jinx',
+                    'Storm', 'Sage', 'Titan', 'Vale', 'Winter', 'Xander', 'Yara', 'Zenith', 'Aria', 'Bolt',
+                    'Coda', 'Delta', 'Eon', 'Flux', 'Ghost', 'Hex', 'Ion', 'Jet', 'Kex', 'Lux',
+                    'Matrix', 'Nexus', 'Omega', 'Pulse', 'Quantum', 'Rift', 'Sync', 'Tech', 'Vector', 'Warp',
+                    'Astra', 'Blade', 'Chrome', 'Dax', 'Edge', 'Flare', 'Grid', 'Haze', 'Ivory', 'Jade'
+                ],
+                last: [
+                    'Chen', 'Reyes', 'Torres', 'Kim', 'Santos', 'Cross', 'Steel', 'Nakamura', 'Voss', 'Quinn',
+                    'Blackwell', 'Stone', 'Rivera', 'Park', 'Singh', 'Tanaka', 'Novak', 'O\'Brien', 'Petrov', 'Zhao',
+                    'Khan', 'Mendoza', 'Yamamoto', 'Kowalski', 'Fernandez', 'Nguyen', 'Rossi', 'Weber', 'Anderson', 'Laurent',
+                    'Sato', 'Moreno', 'Werner', 'Silva', 'Ivanov', 'Muller', 'Dubois', 'Lee', 'Gonzalez', 'Watanabe',
+                    'Costa', 'Russo', 'Schmidt', 'Patel', 'Ali', 'Rodriguez', 'Cohen', 'Murphy', 'Fischer', 'Wagner',
+                    'Atlas', 'Cipher', 'Nexus', 'Vector', 'Volt', 'Zero', 'Quantum', 'Nova', 'Onyx', 'Raze',
+                    'Stark', 'Frost', 'Storm', 'Ryder', 'Hunter', 'Knight', 'Drake', 'Wolf', 'Fox', 'Hawk'
+                ]
             },
             modern: {
-                first: ['Alex', 'Jordan', 'Morgan', 'Riley', 'Casey', 'Taylor', 'Jamie', 'Sam', 'Quinn', 'Avery'],
-                last: ['Anderson', 'Martinez', 'Johnson', 'Lee', 'Williams', 'Garcia', 'Davis', 'Brown', 'Miller', 'Wilson']
+                first: [
+                    // Gender-neutral and diverse modern names
+                    'Alex', 'Jordan', 'Morgan', 'Riley', 'Casey', 'Taylor', 'Jamie', 'Sam', 'Quinn', 'Avery',
+                    'Charlie', 'Dakota', 'Elliot', 'Finley', 'Gray', 'Harper', 'Indigo', 'Jesse', 'Kai', 'Logan',
+                    'Max', 'Nico', 'Ocean', 'Parker', 'River', 'Sage', 'Skyler', 'Tatum', 'Winter', 'Wren',
+                    // Traditional varied names
+                    'Aiden', 'Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Ethan', 'Sophia', 'Mason', 'Isabella',
+                    'Lucas', 'Mia', 'Oliver', 'Amelia', 'Elijah', 'Harper', 'James', 'Evelyn', 'Benjamin', 'Abigail',
+                    'Jackson', 'Emily', 'Sebastian', 'Ella', 'Aiden', 'Madison', 'Carter', 'Scarlett', 'Jayden', 'Grace',
+                    'Henry', 'Chloe', 'Owen', 'Lily', 'Dylan', 'Zoey', 'Luke', 'Penelope', 'Gabriel', 'Hannah',
+                    'Isaac', 'Nora', 'Caleb', 'Aria', 'Nathan', 'Layla', 'Ryan', 'Addison', 'Wyatt', 'Ellie',
+                    'Joshua', 'Stella', 'Andrew', 'Natalie', 'Jack', 'Maya', 'Samuel', 'Elena', 'Leo', 'Lucy'
+                ],
+                last: [
+                    'Anderson', 'Martinez', 'Johnson', 'Lee', 'Williams', 'Garcia', 'Davis', 'Brown', 'Miller', 'Wilson',
+                    'Moore', 'Taylor', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson', 'Robinson', 'Clark',
+                    'Rodriguez', 'Lewis', 'Walker', 'Hall', 'Allen', 'Young', 'King', 'Wright', 'Lopez', 'Hill',
+                    'Scott', 'Green', 'Adams', 'Baker', 'Nelson', 'Carter', 'Mitchell', 'Perez', 'Roberts', 'Turner',
+                    'Phillips', 'Campbell', 'Parker', 'Evans', 'Edwards', 'Collins', 'Stewart', 'Morris', 'Murphy', 'Cook',
+                    'Rogers', 'Morgan', 'Peterson', 'Cooper', 'Reed', 'Bailey', 'Bell', 'Gomez', 'Kelly', 'Howard',
+                    'Ward', 'Cox', 'Diaz', 'Richardson', 'Wood', 'Watson', 'Brooks', 'Bennett', 'Gray', 'James',
+                    'Reyes', 'Cruz', 'Hughes', 'Price', 'Myers', 'Long', 'Foster', 'Sanders', 'Ross', 'Morales',
+                    'Powell', 'Sullivan', 'Russell', 'Ortiz', 'Jenkins', 'Gutierrez', 'Perry', 'Butler', 'Barnes', 'Fisher'
+                ]
             }
         };
 
-        const nicknames = ['Shadow', 'Ghost', 'Spark', 'Ace', 'Red', 'Blue', 'Wolf', 'Fox', 'Raven', 'Phoenix', 'Storm', 'Shade'];
+        const nicknames = [
+            'Shadow', 'Ghost', 'Spark', 'Ace', 'Red', 'Blue', 'Wolf', 'Fox', 'Raven', 'Phoenix', 'Storm', 'Shade',
+            'Ash', 'Blaze', 'Bolt', 'Crow', 'Dagger', 'Echo', 'Falcon', 'Frost', 'Hawk', 'Hunter', 'Ice', 'Jet',
+            'Knight', 'Lightning', 'Midnight', 'Night', 'Onyx', 'Phantom', 'Quick', 'Razor', 'Scar', 'Silver', 'Smoke',
+            'Steel', 'Swift', 'Thorn', 'Thunder', 'Tiger', 'Viper', 'Whisper', 'Wild', 'Wraith', 'Zero', 'Flame',
+            'Jade', 'Star', 'Moon', 'Sun', 'Sky', 'Ocean', 'River', 'Stone', 'Ember', 'Nova'
+        ];
         
         const traits = {
-            positive: ['Brave', 'Loyal', 'Creative', 'Witty', 'Compassionate', 'Determined', 'Clever', 'Curious', 'Protective', 'Charismatic'],
-            negative: ['Impulsive', 'Stubborn', 'Sarcastic', 'Self-Doubting', 'Secretive', 'Reckless', 'Cynical', 'Perfectionist', 'Impatient', 'Guarded']
+            positive: [
+                'Brave', 'Loyal', 'Creative', 'Witty', 'Compassionate', 'Determined', 'Clever', 'Curious', 'Protective', 'Charismatic',
+                'Honest', 'Kind', 'Patient', 'Generous', 'Confident', 'Humble', 'Wise', 'Empathetic', 'Resilient', 'Resourceful',
+                'Adaptable', 'Focused', 'Optimistic', 'Perceptive', 'Strategic', 'Diplomatic', 'Inspiring', 'Reliable', 'Adventurous', 'Analytical',
+                'Articulate', 'Assertive', 'Balanced', 'Bold', 'Calm', 'Capable', 'Cheerful', 'Cooperative', 'Courageous', 'Dedicated'
+            ],
+            negative: [
+                'Impulsive', 'Stubborn', 'Sarcastic', 'Self-Doubting', 'Secretive', 'Reckless', 'Cynical', 'Perfectionist', 'Impatient', 'Guarded',
+                'Arrogant', 'Jealous', 'Vindictive', 'Naive', 'Controlling', 'Paranoid', 'Obsessive', 'Aloof', 'Manipulative', 'Pessimistic',
+                'Temperamental', 'Overconfident', 'Indecisive', 'Judgmental', 'Cold', 'Defensive', 'Distant', 'Evasive', 'Hot-headed', 'Insecure',
+                'Passive-aggressive', 'Self-destructive', 'Suspicious', 'Unforgiving', 'Vain', 'Workaholic', 'Anxious', 'Avoidant', 'Cocky', 'Demanding'
+            ]
         };
 
         const desires = [
@@ -645,7 +718,29 @@
             'to make amends for past mistakes',
             'to be free from their destiny',
             'to master their abilities',
-            'to change the world for the better'
+            'to change the world for the better',
+            'to earn the respect of their peers',
+            'to discover their true purpose',
+            'to reunite with someone they lost',
+            'to escape their past',
+            'to build a legacy',
+            'to seek justice for those wronged',
+            'to find inner peace',
+            'to break free from expectations',
+            'to understand their powers',
+            'to create something meaningful',
+            'to forge their own path',
+            'to overcome their limitations',
+            'to honor a promise they made',
+            'to achieve recognition',
+            'to solve an ancient mystery',
+            'to protect a sacred secret',
+            'to gain true freedom',
+            'to master a forbidden art',
+            'to unite divided peoples',
+            'to prevent a prophecy',
+            'to redeem their family name',
+            'to find love and acceptance'
         ];
 
         function random(arr) {
