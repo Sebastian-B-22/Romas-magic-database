@@ -591,7 +591,7 @@
             
             if (input.value === PASSWORD) {
                 overlay.classList.add('hidden');
-                localStorage.setItem('characterforge_premium', 'true');
+                // Don't save anything - password required every time
             } else {
                 error.style.display = 'block';
                 input.value = '';
@@ -599,10 +599,7 @@
             }
         }
 
-        // Check if already authenticated (remembers forever!)
-        if (localStorage.getItem('characterforge_premium') === 'true') {
-            document.getElementById('loginOverlay').classList.add('hidden');
-        }
+        // No auto-login - password required every time you open the page
 
         // Age display update
         function updateAgeDisplay() {
