@@ -43,13 +43,13 @@
             text-decoration: none;
         }
 
-        .usage {
+        .premium-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
             font-size: 0.9rem;
-            color: #6b7280;
-        }
-
-        .usage strong {
-            color: #667eea;
         }
 
         /* Main Layout */
@@ -92,7 +92,7 @@
             font-size: 0.9rem;
         }
 
-        select, input {
+        select, input, textarea {
             width: 100%;
             padding: 0.7rem;
             border: 2px solid #e5e7eb;
@@ -100,9 +100,15 @@
             font-size: 0.95rem;
             transition: border-color 0.2s;
             background: white;
+            font-family: inherit;
         }
 
-        select:focus, input:focus {
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -151,37 +157,6 @@
             font-size: 0.8rem;
             color: #6b7280;
             margin-top: 0.3rem;
-        }
-
-        .premium-lock {
-            background: #f0f4ff;
-            border: 2px dashed #667eea;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-
-        .premium-lock p {
-            font-size: 0.85rem;
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-
-        .upgrade-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upgrade-btn:hover {
-            background: #5568d3;
         }
 
         .generate-btn {
@@ -388,9 +363,7 @@
     <header>
         <nav>
             <a href="index.html" class="logo">⚡ Character Forge</a>
-            <div class="usage">
-                <span class="usage">Characters today: <strong>0/3</strong></span>
-            </div>
+            <div class="premium-badge">✨ Premium</div>
         </nav>
     </header>
 
@@ -399,6 +372,11 @@
         <aside class="sidebar">
             <h2>Character Settings</h2>
             
+            <div class="form-group">
+                <label for="storyType">What are you writing?</label>
+                <textarea id="storyType" placeholder="e.g., A fantasy novel about a young mage discovering their powers..."></textarea>
+            </div>
+
             <div class="form-group">
                 <label for="genre">Genre</label>
                 <select id="genre">
@@ -459,11 +437,6 @@
                 </div>
             </div>
 
-            <div class="premium-lock">
-                <p>🔒 Unlock Advanced Options</p>
-                <button class="upgrade-btn">Go Premium</button>
-            </div>
-
             <button class="generate-btn" onclick="generateCharacter()">✨ Generate Character</button>
         </aside>
 
@@ -472,13 +445,101 @@
             <div class="empty-state" id="emptyState">
                 <div class="empty-state-icon">✨</div>
                 <h3>Ready to create magic?</h3>
-                <p>Choose your settings and click Generate to bring your character to life.</p>
+                <p>Tell us about your story and click Generate to bring your character to life.</p>
             </div>
 
             <div class="character-result" id="characterResult">
+                <!-- Generated content goes here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Character generation data
+        const names = {
+            fantasy: {
+                first: ['Lyra', 'Kael', 'Aria', 'Theron', 'Zara', 'Dorian', 'Elowen', 'Cassius', 'Nova', 'Riven'],
+                last: ['Shadowmend', 'Stormweaver', 'Nightwhisper', 'Ironheart', 'Moonblade', 'Ashborne', 'Silverwing', 'Darkwood', 'Starfall', 'Embercrest']
+            },
+            scifi: {
+                first: ['Marcus', 'Zara', 'Nova', 'Kai', 'Phoenix', 'Echo', 'Atlas', 'Cipher', 'Neo', 'Raven'],
+                last: ['Chen', 'Reyes', 'Torres', 'Kim', 'Santos', 'Cross', 'Steel', 'Nakamura', 'Voss', 'Quinn']
+            },
+            modern: {
+                first: ['Alex', 'Jordan', 'Morgan', 'Riley', 'Casey', 'Taylor', 'Jamie', 'Sam', 'Quinn', 'Avery'],
+                last: ['Anderson', 'Martinez', 'Johnson', 'Lee', 'Williams', 'Garcia', 'Davis', 'Brown', 'Miller', 'Wilson']
+            }
+        };
+
+        const nicknames = ['Shadow', 'Ghost', 'Spark', 'Ace', 'Red', 'Blue', 'Wolf', 'Fox', 'Raven', 'Phoenix', 'Storm', 'Shade'];
+        
+        const traits = {
+            positive: ['Brave', 'Loyal', 'Creative', 'Witty', 'Compassionate', 'Determined', 'Clever', 'Curious', 'Protective', 'Charismatic'],
+            negative: ['Impulsive', 'Stubborn', 'Sarcastic', 'Self-Doubting', 'Secretive', 'Reckless', 'Cynical', 'Perfectionist', 'Impatient', 'Guarded']
+        };
+
+        const fears = [
+            'losing those they love',
+            'failing when it matters most',
+            'being powerless to help',
+            'never living up to expectations',
+            'being forgotten',
+            'making the wrong choice',
+            'their past catching up with them',
+            'becoming what they fear most'
+        ];
+
+        const desires = [
+            'to prove themselves worthy',
+            'to protect those who cannot protect themselves',
+            'to uncover the truth',
+            'to find where they truly belong',
+            'to make amends for past mistakes',
+            'to be free from their destiny',
+            'to master their abilities',
+            'to change the world for the better'
+        ];
+
+        function random(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateCharacter() {
+            const genre = document.getElementById('genre').value.toLowerCase();
+            const role = document.getElementById('role').value;
+            const age = document.querySelector('input[name="age"]:checked').value;
+            const storyType = document.getElementById('storyType').value;
+
+            // Pick name set based on genre
+            let nameSet = names.modern;
+            if (genre.includes('fantasy')) nameSet = names.fantasy;
+            else if (genre.includes('sci-fi')) nameSet = names.scifi;
+
+            const firstName = random(nameSet.first);
+            const lastName = random(nameSet.last);
+            const nickname = random(nicknames);
+            const fullName = `${firstName} ${lastName}`;
+
+            // Generate age
+            let ageNum;
+            if (age === 'child') ageNum = Math.floor(Math.random() * 5) + 8;
+            else if (age === 'teen') ageNum = Math.floor(Math.random() * 7) + 13;
+            else if (age === 'adult') ageNum = Math.floor(Math.random() * 25) + 26;
+            else ageNum = Math.floor(Math.random() * 20) + 51;
+
+            // Generate traits
+            const positiveTraits = [random(traits.positive), random(traits.positive), random(traits.positive)];
+            const negativeTraits = [random(traits.negative), random(traits.negative)];
+            const allTraits = [...positiveTraits, ...negativeTraits];
+
+            const fear = random(fears);
+            const desire = random(desires);
+
+            // Build HTML
+            const html = `
                 <div class="character-header">
-                    <h1>Lyra Shadowmend</h1>
-                    <p class="character-subtitle">"The Reluctant Seer"</p>
+                    <h1>${fullName}</h1>
+                    <p class="character-subtitle">"${nickname}"</p>
                 </div>
 
                 <div class="character-section">
@@ -486,38 +547,27 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">Full Name</div>
-                            <div class="info-value">Lyra Elaine Shadowmend</div>
+                            <div class="info-value">${fullName}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Nickname</div>
-                            <div class="info-value">"Shade" to close friends</div>
+                            <div class="info-value">"${nickname}" to close friends</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Age</div>
-                            <div class="info-value">17 years old</div>
+                            <div class="info-value">${ageNum} years old</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Pronouns</div>
-                            <div class="info-value">She/Her</div>
+                            <div class="info-label">Role</div>
+                            <div class="info-value">${role}</div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="character-section">
-                    <h3><span class="section-icon">✨</span> Name Meaning</h3>
-                    <div class="backstory-text">
-                        <strong>Lyra</strong> comes from the constellation of the harp, symbolizing her hidden musical talent and destiny written in the stars. <strong>Shadowmend</strong> is a family name carried by healers who work in darkness—those who mend what others cannot see.
                     </div>
                 </div>
 
                 <div class="character-section">
                     <h3><span class="section-icon">🎭</span> Personality</h3>
                     <div class="trait-list">
-                        <span class="trait-tag">Sarcastic</span>
-                        <span class="trait-tag">Loyal</span>
-                        <span class="trait-tag">Curious</span>
-                        <span class="trait-tag">Self-Doubting</span>
-                        <span class="trait-tag">Protective</span>
+                        ${allTraits.map(t => `<span class="trait-tag">${t}</span>`).join('')}
                     </div>
                 </div>
 
@@ -526,19 +576,22 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">Strengths</div>
-                            <div class="info-value">Quick thinking, natural magic affinity, fierce protector of loved ones</div>
+                            <div class="info-value">${positiveTraits.join(', ')}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Flaws</div>
-                            <div class="info-value">Pushes people away, doesn't trust her own abilities, self-sabotages when happy</div>
+                            <div class="info-value">${negativeTraits.join(', ')}</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="character-section">
-                    <h3><span class="section-icon">📖</span> Backstory</h3>
+                    <h3><span class="section-icon">📖</span> Character Hook</h3>
                     <div class="backstory-text">
-                        Born under a blood moon, Lyra has always seen glimpses of possible futures—a gift she considers a curse. When she was twelve, she saw her mentor's death but failed to prevent it, leaving her wracked with guilt. Now she attends the Academy of Arcane Arts, trying to live a normal life while avoiding the prophecy that claims she'll either save or destroy the realm. She hides behind sarcasm and keeps everyone at arm's length, terrified that getting close to anyone will only lead to more loss.
+                        ${firstName} is a ${ageNum}-year-old ${role.toLowerCase()} in your ${genre.toLowerCase()} story${storyType ? ': ' + storyType : ''}. 
+                        Known for being ${positiveTraits[0].toLowerCase()} yet ${negativeTraits[0].toLowerCase()}, they navigate their world with 
+                        ${positiveTraits[1].toLowerCase()} determination. Their journey is shaped by their need ${desire} while wrestling with 
+                        their deepest fear of ${fear}.
                     </div>
                 </div>
 
@@ -547,34 +600,39 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <div class="info-label">Greatest Desire</div>
-                            <div class="info-value">To be free from her visions and live without the weight of fate</div>
+                            <div class="info-value">${desire.charAt(0).toUpperCase() + desire.slice(1)}</div>
                         </div>
                         <div class="info-item">
                             <div class="info-label">Deepest Fear</div>
-                            <div class="info-value">That she'll see someone she loves die and be powerless to stop it</div>
+                            <div class="info-value">${fear.charAt(0).toUpperCase() + fear.slice(1)}</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="actions">
-                    <button class="action-btn">💾 Save</button>
-                    <button class="action-btn">📥 Export PDF</button>
+                    <button class="action-btn" onclick="copyCharacter()">📋 Copy</button>
+                    <button class="action-btn" onclick="window.print()">📥 Print</button>
                     <button class="action-btn primary" onclick="generateCharacter()">🔄 Generate New</button>
                 </div>
-            </div>
-        </main>
-    </div>
+            `;
 
-    <script>
-        function generateCharacter() {
             const emptyState = document.getElementById('emptyState');
             const result = document.getElementById('characterResult');
             
             emptyState.style.display = 'none';
+            result.innerHTML = html;
             result.classList.add('active');
             
             // Scroll to top of results
             result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copyCharacter() {
+            const result = document.getElementById('characterResult');
+            const text = result.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Character copied to clipboard!');
+            });
         }
     </script>
 </body>
