@@ -150,6 +150,69 @@
             font-size: 0.9rem;
         }
 
+        .usage-counter {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-right: 1rem;
+        }
+
+        .usage-counter.warning {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .upgrade-link {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upgrade-link:hover {
+            background: #5568d3;
+        }
+
+        .limit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .limit-modal.active {
+            display: flex;
+        }
+
+        .limit-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .limit-box h2 {
+            font-size: 2rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .limit-box p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
         /* Main Layout */
         .container {
             max-width: 1400px;
@@ -472,14 +535,15 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="login-overlay" id="loginOverlay">
+    <!-- Premium Upgrade Screen -->
+    <div class="login-overlay" id="loginOverlay" style="display:none;">
         <div class="login-box">
-            <h2>🛡️ Character Forge</h2>
-            <p>Premium Access Required</p>
-            <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="if(event.key==='Enter') login()">
-            <button class="login-btn" onclick="login()">Unlock</button>
+            <h2>🛡️ Upgrade to Premium</h2>
+            <p>Enter your premium password for unlimited access</p>
+            <input type="password" id="passwordInput" placeholder="Enter premium password" onkeypress="if(event.key==='Enter') login()">
+            <button class="login-btn" onclick="login()">Unlock Premium</button>
             <div class="error-msg" id="errorMsg">Incorrect password. Try again!</div>
+            <p style="font-size: 0.85rem; color: #9ca3af; margin-top: 1.5rem; cursor: pointer;" onclick="document.getElementById('loginOverlay').style.display='none'">← Back to free version</p>
         </div>
     </div>
 
@@ -488,10 +552,22 @@
             <a href="index.html" class="logo">⚡ Character Forge</a>
             <div class="nav-right">
                 <a href="saved.html" class="saved-btn">💾 Saved Characters</a>
-                <div class="premium-badge">✨ Premium</div>
+                <span class="usage-counter" id="usageCounter">3/3 free today</span>
+                <a class="upgrade-link" id="upgradeBtn" onclick="showUpgradeModal()">✨ Go Premium</a>
+                <div class="premium-badge" id="premiumBadge" style="display:none;">✨ Premium</div>
             </div>
         </nav>
     </header>
+
+    <!-- Daily Limit Modal -->
+    <div class="limit-modal" id="limitModal" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="limit-box">
+            <h2>⏰ Daily Limit Reached</h2>
+            <p>You've used all 3 free characters today. Upgrade to Premium for unlimited access!</p>
+            <button class="login-btn" onclick="showUpgradeModal(); document.getElementById('limitModal').classList.remove('active')">Upgrade to Premium</button>
+            <p style="font-size: 0.85rem; color: #9ca3af; margin-top: 1rem;">Free limit resets at midnight</p>
+        </div>
+    </div>
 
     <div class="container">
         <!-- Sidebar -->
@@ -583,6 +659,7 @@
     <script>
         // Password protection - Premium access password
         const PASSWORD = 'Characterforge2026';
+        let isPremium = false;
         
         function login() {
             const input = document.getElementById('passwordInput');
@@ -591,7 +668,8 @@
             
             if (input.value === PASSWORD) {
                 overlay.classList.add('hidden');
-                // Don't save anything - password required every time
+                isPremium = true;
+                updateUI();
             } else {
                 error.style.display = 'block';
                 input.value = '';
@@ -599,7 +677,61 @@
             }
         }
 
-        // No auto-login - password required every time you open the page
+        function showUpgradeModal() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+        }
+
+        // Usage tracking for free users
+        function getTodayKey() {
+            const today = new Date();
+            return `usage_${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`;
+        }
+
+        function getUsageCount() {
+            if (isPremium) return 0; // Premium = unlimited
+            const key = getTodayKey();
+            return parseInt(localStorage.getItem(key) || '0');
+        }
+
+        function incrementUsage() {
+            if (isPremium) return; // Don't track for premium
+            const key = getTodayKey();
+            const count = getUsageCount();
+            localStorage.setItem(key, (count + 1).toString());
+            updateUsageDisplay();
+        }
+
+        function updateUsageDisplay() {
+            const counter = document.getElementById('usageCounter');
+            const used = getUsageCount();
+            const remaining = Math.max(0, 3 - used);
+            
+            counter.textContent = `${remaining}/3 free today`;
+            
+            if (remaining === 0) {
+                counter.classList.add('warning');
+            } else {
+                counter.classList.remove('warning');
+            }
+        }
+
+        function updateUI() {
+            if (isPremium) {
+                document.getElementById('usageCounter').style.display = 'none';
+                document.getElementById('upgradeBtn').style.display = 'none';
+                document.getElementById('premiumBadge').style.display = 'block';
+            } else {
+                updateUsageDisplay();
+            }
+        }
+
+        function canGenerate() {
+            if (isPremium) return true;
+            return getUsageCount() < 3;
+        }
+
+        // Initialize on load
+        updateUI();
 
         // Age display update
         function updateAgeDisplay() {
@@ -749,6 +881,12 @@
         }
 
         function generateCharacter() {
+            // Check if user can generate
+            if (!canGenerate()) {
+                document.getElementById('limitModal').classList.add('active');
+                return;
+            }
+
             const genre = document.getElementById('genre').value.toLowerCase();
             const role = document.getElementById('role').value;
             const minAge = parseInt(document.getElementById('minAge').value);
@@ -895,6 +1033,9 @@
             
             // Scroll to top of results
             result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Increment usage counter (only for free users)
+            incrementUsage();
         }
 
         function saveCharacter() {
