@@ -613,6 +613,10 @@
 
         // Current character (for saving)
         let currentCharacter = null;
+        
+        // Track last generated names to avoid duplicates
+        let lastFirstName = null;
+        let lastLastName = null;
 
         // Character generation data
         const names = {
@@ -760,10 +764,29 @@
             if (genre.includes('fantasy')) nameSet = names.fantasy;
             else if (genre.includes('sci-fi')) nameSet = names.scifi;
 
-            const firstName = random(nameSet.first);
-            const lastName = random(nameSet.last);
-            const nickname = includeNickname ? random(nicknames) : null;
+            // Generate first name (avoid repeating)
+            let firstName = random(nameSet.first);
+            while (firstName === lastFirstName && nameSet.first.length > 1) {
+                firstName = random(nameSet.first);
+            }
+            
+            // Generate last name (avoid repeating)
+            let lastName = random(nameSet.last);
+            while (lastName === lastLastName && nameSet.last.length > 1) {
+                lastName = random(nameSet.last);
+            }
+            
+            // Generate nickname (avoid repeating if included)
+            let nickname = null;
+            if (includeNickname) {
+                nickname = random(nicknames);
+            }
+            
             const fullName = `${firstName} ${lastName}`;
+            
+            // Store for next generation
+            lastFirstName = firstName;
+            lastLastName = lastName;
 
             // Generate age within range
             const ageNum = Math.floor(Math.random() * (maxAge - minAge + 1)) + minAge;
