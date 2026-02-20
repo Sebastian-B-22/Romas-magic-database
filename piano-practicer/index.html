@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano Music Practicer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: #16213e;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #a78bfa;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status {
+            color: #a78bfa;
+            font-weight: 600;
+            font-size: 0.95rem;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .status.recording {
+            color: #ef4444;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn {
+            padding: 0.6rem 1.4rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-record {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-record:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .btn-stop {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-stop:hover {
+            background: #4b5563;
+        }
+
+        .btn-play {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-play:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-clear {
+            background: #374151;
+            color: #9ca3af;
+        }
+
+        .btn-clear:hover {
+            background: #4b5563;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Recording indicator */
+        .rec-dot {
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            animation: pulse 1s infinite;
+        }
+
+        /* Timer */
+        .timer {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: monospace;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* Keyboard shortcut hint */
+        .hint {
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+
+        /* Piano Container */
+        .piano-container {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 2rem 1rem;
+            overflow: hidden;
+        }
+
+        /* Piano */
+        .piano {
+            display: flex;
+            position: relative;
+            height: 100%;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* White Keys */
+        .white-key {
+            flex: 1;
+            background: linear-gradient(to bottom, #f0f0f0 0%, #ffffff 60%, #e8e8e8 100%);
+            border: 1px solid #555;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.05s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 1rem;
+            min-width: 0;
+            box-shadow: 2px 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .white-key:hover {
+            background: linear-gradient(to bottom, #e8e8ff 0%, #f0f0ff 60%, #dcdcee 100%);
+        }
+
+        .white-key.pressed {
+            background: linear-gradient(to bottom, #c4b5fd 0%, #ddd6fe 60%, #b3a5e8 100%);
+            box-shadow: 1px 2px 4px rgba(0,0,0,0.4);
+            transform: translateY(2px);
+        }
+
+        .white-key .note-name {
+            font-size: clamp(0.6rem, 1.2vw, 1rem);
+            font-weight: 700;
+            color: #4b5563;
+        }
+
+        .white-key .key-shortcut {
+            font-size: clamp(0.45rem, 0.8vw, 0.7rem);
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        /* Black Keys */
+        .black-key {
+            position: absolute;
+            width: 60%;
+            height: 62%;
+            background: linear-gradient(to bottom, #2d2d2d 0%, #1a1a1a 60%, #333 100%);
+            border-radius: 0 0 6px 6px;
+            cursor: pointer;
+            z-index: 2;
+            transform: translateX(-50%);
+            transition: background 0.05s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            box-shadow: 2px 6px 10px rgba(0,0,0,0.6);
+        }
+
+        .black-key:hover {
+            background: linear-gradient(to bottom, #4c3d8a 0%, #3730a3 60%, #4c3d8a 100%);
+        }
+
+        .black-key.pressed {
+            background: linear-gradient(to bottom, #7c3aed 0%, #6d28d9 60%, #7c3aed 100%);
+            box-shadow: 1px 3px 5px rgba(0,0,0,0.6);
+            transform: translateX(-50%) translateY(2px);
+        }
+
+        .black-key .note-name {
+            font-size: clamp(0.45rem, 0.8vw, 0.7rem);
+            font-weight: 700;
+            color: #c4b5fd;
+        }
+
+        .black-key .key-shortcut {
+            font-size: clamp(0.35rem, 0.6vw, 0.55rem);
+            color: #7c3aed;
+            margin-top: 1px;
+        }
+
+        /* Octave wrapper */
+        .octave {
+            display: flex;
+            position: relative;
+            flex: 1;
+            height: 100%;
+        }
+
+        /* Visualizer */
+        .visualizer {
+            height: 60px;
+            background: #0f0f23;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 0 1rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .viz-bar {
+            flex: 1;
+            background: #a78bfa;
+            border-radius: 2px 2px 0 0;
+            transition: height 0.1s;
+            min-height: 2px;
+            opacity: 0.7;
+        }
+
+        /* Recordings panel */
+        .recordings {
+            background: #16213e;
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+            border-top: 1px solid #2d2d4e;
+        }
+
+        .recordings-label {
+            color: #6b7280;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .recordings-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .recording-chip {
+            background: #2d2d4e;
+            color: #c4b5fd;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #4c3d8a;
+        }
+
+        .recording-chip:hover {
+            background: #4c3d8a;
+            color: white;
+        }
+
+        .no-recordings {
+            color: #4b5563;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🎹 Piano Music <span>Practicer</span></div>
+        <div class="controls">
+            <div class="timer" id="timer">0:00</div>
+            <div class="status" id="status">Ready to play!</div>
+            <button class="btn btn-record" id="btnRecord" onclick="startRecording()">⏺ Record</button>
+            <button class="btn btn-stop" id="btnStop" onclick="stopRecording()" disabled>⏹ Stop</button>
+            <button class="btn btn-play" id="btnPlay" onclick="playRecording()" disabled>▶ Play Back</button>
+            <button class="btn btn-clear" id="btnClear" onclick="clearRecording()" disabled>🗑 Clear</button>
+        </div>
+    </header>
+
+    <div class="visualizer" id="visualizer"></div>
+
+    <div class="piano-container">
+        <div class="piano" id="piano"></div>
+    </div>
+
+    <div class="recordings">
+        <span class="recordings-label">💾 Saved Takes:</span>
+        <div class="recordings-list" id="recordingsList">
+            <span class="no-recordings">No saved recordings yet. Record something!</span>
+        </div>
+    </div>
+
+    <script>
+        // Audio context
+        let audioCtx = null;
+
+        function getAudioCtx() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioCtx;
+        }
+
+        // Note frequencies - 3 octaves (C3 to B5)
+        const noteFreqs = {
+            'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56,
+            'E3': 164.81, 'F3': 174.61, 'F#3': 185.00, 'G3': 196.00,
+            'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08, 'B3': 246.94,
+            'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+            'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+            'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+            'C5': 523.25, 'C#5': 554.37, 'D5': 587.33, 'D#5': 622.25,
+            'E5': 659.25, 'F5': 698.46, 'F#5': 739.99, 'G5': 783.99,
+            'G#5': 830.61, 'A5': 880.00, 'A#5': 932.33, 'B5': 987.77,
+        };
+
+        // Keyboard mappings (white keys then black keys)
+        const keyMap = {
+            // Octave 3 white keys
+            'a': 'C3', 's': 'D3', 'd': 'E3', 'f': 'F3',
+            'g': 'G3', 'h': 'A3', 'j': 'B3',
+            // Octave 3 black keys
+            'w': 'C#3', 'e': 'D#3', 't': 'F#3', 'y': 'G#3', 'u': 'A#3',
+            // Octave 4 white keys
+            'k': 'C4', 'l': 'D4', ';': 'E4', "'": 'F4',
+            // Octave 4 black keys
+            'o': 'C#4', 'p': 'D#4',
+            // Extra keys
+            'z': 'G4', 'x': 'A4', 'c': 'B4',
+        };
+
+        // Reverse map (note → key)
+        const noteToKey = {};
+        for (const [k, n] of Object.entries(keyMap)) {
+            noteToKey[n] = k.toUpperCase();
+        }
+
+        // Recording state
+        let isRecording = false;
+        let recordedNotes = [];
+        let recordingStart = null;
+        let timerInterval = null;
+        let savedRecordings = [];
+        let recordingCount = 0;
+
+        // Visualizer bars
+        const vizBars = {};
+
+        // Build piano
+        function buildPiano() {
+            const piano = document.getElementById('piano');
+            const viz = document.getElementById('visualizer');
+            piano.innerHTML = '';
+            viz.innerHTML = '';
+
+            const octaves = [3, 4, 5];
+            const whiteNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+            const blackNotes = { 'C': 'C#', 'D': 'D#', 'F': 'F#', 'G': 'G#', 'A': 'A#' };
+
+            // Count total white keys
+            const totalWhite = octaves.length * 7;
+
+            octaves.forEach(octave => {
+                const octaveDiv = document.createElement('div');
+                octaveDiv.className = 'octave';
+
+                whiteNotes.forEach((note, i) => {
+                    const fullNote = `${note}${octave}`;
+                    const whiteKey = document.createElement('div');
+                    whiteKey.className = 'white-key';
+                    whiteKey.id = `key-${fullNote}`;
+                    whiteKey.innerHTML = `
+                        <span class="note-name">${note}</span>
+                        ${noteToKey[fullNote] ? `<span class="key-shortcut">${noteToKey[fullNote]}</span>` : ''}
+                    `;
+                    whiteKey.addEventListener('mousedown', (e) => { e.preventDefault(); playNote(fullNote); });
+                    whiteKey.addEventListener('mouseup', () => releaseNote(fullNote));
+                    whiteKey.addEventListener('mouseleave', () => releaseNote(fullNote));
+                    whiteKey.addEventListener('touchstart', (e) => { e.preventDefault(); playNote(fullNote); });
+                    whiteKey.addEventListener('touchend', () => releaseNote(fullNote));
+                    octaveDiv.appendChild(whiteKey);
+
+                    // Visualizer bar
+                    const bar = document.createElement('div');
+                    bar.className = 'viz-bar';
+                    bar.id = `viz-${fullNote}`;
+                    bar.style.height = '2px';
+                    viz.appendChild(bar);
+
+                    // Add black key
+                    if (blackNotes[note]) {
+                        const sharpNote = `${blackNotes[note]}${octave}`;
+                        const blackKey = document.createElement('div');
+                        blackKey.className = 'black-key';
+                        blackKey.id = `key-${sharpNote}`;
+
+                        // Position black key
+                        const whiteWidth = 100 / 7;
+                        const blackOffset = (i + 1) * whiteWidth;
+                        blackKey.style.left = `${blackOffset}%`;
+
+                        const sharpName = blackNotes[note] + '#'.replace('#', '♯');
+                        blackKey.innerHTML = `
+                            <span class="note-name">${blackNotes[note]}♯</span>
+                            ${noteToKey[sharpNote] ? `<span class="key-shortcut">${noteToKey[sharpNote]}</span>` : ''}
+                        `;
+                        blackKey.addEventListener('mousedown', (e) => { e.preventDefault(); playNote(sharpNote); });
+                        blackKey.addEventListener('mouseup', () => releaseNote(sharpNote));
+                        blackKey.addEventListener('mouseleave', () => releaseNote(sharpNote));
+                        blackKey.addEventListener('touchstart', (e) => { e.preventDefault(); playNote(sharpNote); });
+                        blackKey.addEventListener('touchend', () => releaseNote(sharpNote));
+                        octaveDiv.appendChild(blackKey);
+
+                        // Visualizer bar for sharp
+                        const sharpBar = document.createElement('div');
+                        sharpBar.className = 'viz-bar';
+                        sharpBar.id = `viz-${sharpNote}`;
+                        sharpBar.style.height = '2px';
+                        sharpBar.style.background = '#7c3aed';
+                        viz.appendChild(sharpBar);
+                    }
+                });
+
+                piano.appendChild(octaveDiv);
+            });
+        }
+
+        // Active oscillators
+        const activeNodes = {};
+
+        function playNote(note) {
+            const freq = noteFreqs[note];
+            if (!freq || activeNodes[note]) return;
+
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+
+            // Add slight detuning for richness
+            const osc2 = ctx.createOscillator();
+            osc2.type = 'sine';
+            osc2.frequency.value = freq * 1.001;
+
+            const gain2 = ctx.createGain();
+            gain2.gain.value = 0.3;
+
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+
+            // ADSR envelope
+            gainNode.gain.setValueAtTime(0, ctx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.15);
+            gainNode.gain.setValueAtTime(0.3, ctx.currentTime + 0.15);
+
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            osc.start();
+            osc2.start();
+
+            activeNodes[note] = { osc, gainNode, osc2, gain2 };
+
+            // Visual feedback
+            const keyEl = document.getElementById(`key-${note}`);
+            if (keyEl) keyEl.classList.add('pressed');
+
+            // Visualizer
+            const vizBar = document.getElementById(`viz-${note}`);
+            if (vizBar) {
+                vizBar.style.height = `${30 + Math.random() * 28}px`;
+                setTimeout(() => {
+                    if (vizBar) vizBar.style.height = '2px';
+                }, 200);
+            }
+
+            // Record note
+            if (isRecording) {
+                recordedNotes.push({
+                    note,
+                    time: Date.now() - recordingStart,
+                    type: 'start'
+                });
+            }
+        }
+
+        function releaseNote(note) {
+            if (!activeNodes[note]) return;
+
+            const ctx = getAudioCtx();
+            const { osc, gainNode, osc2, gain2 } = activeNodes[note];
+
+            gainNode.gain.setValueAtTime(gainNode.gain.value, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+            gain2.gain.setValueAtTime(gain2.gain.value, ctx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
+            osc.stop(ctx.currentTime + 0.5);
+            osc2.stop(ctx.currentTime + 0.5);
+            delete activeNodes[note];
+
+            const keyEl = document.getElementById(`key-${note}`);
+            if (keyEl) keyEl.classList.remove('pressed');
+
+            if (isRecording) {
+                recordedNotes.push({
+                    note,
+                    time: Date.now() - recordingStart,
+                    type: 'end'
+                });
+            }
+        }
+
+        // Keyboard events
+        const pressedKeys = new Set();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            const note = keyMap[e.key.toLowerCase()];
+            if (note && !pressedKeys.has(note)) {
+                pressedKeys.add(note);
+                playNote(note);
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            const note = keyMap[e.key.toLowerCase()];
+            if (note) {
+                pressedKeys.delete(note);
+                releaseNote(note);
+            }
+        });
+
+        // Recording functions
+        function startRecording() {
+            if (isRecording) return;
+            isRecording = true;
+            recordedNotes = [];
+            recordingStart = Date.now();
+
+            document.getElementById('status').textContent = '⏺ Recording...';
+            document.getElementById('status').className = 'status recording';
+            document.getElementById('btnRecord').disabled = true;
+            document.getElementById('btnStop').disabled = false;
+            document.getElementById('btnPlay').disabled = true;
+            document.getElementById('btnClear').disabled = true;
+
+            // Timer
+            let seconds = 0;
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                document.getElementById('timer').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopRecording() {
+            if (!isRecording) return;
+            isRecording = false;
+            clearInterval(timerInterval);
+
+            document.getElementById('status').textContent = recordedNotes.length > 0 ? '✅ Recorded!' : 'Nothing recorded';
+            document.getElementById('status').className = 'status';
+            document.getElementById('btnRecord').disabled = false;
+            document.getElementById('btnStop').disabled = true;
+            document.getElementById('btnPlay').disabled = recordedNotes.length === 0;
+            document.getElementById('btnClear').disabled = recordedNotes.length === 0;
+
+            // Auto-save if something was recorded
+            if (recordedNotes.length > 0) {
+                recordingCount++;
+                savedRecordings.push({
+                    id: recordingCount,
+                    notes: [...recordedNotes],
+                    duration: document.getElementById('timer').textContent,
+                    label: `Take ${recordingCount}`
+                });
+                updateRecordingsList();
+            }
+        }
+
+        function playRecording() {
+            if (recordedNotes.length === 0) return;
+            playNotes(recordedNotes);
+        }
+
+        function playNotes(notes) {
+            document.getElementById('status').textContent = '▶ Playing back...';
+            document.getElementById('status').className = 'status';
+            document.getElementById('btnPlay').disabled = true;
+            document.getElementById('btnRecord').disabled = true;
+
+            notes.forEach(event => {
+                setTimeout(() => {
+                    if (event.type === 'start') {
+                        playNote(event.note);
+                    } else {
+                        releaseNote(event.note);
+                    }
+                }, event.time);
+            });
+
+            // Re-enable after playback ends
+            const maxTime = Math.max(...notes.map(n => n.time)) + 1000;
+            setTimeout(() => {
+                document.getElementById('status').textContent = '✅ Done playing!';
+                document.getElementById('btnPlay').disabled = false;
+                document.getElementById('btnRecord').disabled = false;
+            }, maxTime);
+        }
+
+        function clearRecording() {
+            recordedNotes = [];
+            document.getElementById('status').textContent = 'Ready to play!';
+            document.getElementById('btnPlay').disabled = true;
+            document.getElementById('btnClear').disabled = true;
+            document.getElementById('timer').textContent = '0:00';
+        }
+
+        function updateRecordingsList() {
+            const list = document.getElementById('recordingsList');
+            if (savedRecordings.length === 0) {
+                list.innerHTML = '<span class="no-recordings">No saved recordings yet. Record something!</span>';
+                return;
+            }
+
+            list.innerHTML = '';
+            savedRecordings.forEach((rec, idx) => {
+                const chip = document.createElement('div');
+                chip.className = 'recording-chip';
+                chip.textContent = `🎵 ${rec.label} (${rec.duration})`;
+                chip.title = 'Click to play this recording';
+                chip.onclick = () => {
+                    recordedNotes = [...rec.notes];
+                    document.getElementById('btnPlay').disabled = false;
+                    document.getElementById('btnClear').disabled = false;
+                    playNotes(rec.notes);
+                };
+                list.appendChild(chip);
+            });
+        }
+
+        // Build on load
+        buildPiano();
+    </script>
+</body>
+</html>
