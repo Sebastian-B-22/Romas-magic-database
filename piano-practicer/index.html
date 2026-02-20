@@ -45,42 +45,47 @@
         .toggle-btn:hover { border-color: #a78bfa; color: #a78bfa; }
         .toggle-btn.active { background: #a78bfa; border-color: #a78bfa; color: white; }
 
-        /* Extras Panel */
-        .extras-panel {
-            background: #1f2937;
-            padding: 0.7rem 1.5rem;
-            display: none;
-            align-items: center;
-            gap: 1rem;
-            border-top: 1px solid #374151;
-            flex-shrink: 0;
-        }
-        .extras-panel.visible { display: flex; }
-
-        .timer { color: white; font-size: 1rem; font-weight: 700; font-family: monospace; min-width: 50px; }
-
-        .status { color: #a78bfa; font-weight: 600; font-size: 0.85rem; flex: 1; }
-        .status.recording { color: #ef4444; animation: blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-        .action-btn {
-            padding: 0.5rem 1rem;
-            border: none;
+        .rec-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid #ef4444;
             border-radius: 8px;
+            background: transparent;
+            color: #ef4444;
             font-weight: 700;
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-record { background: #ef4444; color: white; }
-        .btn-record:hover { background: #dc2626; }
-        .btn-stop { background: #6b7280; color: white; }
-        .btn-stop:hover { background: #4b5563; }
-        .btn-play { background: #10b981; color: white; }
-        .btn-play:hover { background: #059669; }
-        .btn-clear { background: #374151; color: #9ca3af; }
-        .btn-clear:hover { background: #4b5563; color: white; }
-        .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .rec-btn:hover { background: #ef4444; color: white; }
+        .rec-btn.recording { background: #ef4444; color: white; animation: blink-border 1s infinite; }
+        @keyframes blink-border { 0%,100%{border-color:#ef4444} 50%{border-color:#fca5a5} }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        .timer { color: #9ca3af; font-size: 0.9rem; font-weight: 700; font-family: monospace; }
+        .timer.recording { color: #ef4444; }
+
+        /* Takes Panel */
+        .takes-bar {
+            background: #1f2937;
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-top: 1px solid #374151;
+            flex-shrink: 0;
+            min-height: 0;
+            flex-wrap: wrap;
+        }
+        .takes-bar.hidden { display: none; }
+        .takes-label { color: #6b7280; font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+        #takesList { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .take-chip {
+            background: #374151; color: #c4b5fd;
+            padding: 0.3rem 0.8rem; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 600; cursor: pointer;
+            border: 1px solid #4c3d8a; transition: all 0.2s;
+        }
+        .take-chip:hover { background: #4c3d8a; color: white; }
 
         .takes-panel { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .take-chip {
@@ -174,6 +179,7 @@
             position: relative;
             z-index: 1;
             transition: background 0.03s, transform 0.03s, box-shadow 0.03s;
+            min-width: 60px;
         }
 
         .white-key:hover {
@@ -207,13 +213,13 @@
         .show-shortcuts .white-key .key-shortcut,
         .show-shortcuts .black-key .key-shortcut { display: block; }
 
-        /* BLACK KEYS - big and chunky */
+        /* BLACK KEYS - smaller and narrower */
         .black-key {
             position: absolute;
-            width: 62%;
-            height: 62%;
+            width: 42%;
+            height: 55%;
             background: linear-gradient(180deg, #2a2a2a 0%, #111 55%, #333 100%);
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 8px 8px;
             cursor: pointer;
             z-index: 2;
             transform: translateX(-50%);
@@ -222,7 +228,7 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 0.8rem;
+            padding-bottom: 0.6rem;
             border-top: 4px solid #555;
             transition: background 0.03s, transform 0.03s, box-shadow 0.03s;
         }
@@ -258,19 +264,15 @@
 <header>
     <div class="logo">🎹 Piano Music <span>Practicer</span></div>
     <div class="header-buttons">
+        <div class="timer" id="timer">0:00</div>
         <button class="toggle-btn" id="btnKeyboard" onclick="toggleKeyboard()">⌨️ Keyboard</button>
-        <button class="toggle-btn" id="btnExtras" onclick="toggleExtras()">🎛️ Extras</button>
+        <button class="rec-btn" id="btnRecord" onclick="toggleRecording()">⏺ Record</button>
     </div>
 </header>
 
-<div class="extras-panel" id="extrasPanel">
-    <div class="timer" id="timer">0:00</div>
-    <div class="status" id="status">Ready to record!</div>
-    <button class="action-btn btn-record" id="btnRecord" onclick="startRecording()">⏺ Record</button>
-    <button class="action-btn btn-stop" id="btnStop" onclick="stopRecording()" disabled>⏹ Stop</button>
-    <button class="action-btn btn-play" id="btnPlay" onclick="playRecording()" disabled>▶ Play</button>
-    <button class="action-btn btn-clear" id="btnClear" onclick="clearRecording()" disabled>🗑 Clear</button>
-    <div class="takes-panel" id="takesList"></div>
+<div class="takes-bar hidden" id="takesBar">
+    <span class="takes-label">🎵 Takes:</span>
+    <div id="takesList"></div>
 </div>
 
 <div class="visualizer" id="visualizer"></div>
@@ -318,12 +320,12 @@
 
     let isRecording = false, recordedNotes = [], recordingStart = null;
     let timerInterval = null, savedTakes = [], takeCount = 0;
-    let showShortcuts = false, extrasVisible = false;
+    let showShortcuts = false;
     let isMouseDown = false;
 
     // Which octaves to show
     const ALL_OCTAVES = [2, 3, 4, 5];
-    let visibleOctaves = [3, 4];
+    let visibleOctaves = [4];
 
     // ── Play / Release ─────────────────────────────────
     function playNote(note) {
@@ -558,66 +560,51 @@
         document.getElementById('piano').classList.toggle('show-shortcuts', showShortcuts);
         document.getElementById('btnKeyboard').classList.toggle('active', showShortcuts);
     }
-    function toggleExtras() {
-        extrasVisible = !extrasVisible;
-        document.getElementById('extrasPanel').classList.toggle('visible', extrasVisible);
-        document.getElementById('btnExtras').classList.toggle('active', extrasVisible);
-    }
 
     // ── Recording ──────────────────────────────────────
-    function startRecording() {
-        isRecording = true; recordedNotes = []; recordingStart = Date.now();
-        document.getElementById('status').textContent = '⏺ Recording...';
-        document.getElementById('status').className = 'status recording';
-        document.getElementById('btnRecord').disabled = true;
-        document.getElementById('btnStop').disabled = false;
-        document.getElementById('btnPlay').disabled = true;
-        document.getElementById('btnClear').disabled = true;
-        let s = 0;
-        timerInterval = setInterval(() => {
-            s++;
-            document.getElementById('timer').textContent = `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
-        }, 1000);
-    }
+    function toggleRecording() {
+        if (isRecording) {
+            // STOP
+            isRecording = false;
+            clearInterval(timerInterval);
+            const btn = document.getElementById('btnRecord');
+            btn.textContent = '⏺ Record';
+            btn.classList.remove('recording');
+            document.getElementById('timer').className = 'timer';
 
-    function stopRecording() {
-        isRecording = false; clearInterval(timerInterval);
-        document.getElementById('status').textContent = recordedNotes.length ? '✅ Recorded!' : 'Nothing played';
-        document.getElementById('status').className = 'status';
-        document.getElementById('btnRecord').disabled = false;
-        document.getElementById('btnStop').disabled = true;
-        document.getElementById('btnPlay').disabled = !recordedNotes.length;
-        document.getElementById('btnClear').disabled = !recordedNotes.length;
-        if (recordedNotes.length) {
-            takeCount++;
-            savedTakes.push({ notes: [...recordedNotes], label: `Take ${takeCount}`, duration: document.getElementById('timer').textContent });
-            updateTakes();
+            if (recordedNotes.length) {
+                takeCount++;
+                const dur = document.getElementById('timer').textContent;
+                savedTakes.push({ notes: [...recordedNotes], label: `Take ${takeCount}`, duration: dur });
+                updateTakes();
+                document.getElementById('takesBar').classList.remove('hidden');
+            }
+        } else {
+            // START
+            isRecording = true;
+            recordedNotes = [];
+            recordingStart = Date.now();
+            const btn = document.getElementById('btnRecord');
+            btn.textContent = '⏹ Stop';
+            btn.classList.add('recording');
+            document.getElementById('timer').className = 'timer recording';
+            document.getElementById('timer').textContent = '0:00';
+
+            let s = 0;
+            timerInterval = setInterval(() => {
+                s++;
+                document.getElementById('timer').textContent = `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+            }, 1000);
         }
     }
 
-    function playRecording() { if (recordedNotes.length) doPlayback(recordedNotes); }
-
     function doPlayback(notes) {
-        document.getElementById('status').textContent = '▶ Playing...';
-        document.getElementById('btnPlay').disabled = true;
         document.getElementById('btnRecord').disabled = true;
         notes.forEach(ev => {
             setTimeout(() => { ev.type === 'on' ? playNote(ev.note) : releaseNote(ev.note); }, ev.time);
         });
         const maxTime = Math.max(...notes.map(n => n.time)) + 1200;
-        setTimeout(() => {
-            document.getElementById('status').textContent = '✅ Done!';
-            document.getElementById('btnPlay').disabled = false;
-            document.getElementById('btnRecord').disabled = false;
-        }, maxTime);
-    }
-
-    function clearRecording() {
-        recordedNotes = [];
-        document.getElementById('status').textContent = 'Ready to record!';
-        document.getElementById('btnPlay').disabled = true;
-        document.getElementById('btnClear').disabled = true;
-        document.getElementById('timer').textContent = '0:00';
+        setTimeout(() => { document.getElementById('btnRecord').disabled = false; }, maxTime);
     }
 
     function updateTakes() {
@@ -626,9 +613,21 @@
         savedTakes.forEach(take => {
             const chip = document.createElement('div');
             chip.className = 'take-chip';
-            chip.textContent = `🎵 ${take.label} (${take.duration})`;
-            chip.onclick = () => { recordedNotes = [...take.notes]; document.getElementById('btnPlay').disabled = false; doPlayback(take.notes); };
+            chip.textContent = `▶ ${take.label} (${take.duration})`;
+            chip.onclick = () => doPlayback(take.notes);
             list.appendChild(chip);
+
+            // Delete button
+            const del = document.createElement('span');
+            del.textContent = ' ✕';
+            del.style.cssText = 'cursor:pointer;color:#6b7280;margin-right:0.3rem;';
+            del.onclick = e => {
+                e.stopPropagation();
+                savedTakes = savedTakes.filter(t => t !== take);
+                updateTakes();
+                if (!savedTakes.length) document.getElementById('takesBar').classList.add('hidden');
+            };
+            chip.appendChild(del);
         });
     }
 
