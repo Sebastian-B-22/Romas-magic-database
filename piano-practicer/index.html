@@ -121,7 +121,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding: 0.8rem 0.5rem 0.5rem;
+            padding: 0.5rem 0.5rem 0.3rem;
         }
 
         /* Octave selector */
@@ -213,22 +213,22 @@
         .show-shortcuts .white-key .key-shortcut,
         .show-shortcuts .black-key .key-shortcut { display: block; }
 
-        /* BLACK KEYS - smaller and narrower */
+        /* BLACK KEYS - small, about an inch tall */
         .black-key {
             position: absolute;
-            width: 42%;
-            height: 55%;
+            width: 36%;
+            height: 100px;
             background: linear-gradient(180deg, #2a2a2a 0%, #111 55%, #333 100%);
             border-radius: 0 0 8px 8px;
             cursor: pointer;
             z-index: 2;
             transform: translateX(-50%);
-            box-shadow: 3px 10px 18px rgba(0,0,0,0.8), inset 0 -4px 8px rgba(255,255,255,0.04);
+            box-shadow: 3px 8px 14px rgba(0,0,0,0.8), inset 0 -3px 6px rgba(255,255,255,0.04);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 0.6rem;
+            padding-bottom: 0.4rem;
             border-top: 4px solid #555;
             transition: background 0.03s, transform 0.03s, box-shadow 0.03s;
         }
