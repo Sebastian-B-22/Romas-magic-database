@@ -435,13 +435,38 @@
             });
         }
 
+        // Track mouse button state for click-and-drag across keys
+        let isMouseDown = false;
+        document.addEventListener('mousedown', () => isMouseDown = true);
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+            // Release all mouse-held notes
+            Object.keys(activeNodes).forEach(note => {
+                if (!pressedKeys.has(note)) releaseNote(note);
+            });
+        });
+
         function addKeyEvents(el, note) {
+            // Mouse - click and hold + drag across keys
             el.addEventListener('mousedown', e => { e.preventDefault(); playNote(note); });
-            el.addEventListener('mouseup', () => releaseNote(note));
-            el.addEventListener('mouseleave', () => releaseNote(note));
-            el.addEventListener('touchstart', e => { e.preventDefault(); playNote(note); }, {passive: false});
-            el.addEventListener('touchend', e => { e.preventDefault(); releaseNote(note); });
+            el.addEventListener('mouseenter', e => { if (isMouseDown) playNote(note); });
+            el.addEventListener('mouseleave', () => { if (!pressedKeys.has(note)) releaseNote(note); });
+
+            // Touch - supports multiple fingers at once
+            el.addEventListener('touchstart', e => {
+                e.preventDefault();
+                playNote(note);
+            }, { passive: false });
+
+            el.addEventListener('touchend', e => {
+                e.preventDefault();
+                releaseNote(note);
+            }, { passive: false });
+
+            el.addEventListener('touchcancel', () => releaseNote(note));
         }
+
+        // Handle touch sliding (moved to buildPiano after DOM ready)
 
         function playNote(note) {
             const freq = noteFreqs[note];
@@ -614,6 +639,21 @@
         }
 
         buildPiano();
+
+        // Touch sliding across keys - drag finger to play multiple notes
+        document.getElementById('piano').addEventListener('touchmove', e => {
+            e.preventDefault();
+            Array.from(e.touches).forEach(touch => {
+                const el = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (el) {
+                    const key = el.closest('[id^="key-"]');
+                    if (key) {
+                        const note = key.id.replace('key-', '');
+                        playNote(note);
+                    }
+                }
+            });
+        }, { passive: false });
     </script>
 </body>
 </html>
