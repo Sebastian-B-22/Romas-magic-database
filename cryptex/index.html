@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cryptex - Code & Cipher Encyclopedia</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #e94560;
+            text-shadow: 0 0 20px rgba(233,69,96,0.5);
+            letter-spacing: 4px;
+        }
+
+        .tagline {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(233,69,96,0.2);
+            border: 1px solid #e94560;
+            color: #e94560;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #e94560;
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Intro */
+        .intro {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .intro h2 {
+            color: #e94560;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro p {
+            color: #b0b0b0;
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Code Cards Grid */
+        .codes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Code Card */
+        .code-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(233,69,96,0.3);
+            transition: all 0.3s;
+        }
+
+        .code-card:hover {
+            transform: translateY(-5px);
+            border-color: #e94560;
+            box-shadow: 0 10px 30px rgba(233,69,96,0.2);
+        }
+
+        .card-header {
+            background: rgba(233,69,96,0.2);
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e94560;
+        }
+
+        .card-difficulty {
+            margin-left: auto;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .easy { background: #10b981; color: white; }
+        .medium { background: #f59e0b; color: white; }
+        .hard { background: #ef4444; color: white; }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body h4 {
+            color: #e94560;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body p {
+            color: #c0c0c0;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .example {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+
+        .example-label {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .example-text {
+            color: #e94560;
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+
+        .tips {
+            background: rgba(16,185,129,0.1);
+            border-left: 3px solid #10b981;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        .tips h5 {
+            color: #10b981;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .tips ul {
+            color: #a0a0a0;
+            padding-left: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .tips li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 3rem;
+        }
+
+        /* Category Labels */
+        .category {
+            color: #888;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .codes-grid {
+                grid-template-columns: 1fr;
+            }
+            .logo { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🔐 THE CRYPTEX</div>
+    <p class="tagline">Your Ultimate Code & Cipher Encyclopedia</p>
+</header>
+
+<nav>
+    <button class="nav-btn active" onclick="filterCodes('all')">All Codes</button>
+    <button class="nav-btn" onclick="filterCodes('substitution')">Substitution</button>
+    <button class="nav-btn" onclick="filterCodes('symbol')">Symbol-Based</button>
+    <button class="nav-btn" onclick="filterCodes('transposition')">Transposition</button>
+    <button class="nav-btn" onclick="filterCodes('modern')">Modern/Digital</button>
+</nav>
+
+<main>
+    <div class="intro">
+        <h2>🕵️ Crack the Code!</h2>
+        <p>Welcome to The Cryptex - your guide to secret codes, ciphers, and cryptography! Learn how spies, soldiers, and secret societies have hidden messages throughout history. Each code includes examples, explanations, and tips for cracking them!</p>
+    </div>
+
+    <div class="codes-grid" id="codesGrid">
+        
+        <!-- CAESAR CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🏛️</span>
+                <span class="card-title">Caesar Cipher</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Substitution Cipher</p>
+                <h4>How It Works</h4>
+                <p>Shift each letter in the alphabet by a set number. Named after Julius Caesar who used it to send secret military messages!</p>
+                
+                <div class="example">
+                    <div class="example-label">Shift by 3:</div>
+                    <div class="example-text">HELLO → KHOOR</div>
+                </div>
+
+                <h4>The Key</h4>
+                <p>A=D, B=E, C=F... (each letter becomes the one 3 places forward)</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Try all 25 possible shifts</li>
+                        <li>Look for common words like "THE" or "AND"</li>
+                        <li>Most common letter in English is E</li>
+                        <li>Count letter frequency to find the shift</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MORSE CODE -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">📡</span>
+                <span class="card-title">Morse Code</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Symbol-Based Code</p>
+                <h4>How It Works</h4>
+                <p>Letters and numbers become patterns of dots (.) and dashes (-). Invented by Samuel Morse for telegraphs!</p>
+                
+                <div class="example">
+                    <div class="example-label">SOS (famous distress signal):</div>
+                    <div class="example-text">... --- ...</div>
+                </div>
+
+                <h4>Common Letters</h4>
+                <p>E = •  |  T = −  |  A = •−  |  N = −•  |  S = •••  |  O = −−−</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Spaces separate letters, bigger gaps separate words</li>
+                        <li>E (•) and T (−) are the simplest - and most common!</li>
+                        <li>Learn SOS (••• −−− •••) - it's iconic!</li>
+                        <li>Use a Morse code chart to decode</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PIGPEN CIPHER -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">🐷</span>
+                <span class="card-title">Pigpen Cipher</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Symbol-Based Cipher</p>
+                <h4>How It Works</h4>
+                <p>Letters are replaced with symbols based on a grid pattern. Used by Freemasons and in treasure hunts!</p>
+                
+                <div class="example">
+                    <div class="example-label">Grid layout:</div>
+                    <div class="example-text">ABC|DEF|GHI placed in a tic-tac-toe grid</div>
+                </div>
+
+                <h4>The Pattern</h4>
+                <p>Each letter gets the lines around it from the grid. A = ⌐  B = ⌐̲  etc.</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Look for repeating symbols (same letters)</li>
+                        <li>The grid has 4 sections: 2 tic-tac-toe grids, 2 X grids</li>
+                        <li>Dots inside symbols mean second grid</li>
+                        <li>Draw out the grid to decode!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BINARY CODE -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">💻</span>
+                <span class="card-title">Binary Code</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Modern/Digital</p>
+                <h4>How It Works</h4>
+                <p>The language of computers! Everything becomes 0s and 1s. Each letter is represented by 8 bits (binary digits).</p>
+                
+                <div class="example">
+                    <div class="example-label">HI in binary:</div>
+                    <div class="example-text">01001000 01001001</div>
+                </div>
+
+                <h4>The System</h4>
+                <p>A = 01000001 (65 in ASCII), B = 01000010 (66), etc.</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Each letter is 8 digits (bits)</li>
+                        <li>Convert binary to decimal first</li>
+                        <li>Look up the decimal in an ASCII table</li>
+                        <li>Capital letters are 65-90, lowercase 97-122</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATBASH CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🔄</span>
+                <span class="card-title">Atbash Cipher</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Substitution Cipher</p>
+                <h4>How It Works</h4>
+                <p>The alphabet is reversed! A becomes Z, B becomes Y, and so on. Ancient Hebrew cipher used in the Bible!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO in Atbash:</div>
+                    <div class="example-text">SVOOL</div>
+                </div>
+
+                <h4>The Key</h4>
+                <p>A↔Z, B↔Y, C↔X, D↔W... M↔N (the middle stays close!)</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Write out the alphabet forwards and backwards</li>
+                        <li>Line them up and swap each letter</li>
+                        <li>It's its own inverse - encode = decode!</li>
+                        <li>Quick to crack once you know the pattern</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- A1Z26 -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🔢</span>
+                <span class="card-title">A1Z26 (Number Code)</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Substitution Cipher</p>
+                <h4>How It Works</h4>
+                <p>Simply replace each letter with its position in the alphabet. A=1, B=2, C=3... Z=26!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO:</div>
+                    <div class="example-text">8-5-12-12-15</div>
+                </div>
+
+                <h4>The Key</h4>
+                <p>A=1, B=2, C=3... or sometimes A=0, B=1, C=2...</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Numbers will be between 1-26</li>
+                        <li>Look for separators (dashes, spaces, commas)</li>
+                        <li>Common numbers: 5=E, 20=T, 1=A</li>
+                        <li>Super easy once you spot the pattern!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- NATO PHONETIC ALPHABET -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">✈️</span>
+                <span class="card-title">NATO Phonetic Alphabet</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Modern Communication Code</p>
+                <h4>How It Works</h4>
+                <p>Each letter has a code word so it's clear over radio. Used by military, pilots, police, and more!</p>
+                
+                <div class="example">
+                    <div class="example-label">SOS:</div>
+                    <div class="example-text">Sierra Oscar Sierra</div>
+                </div>
+
+                <h4>The Alphabet</h4>
+                <p>Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliet, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Take the first letter of each word</li>
+                        <li>Alpha=A, Bravo=B, Charlie=C...</li>
+                        <li>Learn the full alphabet - it's useful!</li>
+                        <li>Used in movies, games, and real life</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROT13 -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🔁</span>
+                <span class="card-title">ROT13</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Substitution Cipher</p>
+                <h4>How It Works</h4>
+                <p>A special Caesar cipher that shifts by exactly 13. Popular on the internet for hiding spoilers!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO:</div>
+                    <div class="example-text">URYYB</div>
+                </div>
+
+                <h4>Why 13?</h4>
+                <p>26 letters ÷ 2 = 13. Apply ROT13 twice and you get the original back!</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Just apply ROT13 again to decode!</li>
+                        <li>A↔N, B↔O, C↔P, etc.</li>
+                        <li>Used online for spoilers & puzzles</li>
+                        <li>Tons of free ROT13 tools online</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIGENÈRE CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🗝️</span>
+                <span class="card-title">Vigenère Cipher</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Polyalphabetic Cipher</p>
+                <h4>How It Works</h4>
+                <p>Like Caesar cipher but each letter shifts differently based on a keyword. Called "le chiffre indéchiffrable" (the unbreakable cipher) for 300 years!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO with key "KEY":</div>
+                    <div class="example-text">RIJVS</div>
+                </div>
+
+                <h4>The Method</h4>
+                <p>H+K=R, E+E=I, L+Y=J, L+K=V, O+E=S (add letter positions)</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Find the key length using repeated patterns</li>
+                        <li>Then solve each position like Caesar cipher</li>
+                        <li>Look for repeating sequences (same letters with same key position)</li>
+                        <li>Frequency analysis on each key position</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- RAIL FENCE CIPHER -->
+        <div class="code-card" data-category="transposition">
+            <div class="card-header">
+                <span class="card-icon">🚃</span>
+                <span class="card-title">Rail Fence Cipher</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Transposition Cipher</p>
+                <h4>How It Works</h4>
+                <p>Write your message in a zigzag pattern across multiple "rails" then read off each row!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO WORLD (2 rails):</div>
+                    <div class="example-text">HLOWRDEL OL</div>
+                </div>
+
+                <h4>Visualized (2 rails)</h4>
+                <p>H.L.O.W.R.D<br>
+                   .E.L. .O.L.</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Try different numbers of rails (2, 3, 4...)</li>
+                        <li>Split the message into equal parts</li>
+                        <li>Weave them back together in zigzag</li>
+                        <li>Look for word patterns forming</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAP CODE -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">👊</span>
+                <span class="card-title">Tap Code</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Sound-Based Code</p>
+                <h4>How It Works</h4>
+                <p>Used by prisoners to communicate through walls! Based on a 5x5 grid. Two sets of taps: row number, then column number.</p>
+                
+                <div class="example">
+                    <div class="example-label">HI:</div>
+                    <div class="example-text">••/••• (H) ••/•••• (I)</div>
+                </div>
+
+                <h4>The Grid</h4>
+                <p>
+                A B C D E (row 1)<br>
+                F G H I J (row 2)<br>
+                L M N O P (row 3)<br>
+                Q R S T U (row 4)<br>
+                V W X Y Z (row 5)<br>
+                (K = C)
+                </p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Listen for pauses between tap groups</li>
+                        <li>First taps = row, second taps = column</li>
+                        <li>K is replaced with C</li>
+                        <li>Draw the 5x5 grid to decode</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRAILLE -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">⠃</span>
+                <span class="card-title">Braille</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Tactile Symbol System</p>
+                <h4>How It Works</h4>
+                <p>A system of raised dots that people who are blind can read with their fingers. Each letter is a pattern in a 2×3 grid!</p>
+                
+                <div class="example">
+                    <div class="example-label">HI:</div>
+                    <div class="example-text">⠓ ⠊</div>
+                </div>
+
+                <h4>The Pattern</h4>
+                <p>6 dot positions, dots 1-6. A=dot 1, B=dots 1+2, C=dots 1+4...</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Each cell is 2 columns × 3 rows of dots</li>
+                        <li>First 10 letters use only top 4 dots</li>
+                        <li>Next 10 add dot 3 (bottom left)</li>
+                        <li>Braille charts are easy to find online</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEMAPHORE -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">🚩</span>
+                <span class="card-title">Semaphore</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Visual Signal System</p>
+                <h4>How It Works</h4>
+                <p>Hold two flags in different positions to spell letters. Used by sailors and scouts! Each arm position represents part of the letter.</p>
+                
+                <div class="example">
+                    <div class="example-label">Positions:</div>
+                    <div class="example-text">A = Left arm down-left, right arm down</div>
+                </div>
+
+                <h4>The System</h4>
+                <p>8 possible positions per arm, combinations make 26 letters + numbers</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Picture a clock - arms point to "hours"</li>
+                        <li>Arms never overlap or point same direction</li>
+                        <li>Learn the pattern groups (A-G, H-N, etc.)</li>
+                        <li>Rest position = space between words</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEXADECIMAL -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">🔢</span>
+                <span class="card-title">Hexadecimal (Hex)</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Modern/Digital</p>
+                <h4>How It Works</h4>
+                <p>Base-16 number system used in computing. Uses 0-9 and A-F. Two hex digits = one byte = one character!</p>
+                
+                <div class="example">
+                    <div class="example-label">HI in hex:</div>
+                    <div class="example-text">48 49</div>
+                </div>
+
+                <h4>The System</h4>
+                <p>A=41, B=42, C=43... Z=5A (using ASCII values)</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Convert hex to decimal (48 hex = 72 decimal)</li>
+                        <li>Look up decimal in ASCII table</li>
+                        <li>Uppercase A-Z = 41-5A, lowercase = 61-7A</li>
+                        <li>Often shown with "0x" prefix (0x48)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOOK CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">📚</span>
+                <span class="card-title">Book Cipher</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Reference Cipher</p>
+                <h4>How It Works</h4>
+                <p>Use a book that both sender and receiver have. Numbers point to page, line, and word (or letter). Nearly uncrackable without the book!</p>
+                
+                <div class="example">
+                    <div class="example-label">Format:</div>
+                    <div class="example-text">52-7-3 = Page 52, Line 7, Word 3</div>
+                </div>
+
+                <h4>Variations</h4>
+                <p>Page-Line-Word, Page-Line-Letter, Page-Word, or even just Word numbers</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>You NEED the exact same book/edition</li>
+                        <li>Look for number patterns (page ranges)</li>
+                        <li>Popular books: Bible, dictionaries, famous novels</li>
+                        <li>Without the book, nearly impossible!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BASE64 -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">📧</span>
+                <span class="card-title">Base64</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Modern Encoding</p>
+                <h4>How It Works</h4>
+                <p>Converts binary data to text using 64 characters (A-Z, a-z, 0-9, +, /). Used everywhere in computers for sending data!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO:</div>
+                    <div class="example-text">SEVMTE8=</div>
+                </div>
+
+                <h4>The Characters</h4>
+                <p>A-Z (0-25), a-z (26-51), 0-9 (52-61), + (62), / (63)</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Often ends with = or == (padding)</li>
+                        <li>Only uses letters, numbers, +, and /</li>
+                        <li>Use online Base64 decoders</li>
+                        <li>Very common in web/email systems</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <p>🔐 The Cryptex - Built by Roma | Crack codes, solve mysteries! 🕵️</p>
+</footer>
+
+<script>
+    function filterCodes(category) {
+        // Update active button
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Filter cards
+        document.querySelectorAll('.code-card').forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
