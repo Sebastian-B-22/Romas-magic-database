@@ -105,12 +105,172 @@
             overflow: hidden;
             border: 1px solid rgba(233,69,96,0.3);
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         .code-card:hover {
             transform: translateY(-5px);
             border-color: #e94560;
             box-shadow: 0 10px 30px rgba(233,69,96,0.2);
+        }
+
+        /* Modal for detail view */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            border: 2px solid #e94560;
+            box-shadow: 0 20px 60px rgba(233,69,96,0.3);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #e94560 0%, #c73659 100%);
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+        }
+
+        .modal-title-wrap {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .modal-category {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .modal-close {
+            background: rgba(0,0,0,0.3);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0,0,0,0.5);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h3 {
+            color: #e94560;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-section p {
+            color: #c0c0c0;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .modal-example {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 4px solid #e94560;
+        }
+
+        .modal-example-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-example-text {
+            color: #e94560;
+            font-size: 1.4rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .modal-tips {
+            background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .modal-tips h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .modal-tips ul {
+            color: #b0b0b0;
+            padding-left: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 2;
+        }
+
+        .modal-tips li {
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-tips li::marker {
+            color: #10b981;
+        }
+
+        .click-hint {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            font-style: italic;
         }
 
         .card-header {
@@ -1330,17 +1490,59 @@
     </div>
 </main>
 
+    <p class="click-hint">👆 Click any code to learn more!</p>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target === this) closeModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-icon" id="modalIcon">🔐</span>
+            <div class="modal-title-wrap">
+                <div class="modal-title" id="modalTitle">Code Name</div>
+                <div class="modal-category" id="modalCategory">Category</div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <h3>📖 How It Works</h3>
+                <p id="modalDescription">Description here</p>
+            </div>
+            
+            <div class="modal-section">
+                <h3>🔤 Example</h3>
+                <div class="modal-example">
+                    <div class="modal-example-label" id="modalExampleLabel">Example:</div>
+                    <div class="modal-example-text" id="modalExampleText">ENCODED TEXT</div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <h3>🔑 The Key</h3>
+                <p id="modalKey">Key explanation here</p>
+            </div>
+            
+            <div class="modal-tips">
+                <h3>💡 How to Crack It - Help Tips!</h3>
+                <ul id="modalTips">
+                    <li>Tip 1</li>
+                    <li>Tip 2</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer>
     <p>🔐 The Cryptex - Built by Roma | Crack codes, solve mysteries! 🕵️</p>
 </footer>
 
 <script>
     function filterCodes(category) {
-        // Update active button
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
 
-        // Filter cards
         document.querySelectorAll('.code-card').forEach(card => {
             if (category === 'all' || card.dataset.category === category) {
                 card.style.display = 'block';
@@ -1349,6 +1551,62 @@
             }
         });
     }
+
+    // Modal functionality
+    function openModal(card) {
+        const modal = document.getElementById('modal');
+        
+        // Get data from card
+        const icon = card.querySelector('.card-icon').textContent;
+        const title = card.querySelector('.card-title').textContent;
+        const category = card.querySelector('.category')?.textContent || card.dataset.category;
+        const description = card.querySelector('.card-body > p:not(.category)')?.textContent || 
+                           card.querySelector('h4 + p')?.textContent || '';
+        
+        // Get example
+        const exampleLabel = card.querySelector('.example-label')?.textContent || 'Example:';
+        const exampleText = card.querySelector('.example-text')?.textContent || '';
+        
+        // Get key info
+        const keySection = Array.from(card.querySelectorAll('h4')).find(h => h.textContent.includes('Key') || h.textContent.includes('System') || h.textContent.includes('Method') || h.textContent.includes('Pattern') || h.textContent.includes('Grid') || h.textContent.includes('Alphabet') || h.textContent.includes('Characters') || h.textContent.includes('Keypad') || h.textContent.includes('Variations') || h.textContent.includes('Layout') || h.textContent.includes('Story') || h.textContent.includes('Rules'));
+        const keyText = keySection?.nextElementSibling?.textContent || '';
+        
+        // Get tips
+        const tipsItems = card.querySelectorAll('.tips li');
+        let tipsHTML = '';
+        tipsItems.forEach(tip => {
+            tipsHTML += `<li>${tip.textContent}</li>`;
+        });
+        
+        // Fill modal
+        document.getElementById('modalIcon').textContent = icon;
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalCategory').textContent = category;
+        document.getElementById('modalDescription').textContent = description;
+        document.getElementById('modalExampleLabel').textContent = exampleLabel;
+        document.getElementById('modalExampleText').textContent = exampleText;
+        document.getElementById('modalKey').textContent = keyText || 'See the pattern above!';
+        document.getElementById('modalTips').innerHTML = tipsHTML || '<li>Look for patterns!</li><li>Practice makes perfect!</li>';
+        
+        // Show modal
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Add click listeners to all cards
+    document.querySelectorAll('.code-card').forEach(card => {
+        card.addEventListener('click', () => openModal(card));
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeModal();
+    });
 </script>
 
 </body>
