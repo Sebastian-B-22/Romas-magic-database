@@ -276,6 +276,53 @@
         .answer-box.wrong .answer-label { color: #ef4444; }
         .answer-box.wrong .answer-word { color: #f59e0b; }
 
+        /* Reference Chart */
+        .chart-toggle {
+            background: rgba(139, 92, 246, 0.3);
+            border: 2px solid #8b5cf6;
+            color: #c4b5fd;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .chart-toggle:hover {
+            background: rgba(139, 92, 246, 0.5);
+        }
+
+        .reference-chart {
+            display: none;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #8b5cf6;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .reference-chart.show {
+            display: block;
+        }
+
+        .reference-chart pre {
+            color: #c4b5fd;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            text-align: left;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .btn-gotit {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
         /* Results */
         .results {
             display: none;
@@ -337,6 +384,12 @@
             <div class="cipher-label">Decode this:</div>
             <div class="cipher-name" id="cipherName">🏛️ Caesar Cipher (+1)</div>
             
+            <!-- Reference Chart Toggle -->
+            <button class="chart-toggle" onclick="toggleChart()">📖 Show Reference Chart</button>
+            <div class="reference-chart" id="referenceChart">
+                <pre id="chartContent">Chart will appear here</pre>
+            </div>
+            
             <div class="encoded-text">
                 <div class="encoded" id="encodedText">IFMMP</div>
             </div>
@@ -363,6 +416,7 @@
 
             <div class="card-buttons">
                 <button class="card-btn btn-reveal" id="revealBtn" onclick="revealAnswer()">🤷 I Don't Know</button>
+                <button class="card-btn btn-gotit" id="gotitBtn" onclick="gotIt()" style="display:none;">🎉 I Got It! (Hide Chart)</button>
                 <button class="card-btn btn-next" id="nextBtn" onclick="nextQuestion()" style="display:none;">➡️ Next Question</button>
             </div>
         </div>
@@ -617,6 +671,150 @@ let currentIndex = 0;
 let knownCount = 0;
 let learningCount = 0;
 
+// Reference charts for each cipher
+const cipherCharts = {
+    '📡 Morse Code': `MORSE CODE ALPHABET:
+A = •−      N = −•
+B = −•••    O = −−−
+C = −•−•    P = •−−•
+D = −••     Q = −−•−
+E = •       R = •−•
+F = ••−•    S = •••
+G = −−•     T = −
+H = ••••    U = ••−
+I = ••      V = •••−
+J = •−−−    W = •−−
+K = −•−     X = −••−
+L = •−••    Y = −•−−
+M = −−      Z = −−••`,
+
+    '🔢 A1Z26': `A1Z26 NUMBER CODE:
+A=1   B=2   C=3   D=4   E=5
+F=6   G=7   H=8   I=9   J=10
+K=11  L=12  M=13  N=14  O=15
+P=16  Q=17  R=18  S=19  T=20
+U=21  V=22  W=23  X=24  Y=25  Z=26`,
+
+    '✈️ NATO Alphabet': `NATO PHONETIC ALPHABET:
+A = Alpha      N = November
+B = Bravo      O = Oscar
+C = Charlie    P = Papa
+D = Delta      Q = Quebec
+E = Echo       R = Romeo
+F = Foxtrot    S = Sierra
+G = Golf       T = Tango
+H = Hotel      U = Uniform
+I = India      V = Victor
+J = Juliet     W = Whiskey
+K = Kilo       X = X-ray
+L = Lima       Y = Yankee
+M = Mike       Z = Zulu`,
+
+    '⠃ Braille': `BRAILLE ALPHABET:
+⠁=A  ⠃=B  ⠉=C  ⠙=D  ⠑=E
+⠋=F  ⠛=G  ⠓=H  ⠊=I  ⠚=J
+⠅=K  ⠇=L  ⠍=M  ⠝=N  ⠕=O
+⠏=P  ⠟=Q  ⠗=R  ⠎=S  ⠞=T
+⠥=U  ⠧=V  ⠺=W  ⠭=X  ⠽=Y  ⠵=Z`,
+
+    '🏛️ Caesar (+1)': `CAESAR CIPHER (+1):
+A→B  B→C  C→D  D→E  E→F  F→G
+G→H  H→I  I→J  J→K  K→L  L→M
+M→N  N→O  O→P  P→Q  Q→R  R→S
+S→T  T→U  U→V  V→W  W→X  X→Y
+Y→Z  Z→A
+
+To DECODE: shift BACK by 1`,
+
+    '🏛️ Caesar (+3)': `CAESAR CIPHER (+3):
+A→D  B→E  C→F  D→G  E→H  F→I
+G→J  H→K  I→L  J→M  K→N  L→O
+M→P  N→Q  O→R  P→S  Q→T  R→U
+S→V  T→W  U→X  V→Y  W→Z  X→A
+Y→B  Z→C
+
+To DECODE: shift BACK by 3`,
+
+    '🔁 ROT13': `ROT13 (Shift by 13):
+A↔N  B↔O  C↔P  D↔Q  E↔R  F↔S  G↔T
+H↔U  I↔V  J↔W  K↔X  L↔Y  M↔Z
+
+Apply ROT13 twice = back to original!`,
+
+    '🔄 Atbash': `ATBASH (Reverse Alphabet):
+A↔Z  B↔Y  C↔X  D↔W  E↔V  F↔U  G↔T
+H↔S  I↔R  J↔Q  K↔P  L↔O  M↔N`,
+
+    '🔀 Backwards': `BACKWARDS:
+Just write it in reverse!
+HELLO → OLLEH
+SECRET → TERCES`,
+
+    '💬 Leet Speak': `LEET SPEAK:
+A = 4    E = 3    I = 1
+O = 0    S = 5    T = 7
+B = 8    G = 9    L = 1`,
+
+    '💻 Binary': `BINARY (8 bits per letter):
+A = 01000001    N = 01001110
+B = 01000010    O = 01001111
+C = 01000011    S = 01010011
+H = 01001000    T = 01010100
+I = 01001001    Y = 01011001`,
+
+    '📱 Phone Keypad': `PHONE KEYPAD:
+2 = ABC    5 = JKL    8 = TUV
+3 = DEF    6 = MNO    9 = WXYZ
+4 = GHI    7 = PQRS
+
+Count presses: 2=A, 22=B, 222=C`,
+
+    '🐷 Pigpen': `PIGPEN CIPHER:
+ A│B│C     Draw the lines around
+──┼──┼──   each letter!
+ D│E│F     
+──┼──┼──   A = ⌐  E = □
+ G│H│I`,
+
+    '👊 Tap Code': `TAP CODE (5x5 Grid):
+    1   2   3   4   5
+1   A   B   C   D   E
+2   F   G   H   I   J
+3   L   M   N   O   P
+4   Q   R   S   T   U
+5   V   W   X   Y   Z
+(K=C) First taps=row, Second=column`,
+
+    '🏛️ Polybius Square': `POLYBIUS SQUARE:
+    1   2   3   4   5
+1   A   B   C   D   E
+2   F   G   H   I   J
+3   L   M   N   O   P
+4   Q   R   S   T   U
+5   V   W   X   Y   Z
+
+Write: Row number + Column number`,
+
+    '🔢 Hexadecimal': `HEXADECIMAL (Hex):
+A=41  B=42  C=43  D=44  E=45
+F=46  G=47  H=48  I=49  J=4A
+K=4B  L=4C  M=4D  N=4E  O=4F
+P=50  Q=51  R=52  S=53  T=54`,
+
+    '⌨️ Keyboard Cipher': `KEYBOARD CIPHER:
+Q W E R T Y U I O P
+ A S D F G H J K L
+  Z X C V B N M
+
+Shift letters left or right!`,
+
+    'ᚱ Runic (Viking)': `ELDER FUTHARK RUNES:
+ᚠ=F  ᚢ=U  ᚦ=TH ᚨ=A  ᚱ=R  ᚲ=K
+ᚷ=G  ᚹ=W  ᚺ=H  ᚾ=N  ᛁ=I  ᛃ=J
+ᛈ=P  ᛉ=Z  ᛊ=S  ᛏ=T  ᛒ=B  ᛖ=E
+ᛗ=M  ᛚ=L  ᛜ=NG ᛞ=D  ᛟ=O`,
+};
+
 // Get unique cipher types from quizData
 const cipherTypes = [...new Set(quizData.map(q => q.cipher))];
 
@@ -701,6 +899,10 @@ function showQuestion() {
     document.getElementById('answerWord').textContent = q.answer;
     document.getElementById('wrongAnswer').textContent = q.answer;
     
+    // Load the reference chart for this cipher
+    const chart = cipherCharts[q.cipher] || 'No reference chart available for this cipher.';
+    document.getElementById('chartContent').textContent = chart;
+    
     // Reset state
     document.getElementById('answerInput').value = '';
     document.getElementById('answerInput').disabled = false;
@@ -709,6 +911,9 @@ function showQuestion() {
     document.getElementById('wrongBox').style.display = 'none';
     document.getElementById('revealBtn').style.display = 'inline-block';
     document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('gotitBtn').style.display = 'none';
+    document.getElementById('referenceChart').classList.remove('show');
+    document.querySelector('.chart-toggle').textContent = '📖 Show Reference Chart';
     
     document.getElementById('current').textContent = currentIndex + 1;
     document.getElementById('progressFill').style.width = ((currentIndex / currentQuestions.length) * 100) + '%';
@@ -753,6 +958,29 @@ function revealAnswer() {
 function nextQuestion() {
     currentIndex++;
     showQuestion();
+}
+
+function toggleChart() {
+    const chart = document.getElementById('referenceChart');
+    const btn = document.querySelector('.chart-toggle');
+    const gotitBtn = document.getElementById('gotitBtn');
+    
+    if (chart.classList.contains('show')) {
+        chart.classList.remove('show');
+        btn.textContent = '📖 Show Reference Chart';
+        gotitBtn.style.display = 'none';
+    } else {
+        chart.classList.add('show');
+        btn.textContent = '📖 Hide Reference Chart';
+        gotitBtn.style.display = 'inline-block';
+    }
+}
+
+function gotIt() {
+    // Hide the chart - they've memorized it!
+    document.getElementById('referenceChart').classList.remove('show');
+    document.querySelector('.chart-toggle').textContent = '📖 Show Reference Chart';
+    document.getElementById('gotitBtn').style.display = 'none';
 }
 
 function showResults() {
