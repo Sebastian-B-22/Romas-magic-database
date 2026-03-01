@@ -37,7 +37,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Setup Section */
         .setup {
             background: rgba(255,255,255,0.05);
             border-radius: 15px;
@@ -90,18 +89,18 @@
         .btn-secondary { background: rgba(255,255,255,0.1); color: #ccc; }
         .btn:hover { transform: scale(1.02); }
 
-        /* Flashcard Section */
-        .flashcard-area {
+        /* Quiz Area */
+        .quiz-area {
             display: none;
         }
 
-        .flashcard-area.active { display: block; }
+        .quiz-area.active { display: block; }
 
         .progress {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
 
@@ -122,54 +121,97 @@
 
         .score { color: #10b981; font-weight: 700; }
 
-        /* The Flashcard */
-        .flashcard {
+        /* The Quiz Card */
+        .quiz-card {
             background: rgba(255,255,255,0.05);
             border-radius: 20px;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             padding: 2rem;
-            cursor: pointer;
+            text-align: center;
             border: 2px solid rgba(233,69,96,0.3);
-            transition: all 0.3s;
-            perspective: 1000px;
         }
 
-        .flashcard:hover {
-            border-color: #e94560;
-            box-shadow: 0 10px 30px rgba(233,69,96,0.2);
+        .cipher-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
 
-        .flashcard .icon { font-size: 4rem; margin-bottom: 1rem; }
-        .flashcard .name { font-size: 2rem; font-weight: 700; color: #e94560; margin-bottom: 0.5rem; }
-        .flashcard .hint { color: #888; font-size: 1rem; margin-bottom: 1rem; }
+        .cipher-name {
+            color: #e94560;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
 
-        .flashcard .chart {
+        .encoded-text {
             background: #0a0a15;
-            padding: 1.2rem;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: #7dd3fc;
-            white-space: pre;
-            max-width: 100%;
-            overflow-x: auto;
-            display: none;
-            line-height: 1.6;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
         }
 
-        .flashcard.revealed .chart { display: block; }
-        .flashcard.revealed .hint { display: none; }
+        .encoded {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            color: #7dd3fc;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .equals {
+            font-size: 2rem;
+            color: #e94560;
+            margin: 1rem 0;
+        }
+
+        .answer-blank {
+            font-size: 2.5rem;
+            color: #f59e0b;
+            font-weight: bold;
+            letter-spacing: 0.3rem;
+        }
+
+        .hint-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Answer reveal */
+        .answer-section {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .answer-section.revealed { display: block; }
+
+        .answer-box {
+            background: rgba(16,185,129,0.2);
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .answer-label {
+            color: #10b981;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .answer-word {
+            font-size: 2.5rem;
+            color: #10b981;
+            font-weight: bold;
+        }
 
         .card-buttons {
             display: flex;
             gap: 1rem;
-            margin-top: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 1.5rem;
         }
 
         .card-btn {
@@ -181,15 +223,18 @@
             cursor: pointer;
         }
 
+        .btn-reveal { background: #f59e0b; color: white; }
         .btn-know { background: #10b981; color: white; }
-        .btn-learning { background: #f59e0b; color: white; }
-        .btn-skip { background: rgba(255,255,255,0.1); color: #888; }
+        .btn-learning { background: #ef4444; color: white; }
+        .btn-next { background: #3b82f6; color: white; }
 
         /* Results */
         .results {
             display: none;
             text-align: center;
             padding: 3rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
         }
 
         .results.active { display: block; }
@@ -202,14 +247,8 @@
             gap: 2rem;
             margin-bottom: 2rem;
         }
-        .results .stat {
-            text-align: center;
-        }
-        .results .stat-num {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #e94560;
-        }
+        .results .stat { text-align: center; }
+        .results .stat-num { font-size: 2.5rem; font-weight: 700; color: #e94560; }
         .results .stat-label { color: #888; }
     </style>
 </head>
@@ -217,7 +256,7 @@
 
 <header>
     <div class="logo">🧠 Memorize Mode</div>
-    <p class="tagline">Learn your favorite ciphers with flashcards!</p>
+    <p class="tagline">Can you decode these?</p>
 </header>
 
 <main>
@@ -225,97 +264,145 @@
 
     <!-- Setup -->
     <div class="setup" id="setup">
-        <h2>📋 Pick Ciphers to Memorize</h2>
+        <h2>📋 Pick Ciphers to Practice</h2>
         <div class="cipher-select" id="cipherSelect"></div>
         <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
         <button class="btn btn-secondary" onclick="selectNone()">Clear</button>
-        <button class="btn btn-primary" onclick="startPractice()">🚀 Start Practice!</button>
+        <button class="btn btn-primary" onclick="startQuiz()">🚀 Start Quiz!</button>
     </div>
 
-    <!-- Flashcard Area -->
-    <div class="flashcard-area" id="flashcardArea">
+    <!-- Quiz Area -->
+    <div class="quiz-area" id="quizArea">
         <div class="progress">
             <span class="progress-text"><span id="current">1</span> / <span id="total">10</span></span>
             <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
             <span class="score">✅ <span id="score">0</span></span>
         </div>
 
-        <div class="flashcard" id="flashcard" onclick="revealCard()">
-            <div class="icon" id="cardIcon">🔐</div>
-            <div class="name" id="cardName">Cipher Name</div>
-            <div class="hint">👆 Tap to reveal the chart!</div>
-            <div class="chart" id="cardChart">Chart will appear here</div>
-        </div>
+        <div class="quiz-card" id="quizCard">
+            <div class="cipher-label">Decode this:</div>
+            <div class="cipher-name" id="cipherName">🏛️ Caesar Cipher (+1)</div>
+            
+            <div class="encoded-text">
+                <div class="encoded" id="encodedText">IFMMP</div>
+            </div>
+            
+            <div class="equals">=</div>
+            <div class="answer-blank" id="answerBlank">_ _ _ _ _</div>
+            <div class="hint-text" id="hintText">Think about how this cipher works...</div>
 
-        <div class="card-buttons">
-            <button class="card-btn btn-know" onclick="markCard('know')">✅ I Know It!</button>
-            <button class="card-btn btn-learning" onclick="markCard('learning')">📚 Still Learning</button>
-            <button class="card-btn btn-skip" onclick="markCard('skip')">⏭️ Skip</button>
+            <div class="answer-section" id="answerSection">
+                <div class="answer-box">
+                    <div class="answer-label">✅ Answer:</div>
+                    <div class="answer-word" id="answerWord">HELLO</div>
+                </div>
+            </div>
+
+            <div class="card-buttons">
+                <button class="card-btn btn-reveal" id="revealBtn" onclick="revealAnswer()">👀 Show Answer</button>
+                <button class="card-btn btn-know" id="knowBtn" onclick="markCard('know')" style="display:none;">✅ Got It!</button>
+                <button class="card-btn btn-learning" id="learningBtn" onclick="markCard('learning')" style="display:none;">❌ Missed It</button>
+            </div>
         </div>
     </div>
 
     <!-- Results -->
     <div class="results" id="results">
         <div class="emoji">🎉</div>
-        <h2>Great Practice!</h2>
+        <h2>Quiz Complete!</h2>
         <div class="stats">
             <div class="stat">
                 <div class="stat-num" id="knownCount">0</div>
-                <div class="stat-label">Mastered</div>
+                <div class="stat-label">Correct</div>
             </div>
             <div class="stat">
                 <div class="stat-num" id="learningCount">0</div>
-                <div class="stat-label">Learning</div>
+                <div class="stat-label">Missed</div>
             </div>
         </div>
         <p id="resultMessage">Keep practicing!</p>
-        <button class="btn btn-primary" onclick="restart()">🔄 Practice Again</button>
+        <button class="btn btn-primary" onclick="restart()">🔄 Try Again</button>
         <button class="btn btn-secondary" onclick="backToSetup()">📋 Change Ciphers</button>
     </div>
 </main>
 
 <script>
-const cipherData = [
-    { id: 'caesar', icon: '🏛️', name: 'Caesar Cipher', chart: 'Shift letters by a number:\nA B C D E F G H I J K L M\n↓ ↓ ↓ (shift +3)\nD E F G H I J K L M N O P\n\nHELLO (+3) = KHOOR' },
-    { id: 'morse', icon: '📡', name: 'Morse Code', chart: 'A = •−    E = •     I = ••\nB = −•••  F = ••−•  O = −−−\nC = −•−•  G = −−•   S = •••\nD = −••   H = ••••  T = −\n\nSOS = ••• −−− •••' },
-    { id: 'a1z26', icon: '🔢', name: 'A1Z26', chart: 'A=1  B=2  C=3  D=4  E=5\nF=6  G=7  H=8  I=9  J=10\n... Z=26\n\nHELLO = 8-5-12-12-15' },
-    { id: 'atbash', icon: '🔄', name: 'Atbash', chart: 'Flip the alphabet:\nA↔Z  B↔Y  C↔X  D↔W  E↔V\nF↔U  G↔T  H↔S  I↔R  ...\n\nHELLO = SVOOL' },
-    { id: 'pigpen', icon: '🐷', name: 'Pigpen', chart: ' A│B│C   Draw the lines\n──┼──┼── around each letter!\n D│E│F   \n──┼──┼── A = ⌐\n G│H│I   E = □' },
-    { id: 'binary', icon: '💻', name: 'Binary', chart: '8 digits per letter:\nA = 01000001\nB = 01000010\nH = 01001000\nI = 01001001\n\nHI = 01001000 01001001' },
-    { id: 'phone', icon: '📱', name: 'Phone Keypad', chart: '2=ABC  3=DEF  4=GHI\n5=JKL  6=MNO  7=PQRS\n8=TUV  9=WXYZ\n\nHELLO = 44-33-555-555-666' },
-    { id: 'nato', icon: '✈️', name: 'NATO Alphabet', chart: 'A=Alpha    N=November\nB=Bravo    O=Oscar\nC=Charlie  S=Sierra\nH=Hotel    T=Tango\n\nSOS = Sierra Oscar Sierra' },
-    { id: 'rot13', icon: '🔁', name: 'ROT13', chart: 'Shift by 13 (half alphabet):\nA↔N  B↔O  C↔P  D↔Q\nE↔R  F↔S  G↔T  H↔U\n\nHELLO = URYYB\nApply twice = original!' },
-    { id: 'leet', icon: '💬', name: 'Leet Speak', chart: 'A=4  E=3  I=1  O=0\nS=5  T=7  B=8  L=1\n\nLEET = 1337\nHELLO = H3LL0\nHACKER = H4CK3R' },
-    { id: 'braille', icon: '⠃', name: 'Braille', chart: '⠁=A  ⠃=B  ⠉=C  ⠙=D\n⠑=E  ⠓=H  ⠊=I  ⠇=L\n⠕=O  ⠎=S\n\nHI = ⠓ ⠊' },
-    { id: 'tap', icon: '👊', name: 'Tap Code', chart: '  1 2 3 4 5\n1 A B C D E\n2 F G H I J\n3 L M N O P\n4 Q R S T U\n5 V W X Y Z\n\nH = •• ••• (row 2, col 3)' },
-    { id: 'polybius', icon: '🏛️', name: 'Polybius Square', chart: 'Same as Tap Code grid:\nA=11  B=12  H=23\nE=15  L=31  O=34\n\nHELLO = 23 15 31 31 34' },
-    { id: 'hex', icon: '🔢', name: 'Hexadecimal', chart: 'A=41  H=48  L=4C\nE=45  O=4F\n\nHELLO = 48 45 4C 4C 4F' },
-    { id: 'backwards', icon: '🔀', name: 'Backwards', chart: 'Just reverse it!\n\nHELLO → OLLEH\nSECRET → TERCES' },
-    { id: 'runic', icon: 'ᚱ', name: 'Runic (Viking)', chart: 'ᚠ=F ᚢ=U ᚦ=TH ᚨ=A ᚱ=R\nᚺ=H ᛖ=E ᛚ=L ᛟ=O\n\nHELLO = ᚺᛖᛚᛚᛟ' },
-    { id: 'keyboard', icon: '⌨️', name: 'Keyboard Cipher', chart: 'Shift on QWERTY keyboard:\nQ W E R T Y U I O P\n A S D F G H J K L\n\nH→J, E→R, L→;\nHELLO → JRPP;' },
-    { id: 'vigenere', icon: '🔑', name: 'Vigenère', chart: 'Use keyword to shift each letter:\nMessage: H E L L O\nKeyword: K E Y K E\nShifts: 10 4 24 10 4\nResult:  R I J V S' },
-    { id: 'base64', icon: '📧', name: 'Base64', chart: 'Uses A-Z, a-z, 0-9, +, /\nEnds with = or ==\n\nHELLO = SEVMTE8=' }
+// Quiz questions - encoded = ?, answer = decoded word
+const quizData = [
+    // Caesar +1
+    { cipher: '🏛️ Caesar (+1)', encoded: 'IFMMP', answer: 'HELLO', hint: 'Shift each letter back by 1', blanks: '_ _ _ _ _' },
+    { cipher: '🏛️ Caesar (+1)', encoded: 'CZF', answer: 'BYE', hint: 'Shift each letter back by 1', blanks: '_ _ _' },
+    { cipher: '🏛️ Caesar (+1)', encoded: 'DBU', answer: 'CAT', hint: 'Shift each letter back by 1', blanks: '_ _ _' },
+    { cipher: '🏛️ Caesar (+1)', encoded: 'EPH', answer: 'DOG', hint: 'Shift each letter back by 1', blanks: '_ _ _' },
+    { cipher: '🏛️ Caesar (+1)', encoded: 'TFDSFUT', answer: 'SECRETS', hint: 'Shift each letter back by 1', blanks: '_ _ _ _ _ _ _' },
+    
+    // Caesar +3
+    { cipher: '🏛️ Caesar (+3)', encoded: 'KHOOR', answer: 'HELLO', hint: 'Shift each letter back by 3', blanks: '_ _ _ _ _' },
+    { cipher: '🏛️ Caesar (+3)', encoded: 'FDW', answer: 'CAT', hint: 'Shift each letter back by 3', blanks: '_ _ _' },
+    { cipher: '🏛️ Caesar (+3)', encoded: 'BRH', answer: 'BYE', hint: 'Shift each letter back by 3 (wrap around!)', blanks: '_ _ _' },
+    
+    // ROT13
+    { cipher: '🔁 ROT13', encoded: 'URYYB', answer: 'HELLO', hint: 'Shift by 13 (halfway through alphabet)', blanks: '_ _ _ _ _' },
+    { cipher: '🔁 ROT13', encoded: 'FRPERG', answer: 'SECRET', hint: 'Shift by 13 - or use ROT13 again!', blanks: '_ _ _ _ _ _' },
+    { cipher: '🔁 ROT13', encoded: 'PNG', answer: 'CAT', hint: 'Shift by 13', blanks: '_ _ _' },
+    
+    // Atbash
+    { cipher: '🔄 Atbash', encoded: 'SVOOL', answer: 'HELLO', hint: 'A↔Z, B↔Y, C↔X...', blanks: '_ _ _ _ _' },
+    { cipher: '🔄 Atbash', encoded: 'YBV', answer: 'BYE', hint: 'Flip the alphabet!', blanks: '_ _ _' },
+    { cipher: '🔄 Atbash', encoded: 'WLT', answer: 'DOG', hint: 'A↔Z, B↔Y, C↔X...', blanks: '_ _ _' },
+    
+    // A1Z26
+    { cipher: '🔢 A1Z26', encoded: '8-5-12-12-15', answer: 'HELLO', hint: 'A=1, B=2, C=3...', blanks: '_ _ _ _ _' },
+    { cipher: '🔢 A1Z26', encoded: '3-1-20', answer: 'CAT', hint: 'Numbers = letter positions', blanks: '_ _ _' },
+    { cipher: '🔢 A1Z26', encoded: '2-25-5', answer: 'BYE', hint: 'A=1, B=2... Y=25', blanks: '_ _ _' },
+    { cipher: '🔢 A1Z26', encoded: '19-16-25', answer: 'SPY', hint: 'Count the alphabet!', blanks: '_ _ _' },
+    
+    // Backwards
+    { cipher: '🔀 Backwards', encoded: 'OLLEH', answer: 'HELLO', hint: 'Read it backwards!', blanks: '_ _ _ _ _' },
+    { cipher: '🔀 Backwards', encoded: 'TERCES', answer: 'SECRET', hint: 'Reverse the letters!', blanks: '_ _ _ _ _ _' },
+    { cipher: '🔀 Backwards', encoded: 'YPS', answer: 'SPY', hint: 'Flip it around!', blanks: '_ _ _' },
+    
+    // Leet
+    { cipher: '💬 Leet Speak', encoded: 'H3LL0', answer: 'HELLO', hint: '3=E, 0=O', blanks: '_ _ _ _ _' },
+    { cipher: '💬 Leet Speak', encoded: 'H4CK3R', answer: 'HACKER', hint: '4=A, 3=E', blanks: '_ _ _ _ _ _' },
+    { cipher: '💬 Leet Speak', encoded: 'C00L', answer: 'COOL', hint: '0=O', blanks: '_ _ _ _' },
+    { cipher: '💬 Leet Speak', encoded: '1337', answer: 'LEET', hint: '1=L, 3=E, 7=T', blanks: '_ _ _ _' },
+    
+    // Morse
+    { cipher: '📡 Morse Code', encoded: '••• −−− •••', answer: 'SOS', hint: 'S=••• O=−−−', blanks: '_ _ _' },
+    { cipher: '📡 Morse Code', encoded: '•••• ••', answer: 'HI', hint: 'H=•••• I=••', blanks: '_ _' },
+    { cipher: '📡 Morse Code', encoded: '−−− •−•', answer: 'OK', hint: 'Look up Morse chart!', blanks: '_ _' },
+    
+    // Binary
+    { cipher: '💻 Binary', encoded: '01001000 01001001', answer: 'HI', hint: '8 digits = 1 letter', blanks: '_ _' },
+    
+    // Phone
+    { cipher: '📱 Phone Keypad', encoded: '44-33-555-555-666', answer: 'HELLO', hint: 'Count the digits! 44=H (4 twice)', blanks: '_ _ _ _ _' },
+    { cipher: '📱 Phone Keypad', encoded: '222-2-8', answer: 'CAT', hint: '222=C, 2=A, 8=T', blanks: '_ _ _' },
 ];
 
 let selectedCiphers = [];
-let currentCards = [];
+let currentQuestions = [];
 let currentIndex = 0;
 let knownCount = 0;
 let learningCount = 0;
 
-// Populate cipher selection
+// Get unique cipher types from quizData
+const cipherTypes = [...new Set(quizData.map(q => q.cipher))];
+
 function populateSelect() {
     const container = document.getElementById('cipherSelect');
-    container.innerHTML = cipherData.map(c => `
-        <div class="cipher-opt" onclick="toggleSelect('${c.id}')">
-            <input type="checkbox" id="sel-${c.id}">
+    container.innerHTML = cipherTypes.map(c => `
+        <div class="cipher-opt selected" onclick="toggleSelect('${c}')">
+            <input type="checkbox" id="sel-${c.replace(/[^a-z0-9]/gi, '')}" checked>
             <span class="check">✓</span>
-            <span>${c.icon} ${c.name}</span>
+            <span>${c}</span>
         </div>
     `).join('');
 }
 
-function toggleSelect(id) {
+function toggleSelect(cipher) {
+    const id = cipher.replace(/[^a-z0-9]/gi, '');
     const opt = document.querySelector(`#sel-${id}`).parentElement;
     const cb = document.querySelector(`#sel-${id}`);
     cb.checked = !cb.checked;
@@ -336,12 +423,11 @@ function selectNone() {
     });
 }
 
-function startPractice() {
+function startQuiz() {
     selectedCiphers = [];
     document.querySelectorAll('.cipher-opt input:checked').forEach(cb => {
-        const id = cb.id.replace('sel-', '');
-        const cipher = cipherData.find(c => c.id === id);
-        if (cipher) selectedCiphers.push(cipher);
+        const label = cb.parentElement.querySelector('span:last-child').textContent;
+        selectedCiphers.push(label);
     });
 
     if (selectedCiphers.length === 0) {
@@ -349,77 +435,97 @@ function startPractice() {
         return;
     }
 
+    // Filter questions for selected ciphers
+    currentQuestions = quizData.filter(q => selectedCiphers.includes(q.cipher));
+    
     // Shuffle
-    currentCards = [...selectedCiphers].sort(() => Math.random() - 0.5);
+    currentQuestions = currentQuestions.sort(() => Math.random() - 0.5);
+    
+    // Limit to 10 questions max
+    currentQuestions = currentQuestions.slice(0, 10);
+    
     currentIndex = 0;
     knownCount = 0;
     learningCount = 0;
 
     document.getElementById('setup').style.display = 'none';
-    document.getElementById('flashcardArea').classList.add('active');
+    document.getElementById('quizArea').classList.add('active');
     document.getElementById('results').classList.remove('active');
 
-    document.getElementById('total').textContent = currentCards.length;
+    document.getElementById('total').textContent = currentQuestions.length;
     document.getElementById('score').textContent = 0;
     
-    showCard();
+    showQuestion();
 }
 
-function showCard() {
-    if (currentIndex >= currentCards.length) {
+function showQuestion() {
+    if (currentIndex >= currentQuestions.length) {
         showResults();
         return;
     }
 
-    const card = currentCards[currentIndex];
-    document.getElementById('cardIcon').textContent = card.icon;
-    document.getElementById('cardName').textContent = card.name;
-    document.getElementById('cardChart').textContent = card.chart;
-    document.getElementById('flashcard').classList.remove('revealed');
+    const q = currentQuestions[currentIndex];
+    document.getElementById('cipherName').textContent = q.cipher;
+    document.getElementById('encodedText').textContent = q.encoded;
+    document.getElementById('answerBlank').textContent = q.blanks;
+    document.getElementById('hintText').textContent = q.hint;
+    document.getElementById('answerWord').textContent = q.answer;
+    
+    // Reset state
+    document.getElementById('answerSection').classList.remove('revealed');
+    document.getElementById('revealBtn').style.display = 'inline-block';
+    document.getElementById('knowBtn').style.display = 'none';
+    document.getElementById('learningBtn').style.display = 'none';
     
     document.getElementById('current').textContent = currentIndex + 1;
-    document.getElementById('progressFill').style.width = ((currentIndex / currentCards.length) * 100) + '%';
+    document.getElementById('progressFill').style.width = ((currentIndex / currentQuestions.length) * 100) + '%';
 }
 
-function revealCard() {
-    document.getElementById('flashcard').classList.add('revealed');
+function revealAnswer() {
+    document.getElementById('answerSection').classList.add('revealed');
+    document.getElementById('revealBtn').style.display = 'none';
+    document.getElementById('knowBtn').style.display = 'inline-block';
+    document.getElementById('learningBtn').style.display = 'inline-block';
 }
 
 function markCard(status) {
     if (status === 'know') {
         knownCount++;
         document.getElementById('score').textContent = knownCount;
-    } else if (status === 'learning') {
+    } else {
         learningCount++;
     }
     
     currentIndex++;
-    showCard();
+    showQuestion();
 }
 
 function showResults() {
-    document.getElementById('flashcardArea').classList.remove('active');
+    document.getElementById('quizArea').classList.remove('active');
     document.getElementById('results').classList.add('active');
     
     document.getElementById('knownCount').textContent = knownCount;
     document.getElementById('learningCount').textContent = learningCount;
     
-    const percent = Math.round((knownCount / currentCards.length) * 100);
+    const percent = Math.round((knownCount / currentQuestions.length) * 100);
     let message = '';
     let emoji = '🎉';
     
     if (percent === 100) {
-        message = 'Perfect! You know them all! 🏆';
+        message = 'PERFECT! You\'re a cipher master! 🏆';
         emoji = '🏆';
-    } else if (percent >= 75) {
-        message = 'Amazing! Almost there! 🌟';
+    } else if (percent >= 80) {
+        message = 'Amazing! Almost perfect! 🌟';
         emoji = '🌟';
-    } else if (percent >= 50) {
-        message = 'Good progress! Keep practicing! 💪';
+    } else if (percent >= 60) {
+        message = 'Great job! Keep practicing! 💪';
         emoji = '💪';
-    } else {
-        message = 'Keep going! Practice makes perfect! 📚';
+    } else if (percent >= 40) {
+        message = 'Good effort! Practice more! 📚';
         emoji = '📚';
+    } else {
+        message = 'Keep learning! You\'ll get it! 🔐';
+        emoji = '🔐';
     }
     
     document.getElementById('resultMessage').textContent = message;
@@ -427,21 +533,21 @@ function showResults() {
 }
 
 function restart() {
-    currentCards = [...selectedCiphers].sort(() => Math.random() - 0.5);
+    currentQuestions = currentQuestions.sort(() => Math.random() - 0.5);
     currentIndex = 0;
     knownCount = 0;
     learningCount = 0;
     
     document.getElementById('results').classList.remove('active');
-    document.getElementById('flashcardArea').classList.add('active');
+    document.getElementById('quizArea').classList.add('active');
     document.getElementById('score').textContent = 0;
     
-    showCard();
+    showQuestion();
 }
 
 function backToSetup() {
     document.getElementById('results').classList.remove('active');
-    document.getElementById('flashcardArea').classList.remove('active');
+    document.getElementById('quizArea').classList.remove('active');
     document.getElementById('setup').style.display = 'block';
 }
 
