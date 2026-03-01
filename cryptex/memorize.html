@@ -309,6 +309,51 @@
             margin-top: 0.5rem;
         }
 
+        /* Feedback Box - shows in place of input */
+        .feedback-box {
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 1rem auto;
+            max-width: 300px;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .feedback-box.wrong {
+            background: #ef4444;
+        }
+
+        .feedback-box.correct {
+            background: #10b981;
+        }
+
+        .feedback-box.show-answer {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 3px solid #10b981;
+        }
+
+        .feedback-text {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .feedback-text.answer {
+            color: #10b981;
+            font-size: 3rem;
+        }
+
+        .feedback-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
         /* Reference Chart */
         .chart-toggle {
             background: rgba(139, 92, 246, 0.3);
@@ -429,9 +474,12 @@
             
             <div class="equals">=</div>
             
-            <div class="type-answer">
+            <div class="type-answer" id="typeAnswer">
                 <input type="text" id="answerInput" placeholder="Type your answer..." autocomplete="off" onkeypress="if(event.key==='Enter')checkAnswer()">
-                <button class="card-btn btn-check" onclick="checkAnswer()">✓ Check</button>
+                <button class="card-btn btn-check" id="checkBtn" onclick="checkAnswer()">✓ Check</button>
+            </div>
+            <div class="feedback-box" id="feedbackBox" style="display:none;">
+                <div class="feedback-text" id="feedbackText">WRONG!</div>
             </div>
             
             <div class="hint-text" id="hintText">Think about how this cipher works...</div>
@@ -943,14 +991,16 @@ function showQuestion() {
     // Reset state
     document.getElementById('answerInput').value = '';
     document.getElementById('answerInput').disabled = false;
-    document.getElementById('answerInput').focus();
-    document.getElementById('correctBox').style.display = 'none';
-    document.getElementById('wrongBox').style.display = 'none';
+    document.getElementById('typeAnswer').style.display = 'flex';
+    document.getElementById('feedbackBox').style.display = 'none';
     document.getElementById('revealBtn').style.display = 'inline-block';
     document.getElementById('nextBtn').style.display = 'none';
     document.getElementById('gotitBtn').style.display = 'none';
     document.getElementById('referenceChart').classList.remove('show');
     document.querySelector('.chart-toggle').textContent = '📖 Show Reference Chart';
+    
+    // Focus the input after a tiny delay
+    setTimeout(() => document.getElementById('answerInput').focus(), 100);
     
     document.getElementById('current').textContent = currentIndex + 1;
     document.getElementById('progressFill').style.width = ((currentIndex / currentQuestions.length) * 100) + '%';
@@ -966,33 +1016,55 @@ function checkAnswer() {
         return;
     }
     
-    document.getElementById('answerInput').disabled = true;
+    const feedbackBox = document.getElementById('feedbackBox');
+    const feedbackText = document.getElementById('feedbackText');
+    const typeAnswer = document.getElementById('typeAnswer');
+    
+    // Hide input, show feedback
+    typeAnswer.style.display = 'none';
     document.getElementById('revealBtn').style.display = 'none';
-    document.getElementById('nextBtn').style.display = 'inline-block';
+    document.getElementById('gotitBtn').style.display = 'none';
     
     // Check if correct
     if (input === correct) {
-        // Correct!
-        document.getElementById('correctBox').style.display = 'block';
+        // CORRECT!
+        feedbackBox.className = 'feedback-box correct';
+        feedbackText.innerHTML = '✅ CORRECT!<br><span style="font-size:3rem;">' + correct + '</span>';
+        feedbackBox.style.display = 'block';
         knownCount++;
         document.getElementById('score').textContent = knownCount;
+        document.getElementById('nextBtn').style.display = 'inline-block';
     } else {
-        // Wrong - show what they typed and the correct answer
-        document.getElementById('yourAnswer').textContent = input || '(nothing)';
-        document.getElementById('wrongBox').style.display = 'block';
+        // WRONG! - Show "WRONG!" first, then correct answer
+        feedbackBox.className = 'feedback-box wrong';
+        feedbackText.innerHTML = '❌ WRONG!';
+        feedbackBox.style.display = 'block';
         learningCount++;
+        
+        // After 1 second, show the correct answer
+        setTimeout(() => {
+            feedbackBox.className = 'feedback-box show-answer';
+            feedbackText.innerHTML = '<div class="feedback-label">The correct answer is:</div><span class="answer">' + correct + '</span>';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }, 1000);
     }
 }
 
 function revealAnswer() {
     const q = currentQuestions[currentIndex];
-    const input = document.getElementById('answerInput').value.trim().toUpperCase();
-    document.getElementById('yourAnswer').textContent = input || "(didn't answer)";
-    document.getElementById('wrongBox').style.display = 'block';
-    document.getElementById('answerInput').disabled = true;
+    const correct = q.answer.toUpperCase();
+    const feedbackBox = document.getElementById('feedbackBox');
+    const feedbackText = document.getElementById('feedbackText');
+    
+    // Hide input, show answer
+    document.getElementById('typeAnswer').style.display = 'none';
     document.getElementById('revealBtn').style.display = 'none';
-    document.getElementById('nextBtn').style.display = 'inline-block';
     document.getElementById('gotitBtn').style.display = 'none';
+    
+    feedbackBox.className = 'feedback-box show-answer';
+    feedbackText.innerHTML = '<div class="feedback-label">The answer is:</div><span class="answer">' + correct + '</span>';
+    feedbackBox.style.display = 'block';
+    document.getElementById('nextBtn').style.display = 'inline-block';
     learningCount++;
 }
 
