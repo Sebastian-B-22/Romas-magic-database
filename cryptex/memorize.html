@@ -273,8 +273,41 @@
             border-color: #ef4444;
         }
 
-        .answer-box.wrong .answer-label { color: #ef4444; }
-        .answer-box.wrong .answer-word { color: #f59e0b; }
+        .answer-box.wrong .answer-label { 
+            color: #ef4444; 
+            font-size: 1.5rem;
+        }
+        .answer-box.wrong .answer-word { 
+            color: #10b981; 
+            font-size: 3rem;
+            background: rgba(16,185,129,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .you-said {
+            color: #888;
+            margin: 0.5rem 0;
+        }
+
+        .you-said span {
+            color: #ef4444;
+            font-weight: bold;
+            text-decoration: line-through;
+        }
+
+        .correct-was {
+            color: #10b981;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .answer-extra {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
 
         /* Reference Chart */
         .chart-toggle {
@@ -407,10 +440,14 @@
                 <div class="answer-box correct" id="correctBox" style="display:none;">
                     <div class="answer-label">✅ CORRECT!</div>
                     <div class="answer-word" id="answerWord">HELLO</div>
+                    <div class="answer-extra">Great job! 🎉</div>
                 </div>
                 <div class="answer-box wrong" id="wrongBox" style="display:none;">
-                    <div class="answer-label">❌ Not quite! The answer is:</div>
+                    <div class="answer-label">❌ WRONG!</div>
+                    <div class="you-said">You typed: <span id="yourAnswer">???</span></div>
+                    <div class="correct-was">The correct answer is:</div>
                     <div class="answer-word" id="wrongAnswer">HELLO</div>
+                    <div class="answer-extra">Remember this for next time! 📝</div>
                 </div>
             </div>
 
@@ -933,14 +970,15 @@ function checkAnswer() {
     document.getElementById('revealBtn').style.display = 'none';
     document.getElementById('nextBtn').style.display = 'inline-block';
     
-    // Check if correct (allow partial matches for longer answers)
-    if (input === correct || correct.includes(input) && input.length >= correct.length * 0.7) {
+    // Check if correct
+    if (input === correct) {
         // Correct!
         document.getElementById('correctBox').style.display = 'block';
         knownCount++;
         document.getElementById('score').textContent = knownCount;
     } else {
-        // Wrong
+        // Wrong - show what they typed and the correct answer
+        document.getElementById('yourAnswer').textContent = input || '(nothing)';
         document.getElementById('wrongBox').style.display = 'block';
         learningCount++;
     }
@@ -948,10 +986,13 @@ function checkAnswer() {
 
 function revealAnswer() {
     const q = currentQuestions[currentIndex];
+    const input = document.getElementById('answerInput').value.trim().toUpperCase();
+    document.getElementById('yourAnswer').textContent = input || "(didn't answer)";
     document.getElementById('wrongBox').style.display = 'block';
     document.getElementById('answerInput').disabled = true;
     document.getElementById('revealBtn').style.display = 'none';
     document.getElementById('nextBtn').style.display = 'inline-block';
+    document.getElementById('gotitBtn').style.display = 'none';
     learningCount++;
 }
 
