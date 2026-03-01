@@ -339,52 +339,134 @@ const quizData = [
     { cipher: '🏛️ Caesar (+1)', encoded: 'IFMMP', answer: 'HELLO', hint: 'Shift each letter back by 1', blanks: '_ _ _ _ _' },
     { cipher: '🏛️ Caesar (+1)', encoded: 'CZF', answer: 'BYE', hint: 'Shift each letter back by 1', blanks: '_ _ _' },
     { cipher: '🏛️ Caesar (+1)', encoded: 'DBU', answer: 'CAT', hint: 'Shift each letter back by 1', blanks: '_ _ _' },
-    { cipher: '🏛️ Caesar (+1)', encoded: 'EPH', answer: 'DOG', hint: 'Shift each letter back by 1', blanks: '_ _ _' },
-    { cipher: '🏛️ Caesar (+1)', encoded: 'TFDSFUT', answer: 'SECRETS', hint: 'Shift each letter back by 1', blanks: '_ _ _ _ _ _ _' },
     
     // Caesar +3
     { cipher: '🏛️ Caesar (+3)', encoded: 'KHOOR', answer: 'HELLO', hint: 'Shift each letter back by 3', blanks: '_ _ _ _ _' },
     { cipher: '🏛️ Caesar (+3)', encoded: 'FDW', answer: 'CAT', hint: 'Shift each letter back by 3', blanks: '_ _ _' },
-    { cipher: '🏛️ Caesar (+3)', encoded: 'BRH', answer: 'BYE', hint: 'Shift each letter back by 3 (wrap around!)', blanks: '_ _ _' },
     
     // ROT13
-    { cipher: '🔁 ROT13', encoded: 'URYYB', answer: 'HELLO', hint: 'Shift by 13 (halfway through alphabet)', blanks: '_ _ _ _ _' },
-    { cipher: '🔁 ROT13', encoded: 'FRPERG', answer: 'SECRET', hint: 'Shift by 13 - or use ROT13 again!', blanks: '_ _ _ _ _ _' },
-    { cipher: '🔁 ROT13', encoded: 'PNG', answer: 'CAT', hint: 'Shift by 13', blanks: '_ _ _' },
+    { cipher: '🔁 ROT13', encoded: 'URYYB', answer: 'HELLO', hint: 'Shift by 13', blanks: '_ _ _ _ _' },
+    { cipher: '🔁 ROT13', encoded: 'FRPERG', answer: 'SECRET', hint: 'Shift by 13', blanks: '_ _ _ _ _ _' },
     
     // Atbash
     { cipher: '🔄 Atbash', encoded: 'SVOOL', answer: 'HELLO', hint: 'A↔Z, B↔Y, C↔X...', blanks: '_ _ _ _ _' },
-    { cipher: '🔄 Atbash', encoded: 'YBV', answer: 'BYE', hint: 'Flip the alphabet!', blanks: '_ _ _' },
-    { cipher: '🔄 Atbash', encoded: 'WLT', answer: 'DOG', hint: 'A↔Z, B↔Y, C↔X...', blanks: '_ _ _' },
+    { cipher: '🔄 Atbash', encoded: 'WLT', answer: 'DOG', hint: 'Flip the alphabet!', blanks: '_ _ _' },
     
     // A1Z26
     { cipher: '🔢 A1Z26', encoded: '8-5-12-12-15', answer: 'HELLO', hint: 'A=1, B=2, C=3...', blanks: '_ _ _ _ _' },
     { cipher: '🔢 A1Z26', encoded: '3-1-20', answer: 'CAT', hint: 'Numbers = letter positions', blanks: '_ _ _' },
-    { cipher: '🔢 A1Z26', encoded: '2-25-5', answer: 'BYE', hint: 'A=1, B=2... Y=25', blanks: '_ _ _' },
     { cipher: '🔢 A1Z26', encoded: '19-16-25', answer: 'SPY', hint: 'Count the alphabet!', blanks: '_ _ _' },
     
     // Backwards
     { cipher: '🔀 Backwards', encoded: 'OLLEH', answer: 'HELLO', hint: 'Read it backwards!', blanks: '_ _ _ _ _' },
     { cipher: '🔀 Backwards', encoded: 'TERCES', answer: 'SECRET', hint: 'Reverse the letters!', blanks: '_ _ _ _ _ _' },
-    { cipher: '🔀 Backwards', encoded: 'YPS', answer: 'SPY', hint: 'Flip it around!', blanks: '_ _ _' },
     
-    // Leet
+    // Leet Speak
     { cipher: '💬 Leet Speak', encoded: 'H3LL0', answer: 'HELLO', hint: '3=E, 0=O', blanks: '_ _ _ _ _' },
     { cipher: '💬 Leet Speak', encoded: 'H4CK3R', answer: 'HACKER', hint: '4=A, 3=E', blanks: '_ _ _ _ _ _' },
-    { cipher: '💬 Leet Speak', encoded: 'C00L', answer: 'COOL', hint: '0=O', blanks: '_ _ _ _' },
     { cipher: '💬 Leet Speak', encoded: '1337', answer: 'LEET', hint: '1=L, 3=E, 7=T', blanks: '_ _ _ _' },
     
-    // Morse
+    // Morse Code
     { cipher: '📡 Morse Code', encoded: '••• −−− •••', answer: 'SOS', hint: 'S=••• O=−−−', blanks: '_ _ _' },
     { cipher: '📡 Morse Code', encoded: '•••• ••', answer: 'HI', hint: 'H=•••• I=••', blanks: '_ _' },
-    { cipher: '📡 Morse Code', encoded: '−−− •−•', answer: 'OK', hint: 'Look up Morse chart!', blanks: '_ _' },
     
     // Binary
     { cipher: '💻 Binary', encoded: '01001000 01001001', answer: 'HI', hint: '8 digits = 1 letter', blanks: '_ _' },
+    { cipher: '💻 Binary', encoded: '01011001 01000101 01010011', answer: 'YES', hint: '8 digits = 1 letter', blanks: '_ _ _' },
     
-    // Phone
-    { cipher: '📱 Phone Keypad', encoded: '44-33-555-555-666', answer: 'HELLO', hint: 'Count the digits! 44=H (4 twice)', blanks: '_ _ _ _ _' },
+    // Phone Keypad
+    { cipher: '📱 Phone Keypad', encoded: '44-33-555-555-666', answer: 'HELLO', hint: 'Count the digits!', blanks: '_ _ _ _ _' },
     { cipher: '📱 Phone Keypad', encoded: '222-2-8', answer: 'CAT', hint: '222=C, 2=A, 8=T', blanks: '_ _ _' },
+    
+    // NATO Alphabet
+    { cipher: '✈️ NATO Alphabet', encoded: 'Hotel India', answer: 'HI', hint: 'First letter of each word!', blanks: '_ _' },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Sierra Oscar Sierra', answer: 'SOS', hint: 'S=Sierra, O=Oscar', blanks: '_ _ _' },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Charlie Alpha Tango', answer: 'CAT', hint: 'First letters spell it!', blanks: '_ _ _' },
+    
+    // Pigpen
+    { cipher: '🐷 Pigpen', encoded: '⌐ ⊐ ⌐̲ (shapes)', answer: 'ABC', hint: 'Match shapes to the grid!', blanks: '_ _ _' },
+    { cipher: '🐷 Pigpen', encoded: '□ = this letter', answer: 'E', hint: 'E is in the center of the first grid', blanks: '_' },
+    
+    // Braille
+    { cipher: '⠃ Braille', encoded: '⠓ ⠊', answer: 'HI', hint: 'Look up the dot patterns!', blanks: '_ _' },
+    { cipher: '⠃ Braille', encoded: '⠎ ⠕ ⠎', answer: 'SOS', hint: 'Match the dot patterns!', blanks: '_ _ _' },
+    
+    // Tap Code
+    { cipher: '👊 Tap Code', encoded: '•• ••• / •• ••••', answer: 'HI', hint: 'First taps=row, second=column', blanks: '_ _' },
+    { cipher: '👊 Tap Code', encoded: '•••• ••••', answer: 'T', hint: 'Row 4, Column 4 = T', blanks: '_' },
+    
+    // Polybius Square
+    { cipher: '🏛️ Polybius Square', encoded: '23 15 31 31 34', answer: 'HELLO', hint: 'Row + Column numbers', blanks: '_ _ _ _ _' },
+    { cipher: '🏛️ Polybius Square', encoded: '13 11 44', answer: 'CAT', hint: '13=C, 11=A, 44=T', blanks: '_ _ _' },
+    
+    // Hexadecimal
+    { cipher: '🔢 Hexadecimal', encoded: '48 49', answer: 'HI', hint: 'Hex to text!', blanks: '_ _' },
+    { cipher: '🔢 Hexadecimal', encoded: '43 41 54', answer: 'CAT', hint: '43=C, 41=A, 54=T', blanks: '_ _ _' },
+    
+    // Keyboard Cipher
+    { cipher: '⌨️ Keyboard Cipher', encoded: 'JO', answer: 'HI', hint: 'Shifted right on keyboard', blanks: '_ _' },
+    { cipher: '⌨️ Keyboard Cipher', encoded: 'VSY', answer: 'CAT', hint: 'Shift left on keyboard!', blanks: '_ _ _' },
+    
+    // Runic/Viking
+    { cipher: 'ᚱ Runic (Viking)', encoded: 'ᚺᛖᛚᛚᛟ', answer: 'HELLO', hint: 'Look up Elder Futhark!', blanks: '_ _ _ _ _' },
+    { cipher: 'ᚱ Runic (Viking)', encoded: 'ᚺᛁ', answer: 'HI', hint: 'ᚺ=H, ᛁ=I', blanks: '_ _' },
+    
+    // Vigenère
+    { cipher: '🔑 Vigenère (key: KEY)', encoded: 'RIJVS', answer: 'HELLO', hint: 'Subtract KEY from each letter', blanks: '_ _ _ _ _' },
+    { cipher: '🔑 Vigenère (key: ABC)', encoded: 'HJG', answer: 'HIG', hint: 'Subtract A=0, B=1, C=2', blanks: '_ _ _' },
+    
+    // Base64
+    { cipher: '📧 Base64', encoded: 'SGk=', answer: 'HI', hint: 'Use a Base64 decoder!', blanks: '_ _' },
+    { cipher: '📧 Base64', encoded: 'SEVMTE8=', answer: 'HELLO', hint: 'Ends with = sign', blanks: '_ _ _ _ _' },
+    
+    // Rail Fence
+    { cipher: '🚂 Rail Fence (2 rails)', encoded: 'HLOEL', answer: 'HELLO', hint: 'Zigzag pattern!', blanks: '_ _ _ _ _' },
+    { cipher: '🚂 Rail Fence (2 rails)', encoded: 'CTAT', answer: 'CTAT→CAT', hint: 'Read zigzag: top then bottom', blanks: '_ _ _' },
+    
+    // Semaphore
+    { cipher: '🚩 Semaphore', encoded: '↙↓ ↙← ↙↑', answer: 'ABC', hint: 'Flag arm positions!', blanks: '_ _ _' },
+    { cipher: '🚩 Semaphore', encoded: 'Arms point different ways', answer: 'LETTERS', hint: 'Each position = a letter', blanks: '_ _ _ _ _ _ _' },
+    
+    // Book Cipher
+    { cipher: '📚 Book Cipher', encoded: '5-3-2 means...', answer: 'PAGE5 LINE3 WORD2', hint: 'Page-Line-Word format!', blanks: '_ _ _ _ _' },
+    
+    // Scytale
+    { cipher: '📜 Scytale', encoded: 'HSJEICLPREYTS', answer: 'SECRETSHPY', hint: 'Wrap around a rod!', blanks: '_ _ _ _ _ _' },
+    
+    // Mirror Writing
+    { cipher: '🪞 Mirror Writing', encoded: 'OLLƎH', answer: 'HELLO', hint: 'Hold up to a mirror!', blanks: '_ _ _ _ _' },
+    { cipher: '🪞 Mirror Writing', encoded: 'IH', answer: 'HI', hint: 'Flip horizontally!', blanks: '_ _' },
+    
+    // Null Cipher
+    { cipher: '👀 Null Cipher', encoded: 'Have Everyone Loving Pizza', answer: 'HELP', hint: 'First letters!', blanks: '_ _ _ _' },
+    { cipher: '👀 Null Cipher', encoded: 'Send Over Some', answer: 'SOS', hint: 'Read first letters of each word', blanks: '_ _ _' },
+    
+    // Dancing Men
+    { cipher: '🕺 Dancing Men', encoded: 'Stick figures dancing', answer: 'LETTERS', hint: 'From Sherlock Holmes!', blanks: '_ _ _ _ _ _ _' },
+    
+    // Playfair
+    { cipher: '🎭 Playfair', encoded: 'Pairs of letters', answer: 'MESSAGE', hint: 'Uses a 5x5 grid + keyword!', blanks: '_ _ _ _ _ _ _' },
+    
+    // Bacon's Cipher
+    { cipher: '🥓 Bacon\'s Cipher', encoded: 'AAAAA AAAAB AAABA', answer: 'ABC', hint: '5 letters of A/B = 1 letter', blanks: '_ _ _' },
+    { cipher: '🥓 Bacon\'s Cipher', encoded: 'Two text styles hide message', answer: 'SECRET', hint: 'Bold vs normal = A vs B', blanks: '_ _ _ _ _ _' },
+    
+    // Enigma
+    { cipher: '⚙️ Enigma', encoded: 'Machine settings needed!', answer: 'VARIES', hint: 'WWII cipher machine', blanks: '_ _ _ _ _ _' },
+    
+    // Templar
+    { cipher: '⚔️ Templar', encoded: 'Cross shapes with dots', answer: 'LETTERS', hint: 'Like Pigpen but with crosses!', blanks: '_ _ _ _ _ _ _' },
+    
+    // Maritime Flags
+    { cipher: '🚢 Maritime Flags', encoded: '🔵⬜ = ?', answer: 'A (ALPHA)', hint: 'Each flag = letter + meaning!', blanks: '_' },
+    { cipher: '🚢 Maritime Flags', encoded: 'Red/white stripes', answer: 'HOTEL (H)', hint: 'Look up signal flags!', blanks: '_' },
+    
+    // Wingdings
+    { cipher: '✌️ Wingdings', encoded: '✌ = ?', answer: 'A', hint: 'Change font back to normal!', blanks: '_' },
+    { cipher: '✌️ Wingdings', encoded: 'Symbols in Wingdings font', answer: 'TEXT', hint: 'Copy & change font to Arial', blanks: '_ _ _ _' },
+    
+    // Columnar Transposition
+    { cipher: '📊 Columnar', encoded: 'EOOHLO LWD (key CAT)', answer: 'HELLOWORLD', hint: 'Rearrange columns by keyword!', blanks: '_ _ _ _ _' },
 ];
 
 let selectedCiphers = [];
