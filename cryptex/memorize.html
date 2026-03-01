@@ -401,6 +401,64 @@
             color: white;
         }
 
+        /* Level Select */
+        .level-select {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .level-opt {
+            flex: 1;
+            min-width: 150px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .level-opt:hover { background: rgba(233,69,96,0.2); }
+        .level-opt.selected { border-color: #10b981; background: rgba(16,185,129,0.2); }
+        .level-opt.locked { opacity: 0.5; cursor: not-allowed; }
+        .level-opt input { display: none; }
+
+        .level-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+        .level-name { font-weight: 700; color: #e94560; display: block; }
+        .level-desc { font-size: 0.85rem; color: #888; display: block; }
+        .level-lock { 
+            font-size: 0.75rem; 
+            color: #f59e0b; 
+            display: block; 
+            margin-top: 0.5rem;
+            background: rgba(245,158,11,0.2);
+            padding: 0.3rem;
+            border-radius: 5px;
+        }
+
+        .progress-tracker {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .progress-item {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .progress-item span {
+            color: #10b981;
+            font-weight: 700;
+        }
+
         /* Results */
         .results {
             display: none;
@@ -437,8 +495,38 @@
 
     <!-- Setup -->
     <div class="setup" id="setup">
-        <h2>📋 Step 1: Pick Which Ciphers to Learn!</h2>
-        <p style="color: #888; margin-bottom: 1rem;">Click to select/unselect. Only selected ciphers will appear in the quiz!</p>
+        <h2>📋 Step 1: Pick Your Level!</h2>
+        <div class="level-select" id="levelSelect">
+            <div class="level-opt selected" onclick="selectLevel(1)">
+                <input type="radio" name="level" value="1" checked>
+                <span class="level-icon">🔤</span>
+                <span class="level-name">Letters</span>
+                <span class="level-desc">Learn A, B, C...</span>
+            </div>
+            <div class="level-opt" onclick="selectLevel(2)">
+                <input type="radio" name="level" value="2">
+                <span class="level-icon">📝</span>
+                <span class="level-name">Words</span>
+                <span class="level-desc">HI, CAT, DOG...</span>
+                <span class="level-lock" id="lock2">🔒 Get 10 letters right first!</span>
+            </div>
+            <div class="level-opt" onclick="selectLevel(3)">
+                <input type="radio" name="level" value="3">
+                <span class="level-icon">💬</span>
+                <span class="level-name">Sentences</span>
+                <span class="level-desc">HELLO WORLD...</span>
+                <span class="level-lock" id="lock3">🔒 Get 10 words right first!</span>
+            </div>
+        </div>
+        
+        <div class="progress-tracker" id="progressTracker">
+            <div class="progress-item">🔤 Letters: <span id="lettersProgress">0</span>/10</div>
+            <div class="progress-item">📝 Words: <span id="wordsProgress">0</span>/10</div>
+            <div class="progress-item">💬 Sentences: <span id="sentencesProgress">0</span>/5</div>
+        </div>
+
+        <h2 style="margin-top: 1.5rem;">📋 Step 2: Pick Which Ciphers!</h2>
+        <p style="color: #888; margin-bottom: 1rem;">Click to select/unselect.</p>
         <div class="cipher-select" id="cipherSelect"></div>
         <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button class="btn btn-secondary" onclick="selectAll()">✅ Select All</button>
@@ -528,81 +616,117 @@
 </main>
 
 <script>
-// Quiz questions - encoded = ?, answer = decoded word
+// LEVELS: Letters (1) → Words (2) → Sentences (3)
+const quizLevels = {
+    1: { name: 'Letters', description: 'Learn single letters', minCorrect: 10 },
+    2: { name: 'Words', description: 'Short words', minCorrect: 10 },
+    3: { name: 'Sentences', description: 'Full messages!', minCorrect: 5 }
+};
+
+// Quiz questions with levels
 const quizData = [
-    // MORSE CODE - Full Alphabet!
-    { cipher: '📡 Morse Code', encoded: '•−', answer: 'A', hint: 'Dot dash = A', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−•••', answer: 'B', hint: 'Dash dot dot dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−•−•', answer: 'C', hint: 'Dash dot dash dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−••', answer: 'D', hint: 'Dash dot dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•', answer: 'E', hint: 'Single dot!', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '••−•', answer: 'F', hint: 'Dot dot dash dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−−•', answer: 'G', hint: 'Dash dash dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '••••', answer: 'H', hint: 'Four dots!', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '••', answer: 'I', hint: 'Two dots', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•−−−', answer: 'J', hint: 'Dot dash dash dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−•−', answer: 'K', hint: 'Dash dot dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•−••', answer: 'L', hint: 'Dot dash dot dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−−', answer: 'M', hint: 'Two dashes', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−•', answer: 'N', hint: 'Dash dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−−−', answer: 'O', hint: 'Three dashes!', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•−−•', answer: 'P', hint: 'Dot dash dash dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−−•−', answer: 'Q', hint: 'Dash dash dot dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•−•', answer: 'R', hint: 'Dot dash dot', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•••', answer: 'S', hint: 'Three dots!', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−', answer: 'T', hint: 'Single dash!', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '••−', answer: 'U', hint: 'Dot dot dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•••−', answer: 'V', hint: 'Dot dot dot dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '•−−', answer: 'W', hint: 'Dot dash dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−••−', answer: 'X', hint: 'Dash dot dot dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−•−−', answer: 'Y', hint: 'Dash dot dash dash', blanks: '_' },
-    { cipher: '📡 Morse Code', encoded: '−−••', answer: 'Z', hint: 'Dash dash dot dot', blanks: '_' },
+    // MORSE CODE - Level 1: Letters
+    { cipher: '📡 Morse Code', encoded: '•−', answer: 'A', hint: 'Dot dash = A', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−•••', answer: 'B', hint: 'Dash dot dot dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−•−•', answer: 'C', hint: 'Dash dot dash dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−••', answer: 'D', hint: 'Dash dot dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•', answer: 'E', hint: 'Single dot!', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '••−•', answer: 'F', hint: 'Dot dot dash dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−−•', answer: 'G', hint: 'Dash dash dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '••••', answer: 'H', hint: 'Four dots!', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '••', answer: 'I', hint: 'Two dots', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•−−−', answer: 'J', hint: 'Dot dash dash dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−•−', answer: 'K', hint: 'Dash dot dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•−••', answer: 'L', hint: 'Dot dash dot dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−−', answer: 'M', hint: 'Two dashes', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−•', answer: 'N', hint: 'Dash dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−−−', answer: 'O', hint: 'Three dashes!', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•−−•', answer: 'P', hint: 'Dot dash dash dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−−•−', answer: 'Q', hint: 'Dash dash dot dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•−•', answer: 'R', hint: 'Dot dash dot', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•••', answer: 'S', hint: 'Three dots!', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−', answer: 'T', hint: 'Single dash!', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '••−', answer: 'U', hint: 'Dot dot dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•••−', answer: 'V', hint: 'Dot dot dot dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '•−−', answer: 'W', hint: 'Dot dash dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−••−', answer: 'X', hint: 'Dash dot dot dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−•−−', answer: 'Y', hint: 'Dash dot dash dash', level: 1 },
+    { cipher: '📡 Morse Code', encoded: '−−••', answer: 'Z', hint: 'Dash dash dot dot', level: 1 },
+    // MORSE CODE - Level 2: Words
+    { cipher: '📡 Morse Code', encoded: '••• −−− •••', answer: 'SOS', hint: 'Help signal!', level: 2 },
+    { cipher: '📡 Morse Code', encoded: '•••• ••', answer: 'HI', hint: 'Greeting!', level: 2 },
+    { cipher: '📡 Morse Code', encoded: '−•−• •− −', answer: 'CAT', hint: 'Meow!', level: 2 },
+    { cipher: '📡 Morse Code', encoded: '−•• −−− −−•', answer: 'DOG', hint: 'Woof!', level: 2 },
+    { cipher: '📡 Morse Code', encoded: '−−− •−•', answer: 'OK', hint: 'All good!', level: 2 },
+    // MORSE CODE - Level 3: Sentences
+    { cipher: '📡 Morse Code', encoded: '•••• • •−•• •−•• −−−', answer: 'HELLO', hint: 'Greeting!', level: 3 },
+    { cipher: '📡 Morse Code', encoded: '•••• • •−•• •−−• / −− •', answer: 'HELP ME', hint: 'Asking for help', level: 3 },
     
-    // A1Z26 - Full Alphabet!
-    { cipher: '🔢 A1Z26', encoded: '1', answer: 'A', hint: 'First letter!', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '2', answer: 'B', hint: 'Second letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '3', answer: 'C', hint: 'Third letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '5', answer: 'E', hint: 'Fifth letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '8', answer: 'H', hint: 'Eighth letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '9', answer: 'I', hint: 'Ninth letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '12', answer: 'L', hint: 'Twelfth letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '13', answer: 'M', hint: 'Middle of alphabet!', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '14', answer: 'N', hint: 'After M (13)', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '15', answer: 'O', hint: 'Fifteenth letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '18', answer: 'R', hint: '18th letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '19', answer: 'S', hint: '19th letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '20', answer: 'T', hint: '20th letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '24', answer: 'X', hint: '24th letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '25', answer: 'Y', hint: '25th letter', blanks: '_' },
-    { cipher: '🔢 A1Z26', encoded: '26', answer: 'Z', hint: 'Last letter!', blanks: '_' },
+    // A1Z26 - Level 1: Letters
+    { cipher: '🔢 A1Z26', encoded: '1', answer: 'A', hint: 'First letter!', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '2', answer: 'B', hint: 'Second letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '3', answer: 'C', hint: 'Third letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '5', answer: 'E', hint: 'Fifth letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '8', answer: 'H', hint: 'Eighth letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '9', answer: 'I', hint: 'Ninth letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '12', answer: 'L', hint: 'Twelfth letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '13', answer: 'M', hint: 'Middle of alphabet!', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '14', answer: 'N', hint: 'After M (13)', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '15', answer: 'O', hint: 'Fifteenth letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '18', answer: 'R', hint: '18th letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '19', answer: 'S', hint: '19th letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '20', answer: 'T', hint: '20th letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '24', answer: 'X', hint: '24th letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '25', answer: 'Y', hint: '25th letter', level: 1 },
+    { cipher: '🔢 A1Z26', encoded: '26', answer: 'Z', hint: 'Last letter!', level: 1 },
+    // A1Z26 - Level 2: Words
+    { cipher: '🔢 A1Z26', encoded: '8-9', answer: 'HI', hint: 'Greeting!', level: 2 },
+    { cipher: '🔢 A1Z26', encoded: '3-1-20', answer: 'CAT', hint: 'Meow!', level: 2 },
+    { cipher: '🔢 A1Z26', encoded: '4-15-7', answer: 'DOG', hint: 'Woof!', level: 2 },
+    { cipher: '🔢 A1Z26', encoded: '19-16-25', answer: 'SPY', hint: 'Secret agent!', level: 2 },
+    { cipher: '🔢 A1Z26', encoded: '25-5-19', answer: 'YES', hint: 'Affirmative!', level: 2 },
+    // A1Z26 - Level 3: Sentences  
+    { cipher: '🔢 A1Z26', encoded: '8-5-12-12-15', answer: 'HELLO', hint: 'Greeting!', level: 3 },
+    { cipher: '🔢 A1Z26', encoded: '8-5-12-16 13-5', answer: 'HELP ME', hint: 'Asking for help!', level: 3 },
+    { cipher: '🔢 A1Z26', encoded: '19-5-3-18-5-20', answer: 'SECRET', hint: 'Hidden!', level: 3 },
     
-    // NATO - Full Alphabet!
-    { cipher: '✈️ NATO Alphabet', encoded: 'Alpha', answer: 'A', hint: 'A = Alpha', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Bravo', answer: 'B', hint: 'B = Bravo', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Charlie', answer: 'C', hint: 'C = Charlie', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Delta', answer: 'D', hint: 'D = Delta', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Echo', answer: 'E', hint: 'E = Echo', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Foxtrot', answer: 'F', hint: 'F = Foxtrot', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Golf', answer: 'G', hint: 'G = Golf', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Hotel', answer: 'H', hint: 'H = Hotel', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'India', answer: 'I', hint: 'I = India', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Juliet', answer: 'J', hint: 'J = Juliet', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Kilo', answer: 'K', hint: 'K = Kilo', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Lima', answer: 'L', hint: 'L = Lima', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Mike', answer: 'M', hint: 'M = Mike', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'November', answer: 'N', hint: 'N = November', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Oscar', answer: 'O', hint: 'O = Oscar', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Papa', answer: 'P', hint: 'P = Papa', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Quebec', answer: 'Q', hint: 'Q = Quebec', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Romeo', answer: 'R', hint: 'R = Romeo', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Sierra', answer: 'S', hint: 'S = Sierra', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Tango', answer: 'T', hint: 'T = Tango', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Uniform', answer: 'U', hint: 'U = Uniform', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Victor', answer: 'V', hint: 'V = Victor', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Whiskey', answer: 'W', hint: 'W = Whiskey', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'X-ray', answer: 'X', hint: 'X = X-ray', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Yankee', answer: 'Y', hint: 'Y = Yankee', blanks: '_' },
-    { cipher: '✈️ NATO Alphabet', encoded: 'Zulu', answer: 'Z', hint: 'Z = Zulu', blanks: '_' },
+    // NATO - Level 1: Letters
+    { cipher: '✈️ NATO Alphabet', encoded: 'Alpha', answer: 'A', hint: 'A = Alpha', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Bravo', answer: 'B', hint: 'B = Bravo', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Charlie', answer: 'C', hint: 'C = Charlie', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Delta', answer: 'D', hint: 'D = Delta', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Echo', answer: 'E', hint: 'E = Echo', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Foxtrot', answer: 'F', hint: 'F = Foxtrot', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Golf', answer: 'G', hint: 'G = Golf', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Hotel', answer: 'H', hint: 'H = Hotel', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'India', answer: 'I', hint: 'I = India', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Juliet', answer: 'J', hint: 'J = Juliet', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Kilo', answer: 'K', hint: 'K = Kilo', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Lima', answer: 'L', hint: 'L = Lima', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Mike', answer: 'M', hint: 'M = Mike', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'November', answer: 'N', hint: 'N = November', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Oscar', answer: 'O', hint: 'O = Oscar', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Papa', answer: 'P', hint: 'P = Papa', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Quebec', answer: 'Q', hint: 'Q = Quebec', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Romeo', answer: 'R', hint: 'R = Romeo', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Sierra', answer: 'S', hint: 'S = Sierra', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Tango', answer: 'T', hint: 'T = Tango', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Uniform', answer: 'U', hint: 'U = Uniform', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Victor', answer: 'V', hint: 'V = Victor', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Whiskey', answer: 'W', hint: 'W = Whiskey', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'X-ray', answer: 'X', hint: 'X = X-ray', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Yankee', answer: 'Y', hint: 'Y = Yankee', level: 1 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Zulu', answer: 'Z', hint: 'Z = Zulu', level: 1 },
+    // NATO - Level 2: Words
+    { cipher: '✈️ NATO Alphabet', encoded: 'Hotel India', answer: 'HI', hint: 'Greeting!', level: 2 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Charlie Alpha Tango', answer: 'CAT', hint: 'Meow!', level: 2 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Sierra Oscar Sierra', answer: 'SOS', hint: 'Help!', level: 2 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Delta Oscar Golf', answer: 'DOG', hint: 'Woof!', level: 2 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Yankee Echo Sierra', answer: 'YES', hint: 'Affirmative!', level: 2 },
+    // NATO - Level 3: Sentences
+    { cipher: '✈️ NATO Alphabet', encoded: 'Hotel Echo Lima Lima Oscar', answer: 'HELLO', hint: 'Greeting!', level: 3 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Juliet Alpha Mike Echo Sierra', answer: 'JAMES', hint: 'A name!', level: 3 },
+    { cipher: '✈️ NATO Alphabet', encoded: 'Sierra Echo Charlie Romeo Echo Tango', answer: 'SECRET', hint: 'Hidden!', level: 3 },
     
     // Braille - Key letters
     { cipher: '⠃ Braille', encoded: '⠁', answer: 'A', hint: 'Single dot top-left', blanks: '_' },
@@ -755,6 +879,53 @@ let currentQuestions = [];
 let currentIndex = 0;
 let knownCount = 0;
 let learningCount = 0;
+let currentLevel = 1;
+
+// Progress tracking with localStorage
+function getProgress() {
+    const saved = localStorage.getItem('cryptexProgress');
+    return saved ? JSON.parse(saved) : { letters: 0, words: 0, sentences: 0 };
+}
+
+function saveProgress(progress) {
+    localStorage.setItem('cryptexProgress', JSON.stringify(progress));
+}
+
+function updateProgressDisplay() {
+    const progress = getProgress();
+    document.getElementById('lettersProgress').textContent = progress.letters;
+    document.getElementById('wordsProgress').textContent = progress.words;
+    document.getElementById('sentencesProgress').textContent = progress.sentences;
+    
+    // Unlock levels
+    if (progress.letters >= 10) {
+        document.getElementById('lock2').style.display = 'none';
+        document.querySelector('.level-opt:nth-child(2)').classList.remove('locked');
+    }
+    if (progress.words >= 10) {
+        document.getElementById('lock3').style.display = 'none';
+        document.querySelector('.level-opt:nth-child(3)').classList.remove('locked');
+    }
+}
+
+function selectLevel(level) {
+    const progress = getProgress();
+    
+    // Check if level is unlocked
+    if (level === 2 && progress.letters < 10) {
+        alert('Get 10 letters right first to unlock Words!');
+        return;
+    }
+    if (level === 3 && progress.words < 10) {
+        alert('Get 10 words right first to unlock Sentences!');
+        return;
+    }
+    
+    currentLevel = level;
+    document.querySelectorAll('.level-opt').forEach((opt, i) => {
+        opt.classList.toggle('selected', i + 1 === level);
+    });
+}
 
 // Reference charts for each cipher
 const cipherCharts = {
@@ -948,8 +1119,17 @@ function startQuiz() {
         return;
     }
 
-    // Filter questions for selected ciphers
-    currentQuestions = quizData.filter(q => selectedCiphers.includes(q.cipher));
+    // Filter questions for selected ciphers AND current level
+    currentQuestions = quizData.filter(q => {
+        const matchesCipher = selectedCiphers.includes(q.cipher);
+        const matchesLevel = (q.level || 1) === currentLevel;
+        return matchesCipher && matchesLevel;
+    });
+    
+    if (currentQuestions.length === 0) {
+        alert('No questions for this cipher at this level yet! Try a different level or cipher.');
+        return;
+    }
     
     // Shuffle
     currentQuestions = currentQuestions.sort(() => Math.random() - 0.5);
@@ -1033,6 +1213,14 @@ function checkAnswer() {
         feedbackBox.style.display = 'block';
         knownCount++;
         document.getElementById('score').textContent = knownCount;
+        
+        // Save progress
+        const progress = getProgress();
+        if (currentLevel === 1) progress.letters++;
+        else if (currentLevel === 2) progress.words++;
+        else if (currentLevel === 3) progress.sentences++;
+        saveProgress(progress);
+        updateProgressDisplay();
         document.getElementById('nextBtn').style.display = 'inline-block';
     } else {
         // WRONG! - Show "WRONG!" first, then correct answer
@@ -1149,6 +1337,7 @@ function backToSetup() {
 
 // Initialize
 populateSelect();
+updateProgressDisplay();
 </script>
 
 </body>
