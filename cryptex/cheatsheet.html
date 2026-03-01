@@ -570,6 +570,182 @@ HELLO = SEVMTE8=
 HI = SGk=
 
 Look for = at the end - that's the clue!`
+    },
+    {
+        id: 'semaphore',
+        icon: '🚩',
+        name: 'Semaphore Flags',
+        chart: `Hold two flags in different positions:
+
+A = ↙↓    H = ↙→    O = ←↑
+B = ↙←    I = ↙↗    P = ↓↑
+C = ↙↑    J = →↗    S = ↓↘
+D = ↙↗    K = ↑↓    T = ←→
+E = ↙→    L = ↑↙    
+F = ←↓    M = ↑←    
+G = ←↙    N = ↑↘    
+
+Arms point like clock positions!`
+    },
+    {
+        id: 'book',
+        icon: '📚',
+        name: 'Book Cipher',
+        chart: `Use a book as the key!
+Format: Page-Line-Word
+
+5-3-2 = Page 5, Line 3, Word 2
+12-7-4 = Page 12, Line 7, Word 4
+
+Both people need the SAME book!`
+    },
+    {
+        id: 'scytale',
+        icon: '📜',
+        name: 'Scytale (Spartan)',
+        chart: `Wrap paper around a rod, write, unwrap!
+
+On rod:     Unwrapped:
+H E L P     H M E L
+M E ! !  →  E E   !
+
+Try different "rod widths" to decode!`
+    },
+    {
+        id: 'mirror',
+        icon: '🪞',
+        name: 'Mirror Writing',
+        chart: `Write so it reads correctly in a mirror!
+
+HELLO → OLLƎH (flipped)
+SECRET → TƎЯƆƎƧ
+
+Leonardo da Vinci did this!
+Some letters look same: A H I M O T U V W X Y`
+    },
+    {
+        id: 'null',
+        icon: '👀',
+        name: 'Null Cipher',
+        chart: `Hidden message in normal text!
+First letters spell the secret:
+
+"Have Everyone Loving Pizza"
+ H    E        L      P  = HELP
+
+Look for awkward phrasing!`
+    },
+    {
+        id: 'dancing',
+        icon: '🕺',
+        name: 'Dancing Men',
+        chart: `From Sherlock Holmes!
+Each stick figure pose = one letter
+
+🕺 = A    💃 = B    🤸 = C   ...
+
+Figures with FLAGS = end of word
+Most common figure = E`
+    },
+    {
+        id: 'playfair',
+        icon: '🎭',
+        name: 'Playfair Cipher',
+        chart: `5×5 grid with keyword, encrypts PAIRS:
+
+M A G I C  ← keyword first
+B D E F H  ← rest of alphabet
+K L N O P  (I and J share spot)
+Q R S T U
+V W X Y Z
+
+Same row: shift right
+Same column: shift down
+Rectangle: swap corners`
+    },
+    {
+        id: 'bacon',
+        icon: '🥓',
+        name: "Bacon's Cipher",
+        chart: `Hide messages in text styles!
+5 characters = one letter:
+
+A = AAAAA    B = AAAAB    C = AAABA
+D = AAABB    E = AABAA    F = AABAB...
+
+Use BOLD/normal or CAPS/lower as A/B!`
+    },
+    {
+        id: 'enigma',
+        icon: '⚙️',
+        name: 'Enigma Machine',
+        chart: `Famous WWII German cipher!
+
+⚙️⚙️⚙️ ROTORS - spinning wheels
+PLUGBOARD - swapped letters
+KEYBOARD - type here
+
+A letter NEVER encodes to itself!
+158,000,000,000,000,000,000 settings!
+Cracked by Alan Turing!`
+    },
+    {
+        id: 'templar',
+        icon: '⚔️',
+        name: 'Templar Cipher',
+        chart: `Knights Templar cross shapes:
+
+  ╲ A │ B ╱      ╲ I•│ J•╱
+   ╲  │  ╱        ╲  │  ╱
+ C ──┼── D     K•──┼──L•
+   ╱  │  ╲        ╱  │  ╲
+  ╱ E │ F ╲      ╱ M•│ N•╲
+
+Cross sections + dots = letters`
+    },
+    {
+        id: 'maritime',
+        icon: '🚢',
+        name: 'Maritime Flags',
+        chart: `Ship flags - each = letter + meaning:
+
+🔵⬜ A (Alpha) - "Diver down"
+🔴🔴 B (Bravo) - "Dangerous cargo"
+🔵⬜🔴 C (Charlie) - "Yes"
+🟡🔵 D (Delta) - "Keep clear"
+🔴🔵 E (Echo) - "Changing course"
+
+26 letter flags + 10 number flags!`
+    },
+    {
+        id: 'wingdings',
+        icon: '✌️',
+        name: 'Wingdings',
+        chart: `Font that turns letters into symbols!
+
+A = ✌    G = ●    M = ☺
+B = 👎   H = ❍    N = ☻
+C = 👍   I = ◯    O = ☼
+D = ☛   J = ◉    P = ✡
+E = ☞   K = ◎    ...
+
+To decode: Change font back to Arial!`
+    },
+    {
+        id: 'columnar',
+        icon: '📊',
+        name: 'Columnar Transposition',
+        chart: `Write in rows, read columns by keyword:
+
+Keyword "CAT" → alphabetize: A=1, C=2, T=3
+
+  C A T
+  H E L
+  L O W
+  O R D
+
+Read columns in A,C,T order:
+EOR + HLO + LWD = EORHLO LWD`
     }
 ];
 
