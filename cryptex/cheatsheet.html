@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cipher Cheat Sheet Builder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo { font-size: 2rem; font-weight: 900; color: #e94560; }
+        .tagline { color: #888; margin-top: 0.3rem; }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .builder-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .builder-section h2 {
+            color: #e94560;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .cipher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .cipher-option {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .cipher-option:hover {
+            background: rgba(233,69,96,0.2);
+        }
+
+        .cipher-option.selected {
+            border-color: #10b981;
+            background: rgba(16,185,129,0.2);
+        }
+
+        .cipher-option input {
+            display: none;
+        }
+
+        .cipher-option .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #555;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .cipher-option.selected .checkbox {
+            border-color: #10b981;
+            background: rgba(16,185,129,0.3);
+        }
+
+        .cipher-option .icon { font-size: 1.3rem; }
+        .cipher-option .name { font-size: 0.95rem; color: #ccc; }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e94560, #c73659);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(233,69,96,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #ccc;
+            border: 1px solid #555;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .count {
+            background: #10b981;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #e94560;
+            text-decoration: none;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        /* Print Preview */
+        #printPreview {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        #printPreview.active { display: block; }
+
+        .preview-controls {
+            max-width: 800px;
+            margin: 0 auto 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* The actual printable sheet */
+        #cheatSheet {
+            background: white;
+            color: #222;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .sheet-header {
+            text-align: center;
+            border-bottom: 3px solid #e94560;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sheet-header h1 {
+            color: #e94560;
+            font-size: 2rem;
+        }
+
+        .sheet-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .sheet-cipher {
+            margin-bottom: 1.5rem;
+            page-break-inside: avoid;
+        }
+
+        .sheet-cipher-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f5f5f5;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .sheet-cipher-header .icon { font-size: 1.3rem; }
+        .sheet-cipher-header .name { font-weight: 700; color: #333; font-size: 1.1rem; }
+
+        .sheet-cipher-chart {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .sheet-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* Print styles */
+        @media print {
+            body { background: white; }
+            header, main, .preview-controls { display: none !important; }
+            #printPreview { 
+                position: static; 
+                background: white; 
+                padding: 0;
+            }
+            #cheatSheet {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🖨️ Cheat Sheet Builder</div>
+    <p class="tagline">Pick your favorite ciphers and print them!</p>
+</header>
+
+<main>
+    <a href="index.html" class="back-link">← Back to The Cryptex</a>
+
+    <div class="builder-section">
+        <h2>📋 Select Your Ciphers <span class="count" id="count">0</span></h2>
+        
+        <div class="cipher-grid" id="cipherGrid">
+            <!-- Ciphers will be populated by JS -->
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="generateSheet()">🖨️ Generate Cheat Sheet</button>
+            <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
+            <button class="btn btn-secondary" onclick="selectNone()">Clear All</button>
+        </div>
+    </div>
+</main>
+
+<!-- Print Preview Overlay -->
+<div id="printPreview">
+    <div class="preview-controls">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Now</button>
+        <button class="btn btn-secondary" onclick="closePreview()">← Back to Selection</button>
+    </div>
+    
+    <div id="cheatSheet">
+        <!-- Generated content goes here -->
+    </div>
+</div>
+
+<script>
+// Cipher data with charts
+const ciphers = [
+    {
+        id: 'caesar',
+        icon: '🏛️',
+        name: 'Caesar Cipher',
+        chart: `ALPHABET SHIFT:
+Normal:   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+Shift +1: B C D E F G H I J K L M N O P Q R S T U V W X Y Z A
+Shift +3: D E F G H I J K L M N O P Q R S T U V W X Y Z A B C
+
+Example (+1): HELLO → IFMMP`
+    },
+    {
+        id: 'morse',
+        icon: '📡',
+        name: 'Morse Code',
+        chart: `A = •−      N = −•      0 = −−−−−
+B = −•••    O = −−−     1 = •−−−−
+C = −•−•    P = •−−•    2 = ••−−−
+D = −••     Q = −−•−    3 = •••−−
+E = •       R = •−•     4 = ••••−
+F = ••−•    S = •••     5 = •••••
+G = −−•     T = −       6 = −••••
+H = ••••    U = ••−     7 = −−•••
+I = ••      V = •••−    8 = −−−••
+J = •−−−    W = •−−     9 = −−−−•
+K = −•−     X = −••−
+L = •−••    Y = −•−−
+M = −−      Z = −−••`
+    },
+    {
+        id: 'a1z26',
+        icon: '🔢',
+        name: 'A1Z26 Numbers',
+        chart: `A=1   B=2   C=3   D=4   E=5   F=6   G=7
+H=8   I=9   J=10  K=11  L=12  M=13  N=14
+O=15  P=16  Q=17  R=18  S=19  T=20  U=21
+V=22  W=23  X=24  Y=25  Z=26
+
+Example: HELLO = 8-5-12-12-15`
+    },
+    {
+        id: 'atbash',
+        icon: '🔄',
+        name: 'Atbash',
+        chart: `REVERSE ALPHABET:
+Normal:  A B C D E F G H I J K L M
+Becomes: Z Y X W V U T S R Q P O N
+
+Normal:  N O P Q R S T U V W X Y Z
+Becomes: M L K J I H G F E D C B A
+
+Example: HELLO = SVOOL`
+    },
+    {
+        id: 'pigpen',
+        icon: '🐷',
+        name: 'Pigpen Cipher',
+        chart: ` A│B│C     J•│K•│L•
+──┼──┼──   ──┼──┼──
+ D│E│F     M•│N•│O•
+──┼──┼──   ──┼──┼──
+ G│H│I     P•│Q•│R•
+
+  ╲S│T╱      ╲W•│X•╱
+   ╲│╱        ╲│╱
+  U│V        Y•│Z•
+
+Use the lines around each letter as the symbol!`
+    },
+    {
+        id: 'binary',
+        icon: '💻',
+        name: 'Binary Code',
+        chart: `A = 01000001    N = 01001110
+B = 01000010    O = 01001111
+C = 01000011    P = 01010000
+D = 01000100    R = 01010010
+E = 01000101    S = 01010011
+H = 01001000    T = 01010100
+I = 01001001    Space = 00100000
+L = 01001100
+
+Example: HI = 01001000 01001001`
+    },
+    {
+        id: 'phone',
+        icon: '📱',
+        name: 'Phone Keypad',
+        chart: `┌─────┬─────┬─────┐
+│ 1   │ 2   │ 3   │
+│     │ ABC │ DEF │
+├─────┼─────┼─────┤
+│ 4   │ 5   │ 6   │
+│ GHI │ JKL │ MNO │
+├─────┼─────┼─────┤
+│ 7   │ 8   │ 9   │
+│PQRS │ TUV │WXYZ │
+└─────┴─────┴─────┘
+Example: HELLO = 44-33-555-555-666`
+    },
+    {
+        id: 'nato',
+        icon: '✈️',
+        name: 'NATO Alphabet',
+        chart: `A = Alpha     N = November
+B = Bravo     O = Oscar
+C = Charlie   P = Papa
+D = Delta     Q = Quebec
+E = Echo      R = Romeo
+F = Foxtrot   S = Sierra
+G = Golf      T = Tango
+H = Hotel     U = Uniform
+I = India     V = Victor
+J = Juliet    W = Whiskey
+K = Kilo      X = X-ray
+L = Lima      Y = Yankee
+M = Mike      Z = Zulu`
+    },
+    {
+        id: 'rot13',
+        icon: '🔁',
+        name: 'ROT13',
+        chart: `A↔N  B↔O  C↔P  D↔Q  E↔R  F↔S  G↔T
+H↔U  I↔V  J↔W  K↔X  L↔Y  M↔Z
+
+A B C D E F G H I J K L M
+↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕ ↕
+N O P Q R S T U V W X Y Z
+
+Apply twice = back to original!`
+    },
+    {
+        id: 'leet',
+        icon: '💬',
+        name: 'Leet Speak',
+        chart: `A = 4      O = 0
+E = 3      S = 5
+I = 1      T = 7
+L = 1      B = 8
+
+Examples:
+LEET = 1337
+HELLO = H3LL0
+HACKER = H4CK3R`
+    },
+    {
+        id: 'braille',
+        icon: '⠃',
+        name: 'Braille',
+        chart: `⠁=A  ⠃=B  ⠉=C  ⠙=D  ⠑=E  ⠋=F  ⠛=G
+⠓=H  ⠊=I  ⠚=J  ⠅=K  ⠇=L  ⠍=M  ⠝=N
+⠕=O  ⠏=P  ⠟=Q  ⠗=R  ⠎=S  ⠞=T  ⠥=U
+⠧=V  ⠺=W  ⠭=X  ⠽=Y  ⠵=Z
+
+Dot positions: 1●●4
+               2●●5
+               3●●6`
+    },
+    {
+        id: 'tap',
+        icon: '👊',
+        name: 'Tap Code',
+        chart: `    1   2   3   4   5
+  ┌───┬───┬───┬───┬───┐
+1 │ A │ B │ C │ D │ E │
+  ├───┼───┼───┼───┼───┤
+2 │ F │ G │ H │ I │ J │
+  ├───┼───┼───┼───┼───┤
+3 │ L │ M │ N │ O │ P │
+  ├───┼───┼───┼───┼───┤
+4 │ Q │ R │ S │ T │ U │
+  ├───┼───┼───┼───┼───┤
+5 │ V │ W │ X │ Y │ Z │
+  └───┴───┴───┴───┴───┘
+(K=C) First taps=row, Second taps=column`
+    },
+    {
+        id: 'polybius',
+        icon: '🏛️',
+        name: 'Polybius Square',
+        chart: `    1   2   3   4   5
+  ┌───┬───┬───┬───┬───┐
+1 │ A │ B │ C │ D │ E │
+2 │ F │ G │ H │ I │ J │
+3 │ L │ M │ N │ O │ P │
+4 │ Q │ R │ S │ T │ U │
+5 │ V │ W │ X │ Y │ Z │
+  └───┴───┴───┴───┴───┘
+A=11, H=23, HELLO=23 15 31 31 34`
+    },
+    {
+        id: 'hex',
+        icon: '🔢',
+        name: 'Hexadecimal',
+        chart: `A = 41    H = 48    O = 4F
+B = 42    I = 49    P = 50
+C = 43    J = 4A    R = 52
+D = 44    K = 4B    S = 53
+E = 45    L = 4C    T = 54
+F = 46    M = 4D    U = 55
+G = 47    N = 4E
+
+Example: HELLO = 48 45 4C 4C 4F`
+    },
+    {
+        id: 'keyboard',
+        icon: '⌨️',
+        name: 'Keyboard Cipher',
+        chart: `QWERTY KEYBOARD:
+Q W E R T Y U I O P
+ A S D F G H J K L
+  Z X C V B N M
+
+Shift right: H→J, E→R, L→;
+Example: HELLO → JRPP;`
+    },
+    {
+        id: 'runic',
+        icon: 'ᚱ',
+        name: 'Runic (Viking)',
+        chart: `ᚠ=F  ᚢ=U  ᚦ=TH ᚨ=A  ᚱ=R  ᚲ=K
+ᚷ=G  ᚹ=W  ᚺ=H  ᚾ=N  ᛁ=I  ᛃ=J
+ᛇ=EI ᛈ=P  ᛉ=Z  ᛊ=S  ᛏ=T  ᛒ=B
+ᛖ=E  ᛗ=M  ᛚ=L  ᛜ=NG ᛞ=D  ᛟ=O
+
+Example: HELLO = ᚺᛖᛚᛚᛟ`
+    },
+    {
+        id: 'backwards',
+        icon: '🔀',
+        name: 'Backwards',
+        chart: `Just write everything backwards!
+
+HELLO WORLD → DLROW OLLEH
+SECRET → TERCES
+
+Tip: Use a mirror to read quickly!`
+    },
+    {
+        id: 'vigenere',
+        icon: '🔑',
+        name: 'Vigenère',
+        chart: `Uses a keyword to shift each letter differently!
+
+Message:  H E L L O
+Keyword:  K E Y K E
+Shift by: 10 4 24 10 4
+Result:   R I J V S
+
+Need to know the keyword to decode!`
+    },
+    {
+        id: 'railfence',
+        icon: '🚂',
+        name: 'Rail Fence',
+        chart: `Write in zigzag, read across rows:
+
+H . . . O . . . R      = HOR
+. E . L . W . L . D    = ELWLD
+. . L . . . O . . .    = LO
+
+HELLO WORLD → HORELWLDLO`
+    },
+    {
+        id: 'base64',
+        icon: '📧',
+        name: 'Base64',
+        chart: `Uses: A-Z, a-z, 0-9, +, /
+Often ends with = or ==
+
+HELLO = SEVMTE8=
+HI = SGk=
+
+Look for = at the end - that's the clue!`
+    }
+];
+
+// Populate grid
+function populateGrid() {
+    const grid = document.getElementById('cipherGrid');
+    grid.innerHTML = ciphers.map(c => `
+        <div class="cipher-option" onclick="toggleCipher('${c.id}')">
+            <input type="checkbox" id="${c.id}">
+            <span class="checkbox">✓</span>
+            <span class="icon">${c.icon}</span>
+            <span class="name">${c.name}</span>
+        </div>
+    `).join('');
+}
+
+function toggleCipher(id) {
+    const option = document.querySelector(`#${id}`).parentElement;
+    const checkbox = document.querySelector(`#${id}`);
+    checkbox.checked = !checkbox.checked;
+    option.classList.toggle('selected', checkbox.checked);
+    updateCount();
+}
+
+function updateCount() {
+    const count = document.querySelectorAll('.cipher-option input:checked').length;
+    document.getElementById('count').textContent = count;
+}
+
+function selectAll() {
+    document.querySelectorAll('.cipher-option').forEach(opt => {
+        opt.classList.add('selected');
+        opt.querySelector('input').checked = true;
+    });
+    updateCount();
+}
+
+function selectNone() {
+    document.querySelectorAll('.cipher-option').forEach(opt => {
+        opt.classList.remove('selected');
+        opt.querySelector('input').checked = false;
+    });
+    updateCount();
+}
+
+function generateSheet() {
+    const selected = [];
+    document.querySelectorAll('.cipher-option input:checked').forEach(input => {
+        const cipher = ciphers.find(c => c.id === input.id);
+        if (cipher) selected.push(cipher);
+    });
+
+    if (selected.length === 0) {
+        alert('Pick at least one cipher!');
+        return;
+    }
+
+    const sheet = document.getElementById('cheatSheet');
+    sheet.innerHTML = `
+        <div class="sheet-header">
+            <h1>🔐 My Cipher Cheat Sheet</h1>
+            <p>${selected.length} cipher${selected.length > 1 ? 's' : ''} • Created with The Cryptex</p>
+        </div>
+        ${selected.map(c => `
+            <div class="sheet-cipher">
+                <div class="sheet-cipher-header">
+                    <span class="icon">${c.icon}</span>
+                    <span class="name">${c.name}</span>
+                </div>
+                <div class="sheet-cipher-chart">${c.chart}</div>
+            </div>
+        `).join('')}
+        <div class="sheet-footer">
+            🔐 The Cryptex • romas.magic-database.vercel.app/cryptex
+        </div>
+    `;
+
+    document.getElementById('printPreview').classList.add('active');
+}
+
+function closePreview() {
+    document.getElementById('printPreview').classList.remove('active');
+}
+
+// Initialize
+populateGrid();
+</script>
+
+</body>
+</html>
