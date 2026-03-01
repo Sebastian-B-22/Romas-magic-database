@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Cipher - The Cryptex</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo { font-size: 2rem; font-weight: 900; color: #e94560; }
+        .tagline { color: #888; margin-top: 0.3rem; }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #e94560;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .section h2 {
+            color: #e94560;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: #888;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid rgba(233,69,96,0.3);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 2px solid rgba(233,69,96,0.3);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #e94560, #c73659); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #ccc; }
+        .btn:hover { transform: scale(1.02); }
+
+        .qr-display {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            margin-top: 1rem;
+        }
+
+        .qr-display canvas {
+            max-width: 100%;
+        }
+
+        .qr-display p {
+            color: #333;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .encoded-preview {
+            background: rgba(0,0,0,0.4);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin-top: 1rem;
+            word-break: break-all;
+        }
+
+        .encoded-preview .label {
+            color: #10b981;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .encoded-preview .text {
+            color: #7dd3fc;
+        }
+
+        .how-it-works {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .how-it-works h4 {
+            color: #10b981;
+            margin-bottom: 0.5rem;
+        }
+
+        .how-it-works p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .fun-ideas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .idea {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .idea .emoji { font-size: 2rem; margin-bottom: 0.5rem; }
+        .idea h5 { color: #e94560; margin-bottom: 0.3rem; }
+        .idea p { color: #888; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">📱 QR Cipher</div>
+    <p class="tagline">Hide secret messages in QR codes!</p>
+</header>
+
+<main>
+    <a href="index.html" class="back-link">← Back to The Cryptex</a>
+
+    <div class="section">
+        <h2>✍️ Create Your QR Cipher</h2>
+        
+        <div class="input-group">
+            <label>1. Type your secret message:</label>
+            <textarea id="message" placeholder="Type your secret message here...">MEET ME AT THE TREEHOUSE</textarea>
+        </div>
+
+        <div class="input-group">
+            <label>2. Pick a cipher to encode it:</label>
+            <select id="cipher">
+                <option value="none">No cipher (plain text)</option>
+                <option value="caesar1">Caesar +1 (A→B)</option>
+                <option value="caesar3">Caesar +3 (A→D)</option>
+                <option value="caesar13" selected>ROT13 (A→N)</option>
+                <option value="atbash">Atbash (A→Z)</option>
+                <option value="a1z26">A1Z26 (A→1)</option>
+                <option value="backwards">Backwards</option>
+                <option value="leet">Leet Speak</option>
+                <option value="binary">Binary</option>
+                <option value="morse">Morse Code</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="generateQR()">🔐 Generate QR Cipher!</button>
+
+        <div class="encoded-preview" id="preview" style="display:none;">
+            <div class="label">Encoded message:</div>
+            <div class="text" id="encodedText"></div>
+        </div>
+
+        <div class="qr-display" id="qrDisplay" style="display:none;">
+            <canvas id="qrCanvas"></canvas>
+            <p>📱 Scan with any QR reader!</p>
+            <button class="btn btn-secondary" onclick="downloadQR()">💾 Download QR Code</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🎯 Fun Ideas</h2>
+        <div class="fun-ideas">
+            <div class="idea">
+                <div class="emoji">🎁</div>
+                <h5>Gift Scavenger Hunt</h5>
+                <p>Hide QR clues around the house!</p>
+            </div>
+            <div class="idea">
+                <div class="emoji">🎂</div>
+                <h5>Birthday Invitation</h5>
+                <p>Secret party location!</p>
+            </div>
+            <div class="idea">
+                <div class="emoji">📝</div>
+                <h5>Secret Notes</h5>
+                <p>Pass coded messages to friends!</p>
+            </div>
+            <div class="idea">
+                <div class="emoji">🗺️</div>
+                <h5>Treasure Hunt</h5>
+                <p>Each QR leads to the next clue!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>❓ How It Works</h2>
+        <div class="how-it-works">
+            <h4>Step 1: Encode</h4>
+            <p>Your message gets encoded with a cipher (like Caesar or ROT13).</p>
+        </div>
+        <div class="how-it-works" style="margin-top:0.5rem;">
+            <h4>Step 2: QR Code</h4>
+            <p>The encoded text becomes a QR code anyone can scan.</p>
+        </div>
+        <div class="how-it-works" style="margin-top:0.5rem;">
+            <h4>Step 3: Decode</h4>
+            <p>Scanning shows the encoded text - they need The Cryptex to decode it!</p>
+        </div>
+    </div>
+</main>
+
+<script>
+// Cipher functions
+function caesarShift(text, shift) {
+    return text.toUpperCase().split('').map(char => {
+        if (char >= 'A' && char <= 'Z') {
+            return String.fromCharCode(((char.charCodeAt(0) - 65 + shift) % 26) + 65);
+        }
+        return char;
+    }).join('');
+}
+
+function atbash(text) {
+    return text.toUpperCase().split('').map(char => {
+        if (char >= 'A' && char <= 'Z') {
+            return String.fromCharCode(90 - (char.charCodeAt(0) - 65));
+        }
+        return char;
+    }).join('');
+}
+
+function a1z26(text) {
+    return text.toUpperCase().split('').map(char => {
+        if (char >= 'A' && char <= 'Z') {
+            return (char.charCodeAt(0) - 64).toString();
+        }
+        return char === ' ' ? '-' : '';
+    }).join('-').replace(/--+/g, ' ');
+}
+
+function backwards(text) {
+    return text.split('').reverse().join('');
+}
+
+function leet(text) {
+    const map = { 'A': '4', 'E': '3', 'I': '1', 'O': '0', 'S': '5', 'T': '7', 'B': '8', 'G': '9' };
+    return text.toUpperCase().split('').map(c => map[c] || c).join('');
+}
+
+function toBinary(text) {
+    return text.toUpperCase().split('').map(char => {
+        if (char === ' ') return ' ';
+        return char.charCodeAt(0).toString(2).padStart(8, '0');
+    }).join(' ');
+}
+
+function toMorse(text) {
+    const morse = {
+        'A': '•−', 'B': '−•••', 'C': '−•−•', 'D': '−••', 'E': '•',
+        'F': '••−•', 'G': '−−•', 'H': '••••', 'I': '••', 'J': '•−−−',
+        'K': '−•−', 'L': '•−••', 'M': '−−', 'N': '−•', 'O': '−−−',
+        'P': '•−−•', 'Q': '−−•−', 'R': '•−•', 'S': '•••', 'T': '−',
+        'U': '••−', 'V': '•••−', 'W': '•−−', 'X': '−••−', 'Y': '−•−−',
+        'Z': '−−••', ' ': '/'
+    };
+    return text.toUpperCase().split('').map(c => morse[c] || c).join(' ');
+}
+
+function encode(text, cipher) {
+    switch(cipher) {
+        case 'caesar1': return caesarShift(text, 1);
+        case 'caesar3': return caesarShift(text, 3);
+        case 'caesar13': return caesarShift(text, 13);
+        case 'atbash': return atbash(text);
+        case 'a1z26': return a1z26(text);
+        case 'backwards': return backwards(text);
+        case 'leet': return leet(text);
+        case 'binary': return toBinary(text);
+        case 'morse': return toMorse(text);
+        default: return text;
+    }
+}
+
+function generateQR() {
+    const message = document.getElementById('message').value;
+    const cipher = document.getElementById('cipher').value;
+    
+    if (!message.trim()) {
+        alert('Type a message first!');
+        return;
+    }
+
+    const encoded = encode(message, cipher);
+    
+    // Show preview
+    document.getElementById('preview').style.display = 'block';
+    document.getElementById('encodedText').textContent = encoded;
+    
+    // Generate QR
+    const canvas = document.getElementById('qrCanvas');
+    QRCode.toCanvas(canvas, encoded, {
+        width: 250,
+        margin: 2,
+        color: {
+            dark: '#1a1a2e',
+            light: '#ffffff'
+        }
+    }, function(error) {
+        if (error) {
+            console.error(error);
+            alert('Error generating QR code. Message might be too long!');
+            return;
+        }
+        document.getElementById('qrDisplay').style.display = 'block';
+    });
+}
+
+function downloadQR() {
+    const canvas = document.getElementById('qrCanvas');
+    const link = document.createElement('a');
+    link.download = 'qr-cipher.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cipher World Map - The Cryptex</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo { font-size: 2rem; font-weight: 900; color: #e94560; }
+        .tagline { color: #888; margin-top: 0.3rem; }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #e94560;
+            text-decoration: none;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            padding: 0.6rem 1.2rem;
+            background: rgba(255,255,255,0.1);
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        /* World Map */
+        .world-map {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .map-title {
+            text-align: center;
+            color: #e94560;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ascii-map {
+            font-family: 'Courier New', monospace;
+            font-size: 0.65rem;
+            line-height: 1.2;
+            color: #4a5568;
+            white-space: pre;
+            text-align: center;
+        }
+
+        /* Regions Grid */
+        .regions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .region {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .region-header {
+            background: linear-gradient(135deg, #e94560 0%, #c73659 100%);
+            padding: 1rem 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .region-body {
+            padding: 1.5rem;
+        }
+
+        .region-cipher {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .region-cipher:last-child { margin-bottom: 0; }
+
+        .region-cipher .icon { font-size: 1.5rem; }
+        
+        .region-cipher .info h4 {
+            color: #fff;
+            margin-bottom: 0.2rem;
+        }
+
+        .region-cipher .info .year {
+            color: #e94560;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .region-cipher .info p {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .fun-fact {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid #10b981;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .fun-fact-title {
+            color: #10b981;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .fun-fact p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🗺️ Cipher World Map</div>
+    <p class="tagline">Where were these codes invented?</p>
+</header>
+
+<main>
+    <div class="nav-links">
+        <a href="index.html">← Back to Cryptex</a>
+        <a href="timeline.html">⏰ Timeline View</a>
+    </div>
+
+    <div class="world-map">
+        <h2 class="map-title">🌍 Ciphers Around the World</h2>
+        <div class="ascii-map">
+                                    🇳🇴 Vikings (Runes)
+                                         ↓
+            🇺🇸 USA                    ᚱ ● ●────🇩🇪 Germany
+           (Morse,               🇬🇧 ●     (Enigma)
+            Binary)     🇫🇷 France ●  ↓
+               ↓        (Vigenère,   🇮🇹 Italy
+               ●        Braille)     (Caesar,
+                                      Da Vinci)
+                                           ↓
+                                    🇬🇷 Greece ●
+                                    (Polybius,    🇮🇱 Israel
+                                     Scytale)      (Atbash)
+                                                      ●
+
+    ════════════════════════════════════════════════════════
+         ATLANTIC                EUROPE               MIDDLE
+          OCEAN                                        EAST
+        </div>
+    </div>
+
+    <div class="regions">
+        
+        <!-- GREECE -->
+        <div class="region">
+            <div class="region-header">🇬🇷 Ancient Greece</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">📜</span>
+                    <div class="info">
+                        <h4>Scytale</h4>
+                        <div class="year">700 BC - Sparta</div>
+                        <p>Spartan soldiers wrapped leather around rods</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">🏛️</span>
+                    <div class="info">
+                        <h4>Polybius Square</h4>
+                        <div class="year">150 BC - Greece</div>
+                        <p>Historian Polybius used torches to signal</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>The word "cryptography" comes from Greek: "kryptos" (hidden) + "graphein" (to write)!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROME -->
+        <div class="region">
+            <div class="region-header">🇮🇹 Roman Empire & Italy</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">🏛️</span>
+                    <div class="info">
+                        <h4>Caesar Cipher</h4>
+                        <div class="year">58 BC - Rome</div>
+                        <p>Julius Caesar's secret military messages</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">🪞</span>
+                    <div class="info">
+                        <h4>Mirror Writing</h4>
+                        <div class="year">1500s - Florence</div>
+                        <p>Leonardo da Vinci's secret notebooks</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>Caesar shifted by 3, so A→D. His nephew Augustus used shift by 1!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIDDLE EAST -->
+        <div class="region">
+            <div class="region-header">🇮🇱 Middle East</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">🔄</span>
+                    <div class="info">
+                        <h4>Atbash</h4>
+                        <div class="year">600 BC - Israel</div>
+                        <p>Hebrew scholars hid messages in the Bible</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>The word "Babel" in Jeremiah is actually "Sheshach" encoded with Atbash!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCANDINAVIA -->
+        <div class="region">
+            <div class="region-header">🇳🇴 Scandinavia (Vikings)</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">ᚱ</span>
+                    <div class="info">
+                        <h4>Runic Alphabet</h4>
+                        <div class="year">200 AD - Viking Lands</div>
+                        <p>Carved into stone, wood, and bone</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>Vikings believed runes had magical powers! "Rune" means "secret" in Old Norse.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENGLAND -->
+        <div class="region">
+            <div class="region-header">🇬🇧 England</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">🥓</span>
+                    <div class="info">
+                        <h4>Bacon's Cipher</h4>
+                        <div class="year">1605 - London</div>
+                        <p>Francis Bacon's steganography system</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">🎭</span>
+                    <div class="info">
+                        <h4>Playfair Cipher</h4>
+                        <div class="year">1854 - England</div>
+                        <p>Used by British military in WWI</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">🕺</span>
+                    <div class="info">
+                        <h4>Dancing Men</h4>
+                        <div class="year">1903 - Fiction</div>
+                        <p>Sherlock Holmes story by Arthur Conan Doyle</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>Alan Turing cracked Enigma at Bletchley Park, saving millions of lives!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FRANCE -->
+        <div class="region">
+            <div class="region-header">🇫🇷 France</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">🔑</span>
+                    <div class="info">
+                        <h4>Vigenère Cipher</h4>
+                        <div class="year">1553 - France</div>
+                        <p>"The unbreakable cipher" for 300 years</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">⠃</span>
+                    <div class="info">
+                        <h4>Braille</h4>
+                        <div class="year">1824 - France</div>
+                        <p>Invented by 15-year-old Louis Braille</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>Louis Braille was blinded in an accident at age 3, then invented Braille at 15!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GERMANY -->
+        <div class="region">
+            <div class="region-header">🇩🇪 Germany</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">⚙️</span>
+                    <div class="info">
+                        <h4>Enigma Machine</h4>
+                        <div class="year">1918-1945 - Germany</div>
+                        <p>WWII's most famous cipher machine</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>Enigma had 158,962,555,217,826,360,000 possible settings!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- USA -->
+        <div class="region">
+            <div class="region-header">🇺🇸 United States</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">📡</span>
+                    <div class="info">
+                        <h4>Morse Code</h4>
+                        <div class="year">1838 - USA</div>
+                        <p>Samuel Morse revolutionized communication</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">💻</span>
+                    <div class="info">
+                        <h4>Binary Code</h4>
+                        <div class="year">1940s+ - USA</div>
+                        <p>The language of all computers</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">✈️</span>
+                    <div class="info">
+                        <h4>NATO Alphabet</h4>
+                        <div class="year">1956 - International</div>
+                        <p>Used by pilots and military worldwide</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>"What hath God wrought" was the first telegraph message sent by Morse in 1844!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERNET -->
+        <div class="region">
+            <div class="region-header">🌐 The Internet</div>
+            <div class="region-body">
+                <div class="region-cipher">
+                    <span class="icon">💬</span>
+                    <div class="info">
+                        <h4>Leet Speak</h4>
+                        <div class="year">1990s - Online</div>
+                        <p>Born in hacker/gamer culture</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">📧</span>
+                    <div class="info">
+                        <h4>Base64</h4>
+                        <div class="year">1987 - Internet</div>
+                        <p>Sends files through email</p>
+                    </div>
+                </div>
+                <div class="region-cipher">
+                    <span class="icon">🔁</span>
+                    <div class="info">
+                        <h4>ROT13</h4>
+                        <div class="year">1980s - Usenet</div>
+                        <p>Hide spoilers online!</p>
+                    </div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-title">🎓 Fun Fact!</div>
+                    <p>1337 (LEET) speak started on bulletin boards to avoid text filters!</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

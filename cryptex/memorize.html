@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorize Ciphers - The Cryptex</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo { font-size: 2rem; font-weight: 900; color: #e94560; }
+        .tagline { color: #888; margin-top: 0.3rem; }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #e94560;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Setup Section */
+        .setup {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(233,69,96,0.3);
+        }
+
+        .setup h2 {
+            color: #e94560;
+            margin-bottom: 1rem;
+        }
+
+        .cipher-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .cipher-opt {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .cipher-opt:hover { background: rgba(233,69,96,0.2); }
+        .cipher-opt.selected { border-color: #10b981; background: rgba(16,185,129,0.2); }
+        .cipher-opt input { display: none; }
+        .cipher-opt .check { color: #10b981; font-weight: bold; }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #e94560, #c73659); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #ccc; }
+        .btn:hover { transform: scale(1.02); }
+
+        /* Flashcard Section */
+        .flashcard-area {
+            display: none;
+        }
+
+        .flashcard-area.active { display: block; }
+
+        .progress {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .progress-text { color: #888; }
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            min-width: 100px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.3s;
+        }
+
+        .score { color: #10b981; font-weight: 700; }
+
+        /* The Flashcard */
+        .flashcard {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            cursor: pointer;
+            border: 2px solid rgba(233,69,96,0.3);
+            transition: all 0.3s;
+            perspective: 1000px;
+        }
+
+        .flashcard:hover {
+            border-color: #e94560;
+            box-shadow: 0 10px 30px rgba(233,69,96,0.2);
+        }
+
+        .flashcard .icon { font-size: 4rem; margin-bottom: 1rem; }
+        .flashcard .name { font-size: 2rem; font-weight: 700; color: #e94560; margin-bottom: 0.5rem; }
+        .flashcard .hint { color: #888; font-size: 1rem; margin-bottom: 1rem; }
+
+        .flashcard .chart {
+            background: #0a0a15;
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #7dd3fc;
+            white-space: pre;
+            max-width: 100%;
+            overflow-x: auto;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .flashcard.revealed .chart { display: block; }
+        .flashcard.revealed .hint { display: none; }
+
+        .card-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-know { background: #10b981; color: white; }
+        .btn-learning { background: #f59e0b; color: white; }
+        .btn-skip { background: rgba(255,255,255,0.1); color: #888; }
+
+        /* Results */
+        .results {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .results.active { display: block; }
+        .results h2 { color: #10b981; font-size: 2rem; margin-bottom: 1rem; }
+        .results .emoji { font-size: 5rem; margin-bottom: 1rem; }
+        .results p { color: #888; margin-bottom: 1.5rem; }
+        .results .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .results .stat {
+            text-align: center;
+        }
+        .results .stat-num {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e94560;
+        }
+        .results .stat-label { color: #888; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🧠 Memorize Mode</div>
+    <p class="tagline">Learn your favorite ciphers with flashcards!</p>
+</header>
+
+<main>
+    <a href="index.html" class="back-link">← Back to The Cryptex</a>
+
+    <!-- Setup -->
+    <div class="setup" id="setup">
+        <h2>📋 Pick Ciphers to Memorize</h2>
+        <div class="cipher-select" id="cipherSelect"></div>
+        <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
+        <button class="btn btn-secondary" onclick="selectNone()">Clear</button>
+        <button class="btn btn-primary" onclick="startPractice()">🚀 Start Practice!</button>
+    </div>
+
+    <!-- Flashcard Area -->
+    <div class="flashcard-area" id="flashcardArea">
+        <div class="progress">
+            <span class="progress-text"><span id="current">1</span> / <span id="total">10</span></span>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <span class="score">✅ <span id="score">0</span></span>
+        </div>
+
+        <div class="flashcard" id="flashcard" onclick="revealCard()">
+            <div class="icon" id="cardIcon">🔐</div>
+            <div class="name" id="cardName">Cipher Name</div>
+            <div class="hint">👆 Tap to reveal the chart!</div>
+            <div class="chart" id="cardChart">Chart will appear here</div>
+        </div>
+
+        <div class="card-buttons">
+            <button class="card-btn btn-know" onclick="markCard('know')">✅ I Know It!</button>
+            <button class="card-btn btn-learning" onclick="markCard('learning')">📚 Still Learning</button>
+            <button class="card-btn btn-skip" onclick="markCard('skip')">⏭️ Skip</button>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results" id="results">
+        <div class="emoji">🎉</div>
+        <h2>Great Practice!</h2>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num" id="knownCount">0</div>
+                <div class="stat-label">Mastered</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num" id="learningCount">0</div>
+                <div class="stat-label">Learning</div>
+            </div>
+        </div>
+        <p id="resultMessage">Keep practicing!</p>
+        <button class="btn btn-primary" onclick="restart()">🔄 Practice Again</button>
+        <button class="btn btn-secondary" onclick="backToSetup()">📋 Change Ciphers</button>
+    </div>
+</main>
+
+<script>
+const cipherData = [
+    { id: 'caesar', icon: '🏛️', name: 'Caesar Cipher', chart: 'Shift letters by a number:\nA B C D E F G H I J K L M\n↓ ↓ ↓ (shift +3)\nD E F G H I J K L M N O P\n\nHELLO (+3) = KHOOR' },
+    { id: 'morse', icon: '📡', name: 'Morse Code', chart: 'A = •−    E = •     I = ••\nB = −•••  F = ••−•  O = −−−\nC = −•−•  G = −−•   S = •••\nD = −••   H = ••••  T = −\n\nSOS = ••• −−− •••' },
+    { id: 'a1z26', icon: '🔢', name: 'A1Z26', chart: 'A=1  B=2  C=3  D=4  E=5\nF=6  G=7  H=8  I=9  J=10\n... Z=26\n\nHELLO = 8-5-12-12-15' },
+    { id: 'atbash', icon: '🔄', name: 'Atbash', chart: 'Flip the alphabet:\nA↔Z  B↔Y  C↔X  D↔W  E↔V\nF↔U  G↔T  H↔S  I↔R  ...\n\nHELLO = SVOOL' },
+    { id: 'pigpen', icon: '🐷', name: 'Pigpen', chart: ' A│B│C   Draw the lines\n──┼──┼── around each letter!\n D│E│F   \n──┼──┼── A = ⌐\n G│H│I   E = □' },
+    { id: 'binary', icon: '💻', name: 'Binary', chart: '8 digits per letter:\nA = 01000001\nB = 01000010\nH = 01001000\nI = 01001001\n\nHI = 01001000 01001001' },
+    { id: 'phone', icon: '📱', name: 'Phone Keypad', chart: '2=ABC  3=DEF  4=GHI\n5=JKL  6=MNO  7=PQRS\n8=TUV  9=WXYZ\n\nHELLO = 44-33-555-555-666' },
+    { id: 'nato', icon: '✈️', name: 'NATO Alphabet', chart: 'A=Alpha    N=November\nB=Bravo    O=Oscar\nC=Charlie  S=Sierra\nH=Hotel    T=Tango\n\nSOS = Sierra Oscar Sierra' },
+    { id: 'rot13', icon: '🔁', name: 'ROT13', chart: 'Shift by 13 (half alphabet):\nA↔N  B↔O  C↔P  D↔Q\nE↔R  F↔S  G↔T  H↔U\n\nHELLO = URYYB\nApply twice = original!' },
+    { id: 'leet', icon: '💬', name: 'Leet Speak', chart: 'A=4  E=3  I=1  O=0\nS=5  T=7  B=8  L=1\n\nLEET = 1337\nHELLO = H3LL0\nHACKER = H4CK3R' },
+    { id: 'braille', icon: '⠃', name: 'Braille', chart: '⠁=A  ⠃=B  ⠉=C  ⠙=D\n⠑=E  ⠓=H  ⠊=I  ⠇=L\n⠕=O  ⠎=S\n\nHI = ⠓ ⠊' },
+    { id: 'tap', icon: '👊', name: 'Tap Code', chart: '  1 2 3 4 5\n1 A B C D E\n2 F G H I J\n3 L M N O P\n4 Q R S T U\n5 V W X Y Z\n\nH = •• ••• (row 2, col 3)' },
+    { id: 'polybius', icon: '🏛️', name: 'Polybius Square', chart: 'Same as Tap Code grid:\nA=11  B=12  H=23\nE=15  L=31  O=34\n\nHELLO = 23 15 31 31 34' },
+    { id: 'hex', icon: '🔢', name: 'Hexadecimal', chart: 'A=41  H=48  L=4C\nE=45  O=4F\n\nHELLO = 48 45 4C 4C 4F' },
+    { id: 'backwards', icon: '🔀', name: 'Backwards', chart: 'Just reverse it!\n\nHELLO → OLLEH\nSECRET → TERCES' },
+    { id: 'runic', icon: 'ᚱ', name: 'Runic (Viking)', chart: 'ᚠ=F ᚢ=U ᚦ=TH ᚨ=A ᚱ=R\nᚺ=H ᛖ=E ᛚ=L ᛟ=O\n\nHELLO = ᚺᛖᛚᛚᛟ' },
+    { id: 'keyboard', icon: '⌨️', name: 'Keyboard Cipher', chart: 'Shift on QWERTY keyboard:\nQ W E R T Y U I O P\n A S D F G H J K L\n\nH→J, E→R, L→;\nHELLO → JRPP;' },
+    { id: 'vigenere', icon: '🔑', name: 'Vigenère', chart: 'Use keyword to shift each letter:\nMessage: H E L L O\nKeyword: K E Y K E\nShifts: 10 4 24 10 4\nResult:  R I J V S' },
+    { id: 'base64', icon: '📧', name: 'Base64', chart: 'Uses A-Z, a-z, 0-9, +, /\nEnds with = or ==\n\nHELLO = SEVMTE8=' }
+];
+
+let selectedCiphers = [];
+let currentCards = [];
+let currentIndex = 0;
+let knownCount = 0;
+let learningCount = 0;
+
+// Populate cipher selection
+function populateSelect() {
+    const container = document.getElementById('cipherSelect');
+    container.innerHTML = cipherData.map(c => `
+        <div class="cipher-opt" onclick="toggleSelect('${c.id}')">
+            <input type="checkbox" id="sel-${c.id}">
+            <span class="check">✓</span>
+            <span>${c.icon} ${c.name}</span>
+        </div>
+    `).join('');
+}
+
+function toggleSelect(id) {
+    const opt = document.querySelector(`#sel-${id}`).parentElement;
+    const cb = document.querySelector(`#sel-${id}`);
+    cb.checked = !cb.checked;
+    opt.classList.toggle('selected', cb.checked);
+}
+
+function selectAll() {
+    document.querySelectorAll('.cipher-opt').forEach(opt => {
+        opt.classList.add('selected');
+        opt.querySelector('input').checked = true;
+    });
+}
+
+function selectNone() {
+    document.querySelectorAll('.cipher-opt').forEach(opt => {
+        opt.classList.remove('selected');
+        opt.querySelector('input').checked = false;
+    });
+}
+
+function startPractice() {
+    selectedCiphers = [];
+    document.querySelectorAll('.cipher-opt input:checked').forEach(cb => {
+        const id = cb.id.replace('sel-', '');
+        const cipher = cipherData.find(c => c.id === id);
+        if (cipher) selectedCiphers.push(cipher);
+    });
+
+    if (selectedCiphers.length === 0) {
+        alert('Pick at least one cipher!');
+        return;
+    }
+
+    // Shuffle
+    currentCards = [...selectedCiphers].sort(() => Math.random() - 0.5);
+    currentIndex = 0;
+    knownCount = 0;
+    learningCount = 0;
+
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('flashcardArea').classList.add('active');
+    document.getElementById('results').classList.remove('active');
+
+    document.getElementById('total').textContent = currentCards.length;
+    document.getElementById('score').textContent = 0;
+    
+    showCard();
+}
+
+function showCard() {
+    if (currentIndex >= currentCards.length) {
+        showResults();
+        return;
+    }
+
+    const card = currentCards[currentIndex];
+    document.getElementById('cardIcon').textContent = card.icon;
+    document.getElementById('cardName').textContent = card.name;
+    document.getElementById('cardChart').textContent = card.chart;
+    document.getElementById('flashcard').classList.remove('revealed');
+    
+    document.getElementById('current').textContent = currentIndex + 1;
+    document.getElementById('progressFill').style.width = ((currentIndex / currentCards.length) * 100) + '%';
+}
+
+function revealCard() {
+    document.getElementById('flashcard').classList.add('revealed');
+}
+
+function markCard(status) {
+    if (status === 'know') {
+        knownCount++;
+        document.getElementById('score').textContent = knownCount;
+    } else if (status === 'learning') {
+        learningCount++;
+    }
+    
+    currentIndex++;
+    showCard();
+}
+
+function showResults() {
+    document.getElementById('flashcardArea').classList.remove('active');
+    document.getElementById('results').classList.add('active');
+    
+    document.getElementById('knownCount').textContent = knownCount;
+    document.getElementById('learningCount').textContent = learningCount;
+    
+    const percent = Math.round((knownCount / currentCards.length) * 100);
+    let message = '';
+    let emoji = '🎉';
+    
+    if (percent === 100) {
+        message = 'Perfect! You know them all! 🏆';
+        emoji = '🏆';
+    } else if (percent >= 75) {
+        message = 'Amazing! Almost there! 🌟';
+        emoji = '🌟';
+    } else if (percent >= 50) {
+        message = 'Good progress! Keep practicing! 💪';
+        emoji = '💪';
+    } else {
+        message = 'Keep going! Practice makes perfect! 📚';
+        emoji = '📚';
+    }
+    
+    document.getElementById('resultMessage').textContent = message;
+    document.querySelector('.results .emoji').textContent = emoji;
+}
+
+function restart() {
+    currentCards = [...selectedCiphers].sort(() => Math.random() - 0.5);
+    currentIndex = 0;
+    knownCount = 0;
+    learningCount = 0;
+    
+    document.getElementById('results').classList.remove('active');
+    document.getElementById('flashcardArea').classList.add('active');
+    document.getElementById('score').textContent = 0;
+    
+    showCard();
+}
+
+function backToSetup() {
+    document.getElementById('results').classList.remove('active');
+    document.getElementById('flashcardArea').classList.remove('active');
+    document.getElementById('setup').style.display = 'block';
+}
+
+// Initialize
+populateSelect();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cipher Timeline - The Cryptex</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        .logo { font-size: 2rem; font-weight: 900; color: #e94560; }
+        .tagline { color: #888; margin-top: 0.3rem; }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #e94560;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #e94560, #10b981, #3b82f6);
+            border-radius: 2px;
+        }
+
+        .era {
+            margin-bottom: 2rem;
+        }
+
+        .era-title {
+            font-size: 1.5rem;
+            color: #e94560;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .era-title::before {
+            content: '';
+            position: absolute;
+            left: -2.4rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: #e94560;
+            border-radius: 50%;
+            border: 3px solid #1a1a2e;
+        }
+
+        .cipher-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            margin-left: 0.5rem;
+            border-left: 3px solid #e94560;
+        }
+
+        .cipher-item h3 {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cipher-item .year {
+            background: #e94560;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .cipher-item .location {
+            color: #10b981;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cipher-item p {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .cipher-item .seen-in {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cipher-item .seen-in-title {
+            color: #f59e0b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .cipher-item .seen-in-list {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .map-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">⏰ Cipher Timeline</div>
+    <p class="tagline">From Ancient Times to Today!</p>
+</header>
+
+<main>
+    <a href="index.html" class="back-link">← Back to The Cryptex</a>
+    <a href="map.html" class="map-link">🗺️ View World Map</a>
+
+    <div class="timeline">
+        
+        <!-- ANCIENT -->
+        <div class="era">
+            <h2 class="era-title">🏛️ Ancient Era</h2>
+            
+            <div class="cipher-item">
+                <h3>📜 Scytale <span class="year">700 BC</span></h3>
+                <div class="location">📍 Sparta, Greece</div>
+                <p>The Spartans wrapped leather strips around wooden rods to send secret military messages. Only someone with the same size rod could read it!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• 300 (movie) • Assassin's Creed Odyssey</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🔄 Atbash <span class="year">600 BC</span></h3>
+                <div class="location">📍 Ancient Israel</div>
+                <p>Used by Hebrew scholars to hide messages in religious texts. The name comes from the first, last, second, and second-to-last Hebrew letters!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• The Da Vinci Code • The Bible (Book of Jeremiah)</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🏛️ Polybius Square <span class="year">150 BC</span></h3>
+                <div class="location">📍 Greece</div>
+                <p>Invented by the Greek historian Polybius for sending messages with torches! Flash torches to show row and column numbers.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• The Nihilist cipher (based on this)</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🏛️ Caesar Cipher <span class="year">58 BC</span></h3>
+                <div class="location">📍 Rome, Italy</div>
+                <p>Julius Caesar used this to communicate with his generals. He shifted letters by 3, but you can use any number!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• 2001: A Space Odyssey (HAL = IBM shifted) • A Christmas Story</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MEDIEVAL -->
+        <div class="era">
+            <h2 class="era-title">🏰 Medieval Era</h2>
+
+            <div class="cipher-item">
+                <h3>ᚱ Runic Alphabet <span class="year">200 AD</span></h3>
+                <div class="location">📍 Scandinavia (Vikings)</div>
+                <p>Vikings used runes for magic, memorials, and secret messages. Carved into wood, stone, and bone!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Lord of the Rings • The Hobbit • Vikings (TV) • God of War • Frozen 2</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>⚔️ Templar Cipher <span class="year">1100s</span></h3>
+                <div class="location">📍 Europe (Crusades)</div>
+                <p>Knights Templar used cross-based symbols to protect their secrets during the Crusades.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• National Treasure • The Da Vinci Code • Assassin's Creed</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🐷 Pigpen Cipher <span class="year">1500s</span></h3>
+                <div class="location">📍 Europe</div>
+                <p>Used by Freemasons to keep their rituals secret. Each letter becomes a simple shape from a grid!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Gravity Falls • Sherlock Holmes stories • National Treasure</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🪞 Mirror Writing <span class="year">1500s</span></h3>
+                <div class="location">📍 Florence, Italy</div>
+                <p>Leonardo da Vinci wrote all his notebooks backwards! He was left-handed and may have done it to keep his ideas secret.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• The Da Vinci Code • Da Vinci's Demons (TV)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RENAISSANCE -->
+        <div class="era">
+            <h2 class="era-title">📚 Renaissance Era</h2>
+
+            <div class="cipher-item">
+                <h3>🔑 Vigenère Cipher <span class="year">1553</span></h3>
+                <div class="location">📍 France</div>
+                <p>Called "le chiffre indéchiffrable" (the unbreakable cipher) for 300 years! Uses a keyword to shift each letter differently.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Journey to the Center of the Earth • Confederate Army (Civil War)</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🥓 Bacon's Cipher <span class="year">1605</span></h3>
+                <div class="location">📍 England</div>
+                <p>Francis Bacon invented a way to hide messages using two different fonts! Some think he hid secrets in Shakespeare's plays.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Shakespeare conspiracy theories • The Prestige</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODERN -->
+        <div class="era">
+            <h2 class="era-title">🔧 Modern Era</h2>
+
+            <div class="cipher-item">
+                <h3>📡 Morse Code <span class="year">1838</span></h3>
+                <div class="location">📍 United States</div>
+                <p>Samuel Morse invented it for the telegraph! Changed how the world communicated. SOS (••• ——— •••) became the universal distress signal.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Titanic • Stranger Things • Independence Day • A Quiet Place</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>⠃ Braille <span class="year">1824</span></h3>
+                <div class="location">📍 France</div>
+                <p>Louis Braille invented this at age 15! He was blind and created a system so people who can't see can read with their fingers.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Books, signs, and elevators everywhere!</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🎭 Playfair Cipher <span class="year">1854</span></h3>
+                <div class="location">📍 England</div>
+                <p>Used by the British in WWI and WWII. Encrypts pairs of letters, making it much harder to crack!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• National Treasure • World War I communications</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>🕺 Dancing Men <span class="year">1903</span></h3>
+                <div class="location">📍 England (Fiction)</div>
+                <p>Created by Sir Arthur Conan Doyle for a Sherlock Holmes story! Stick figures in different poses represent letters.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• "The Adventure of the Dancing Men" • Sherlock (BBC)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WWII -->
+        <div class="era">
+            <h2 class="era-title">⚔️ World War II</h2>
+
+            <div class="cipher-item">
+                <h3>⚙️ Enigma Machine <span class="year">1918-1945</span></h3>
+                <div class="location">📍 Germany</div>
+                <p>The famous German cipher machine! Had 158 QUINTILLION possible settings. Alan Turing and team cracked it, helping win the war!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• The Imitation Game • Enigma • U-571</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>👊 Tap Code <span class="year">1940s</span></h3>
+                <div class="location">📍 POW Camps</div>
+                <p>Prisoners of war tapped on walls to communicate secretly! Later used by Vietnam POWs. Based on Polybius Square.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• The Great Escape • Unbroken • Vietnam War stories</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIGITAL -->
+        <div class="era">
+            <h2 class="era-title">💻 Digital Era</h2>
+
+            <div class="cipher-item">
+                <h3>💻 Binary Code <span class="year">1940s+</span></h3>
+                <div class="location">📍 Worldwide</div>
+                <p>The language of computers! Everything digital is 0s and 1s - images, music, games, this website!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• The Matrix • Every computer ever!</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>📧 Base64 <span class="year">1987</span></h3>
+                <div class="location">📍 Internet</div>
+                <p>Used to send images and files through email! Turns any data into text characters.</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Every email attachment • Web development</div>
+                </div>
+            </div>
+
+            <div class="cipher-item">
+                <h3>💬 Leet Speak <span class="year">1990s</span></h3>
+                <div class="location">📍 Internet (BBS/Gaming)</div>
+                <p>Born in hacker and gamer culture! Replace letters with numbers that look similar. 1337 = LEET = ELITE!</p>
+                <div class="seen-in">
+                    <div class="seen-in-title">🎬 As Seen In:</div>
+                    <div class="seen-in-list">• Hackers (movie) • Watch Dogs • Mr. Robot</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>
