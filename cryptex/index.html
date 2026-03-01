@@ -707,6 +707,682 @@ A = 11, B = 12, H = 23...</div>
         </div>
     </div>
 
+    <!-- VIGENERE -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🔑</span>
+            <span class="code-name">Vigenère Cipher</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Like Caesar, but with a keyword! Each letter shifts by a different amount.</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HOW IT WORKS (Keyword: KEY):</div>
+                <div class="visual-chart">Message:  H E L L O
+Keyword:  K E Y K E
+Shift by: 10 4 24 10 4  (K=10, E=4, Y=24)
+Result:   R I J V S</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLO with key "KEY":</div>
+                <div class="text">RIJVS</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Need to figure out the keyword!</li>
+                    <li>Look for repeating patterns to find keyword length</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- RAIL FENCE -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🚂</span>
+            <span class="code-name">Rail Fence Cipher</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Write in a zigzag pattern, then read across each row!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 ZIGZAG PATTERN (3 rails):</div>
+                <div class="visual-chart">H . . . O . . . R . .     Row 1: HOR
+. E . L . W . L . D .  →  Row 2: ELWLD
+. . L . . . O . . . !     Row 3: LO!
+
+Read rows: HOR + ELWLD + LO! = HORELWLDLO!</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLO WORLD (3 rails):</div>
+                <div class="text">HORELWLDLO</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Try 2, 3, 4, 5 rails until it works</li>
+                    <li>Draw the zigzag pattern to decode</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEMAPHORE -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🚩</span>
+            <span class="code-name">Semaphore Flags</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Hold two flags in different positions. Each position = a letter!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 FLAG POSITIONS (clock positions):</div>
+                <div class="visual-chart">A = ↙↓    H = ↙→    O = ←↑
+B = ↙←    I = ↙↗    P = ↓↑
+C = ↙↑    J = →↗    Q = ↓↗
+D = ↙↗    K = ↑↓    R = ↓→
+E = ↙→    L = ↑↙    S = ↓↘
+F = ←↓    M = ↑←    T = ←→
+G = ←↙    N = ↑↘    ...</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Each position is like a clock:</div>
+                <div class="text">Arms point different directions = different letters</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Look up a semaphore chart</li>
+                    <li>Picture where the arms are pointing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEXADECIMAL -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🔢</span>
+            <span class="code-name">Hexadecimal (Hex)</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Base-16 numbers using 0-9 and A-F. Used in computers and colors!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HEX VALUES:</div>
+                <div class="visual-chart">A = 41    H = 48    O = 4F
+B = 42    I = 49    P = 50
+C = 43    J = 4A    Q = 51
+D = 44    K = 4B    R = 52
+E = 45    L = 4C    S = 53
+F = 46    M = 4D    T = 54
+G = 47    N = 4E    ...</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLO:</div>
+                <div class="text">48 45 4C 4C 4F</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Two characters = one letter</li>
+                    <li>Use an online hex to text converter!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- BASE64 -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">📧</span>
+            <span class="code-name">Base64</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Uses 64 characters (A-Z, a-z, 0-9, +, /). Used in emails and websites!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 THE 64 CHARACTERS:</div>
+                <div class="visual-chart">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
+
+Often ends with = or == (padding)</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLO:</div>
+                <div class="text">SEVMTE8=</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Look for = at the end (that's a clue!)</li>
+                    <li>Use an online Base64 decoder</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOK CIPHER -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">📚</span>
+            <span class="code-name">Book Cipher</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Use a book as the key! Numbers point to page, line, and word.</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HOW IT WORKS:</div>
+                <div class="visual-chart">Format: Page-Line-Word
+
+5-3-2 = Page 5, Line 3, Word 2
+12-7-4 = Page 12, Line 7, Word 4
+
+Both people need the SAME book!</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Message format:</div>
+                <div class="text">5-3-2, 12-7-4, 1-1-1</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>You need to figure out which book!</li>
+                    <li>Look for clues about the book title</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCYTALE -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">📜</span>
+            <span class="code-name">Scytale (Spartan Cipher)</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Wrap paper around a rod, write message, unwrap = scrambled!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HOW IT WORKS:</div>
+                <div class="visual-chart">On rod (read across):    Unwrapped (read down):
+H E L P                  H M E L 
+M E  ! !          →      E E   !
+                         L   P !
+                         
+Scrambled: HMELEEPL!!</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELP ME becomes:</div>
+                <div class="text">HMLEEPE (depending on rod width)</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Try different "rod widths" (2, 3, 4, 5...)</li>
+                    <li>Write in rows, read down columns</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- KEYBOARD CIPHER -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">⌨️</span>
+            <span class="code-name">Keyboard Cipher</span>
+            <span class="code-level easy">Easy</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Replace each letter with the one next to it on the keyboard!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 QWERTY KEYBOARD:</div>
+                <div class="visual-chart">Q W E R T Y U I O P
+ A S D F G H J K L
+  Z X C V B N M
+
+Shift right: H→J, E→R, L→;, O→P
+HELLO → JRPP;</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLO shifted right:</div>
+                <div class="text">JRPP;</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Try shifting all letters left or right on keyboard</li>
+                    <li>Look at your keyboard layout!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MIRROR WRITING -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🪞</span>
+            <span class="code-name">Mirror Writing</span>
+            <span class="code-level easy">Easy</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Write so it only reads correctly in a mirror! Leonardo da Vinci did this!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HOW IT LOOKS:</div>
+                <div class="visual-chart">Normal:  HELLO
+Mirror:  OLLƎH (flipped horizontally)
+
+Some letters look the same: A H I M O T U V W X Y</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">SECRET:</div>
+                <div class="text">TƎЯƆƎƧ (hold up to mirror!)</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Use an actual mirror!</li>
+                    <li>Or flip the image horizontally on computer</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- RUNIC -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">ᚱ</span>
+            <span class="code-name">Runic Alphabet (Viking)</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Ancient Viking symbols! Called "Elder Futhark" - 24 runes.</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 ELDER FUTHARK RUNES:</div>
+                <div class="visual-chart">ᚠ=F  ᚢ=U  ᚦ=TH ᚨ=A  ᚱ=R  ᚲ=K
+ᚷ=G  ᚹ=W  ᚺ=H  ᚾ=N  ᛁ=I  ᛃ=J
+ᛇ=EI ᛈ=P  ᛉ=Z  ᛊ=S  ᛏ=T  ᛒ=B
+ᛖ=E  ᛗ=M  ᛚ=L  ᛜ=NG ᛞ=D  ᛟ=O</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLO:</div>
+                <div class="text">ᚺᛖᛚᛚᛟ</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Look up Elder Futhark alphabet</li>
+                    <li>Used in Lord of the Rings and video games!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- NULL CIPHER -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">👀</span>
+            <span class="code-name">Null Cipher (Hidden Message)</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Message hidden in normal text! First letters of words spell the secret.</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HOW IT WORKS:</div>
+                <div class="visual-chart">"Have Everyone Loving Pizza"
+ ↓    ↓        ↓      ↓
+ H    E        L      P
+ 
+Secret message: HELP</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Hidden in plain sight:</div>
+                <div class="text">"Send Extra Cakes Right Away" = SECRA</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Read first letter of each word</li>
+                    <li>Or first letter of each sentence</li>
+                    <li>Look for awkward phrasing!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- DANCING MEN -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🕺</span>
+            <span class="code-name">Dancing Men (Sherlock Holmes)</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Stick figures in different poses = letters. From Sherlock Holmes!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 THE CONCEPT:</div>
+                <div class="visual-chart">Each stick figure pose = one letter
+
+🕺 = A    💃 = B    🤸 = C   ...
+
+Figures with FLAGS = end of word
+
+Sherlock cracked it by finding the most common figure = E</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Looks like:</div>
+                <div class="text">Little stick figures dancing in a row!</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Most common figure = E</li>
+                    <li>Flags mark end of words</li>
+                    <li>Look up the Dancing Men alphabet chart</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLAYFAIR -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🎭</span>
+            <span class="code-name">Playfair Cipher</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Uses a 5×5 grid with a keyword. Encrypts pairs of letters!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 GRID WITH KEYWORD "MAGIC":</div>
+                <div class="visual-chart">M A G I C    ← keyword letters first
+B D E F H    ← rest of alphabet
+K L N O P    (I and J share a spot)
+Q R S T U
+V W X Y Z
+
+Rules:
+- Same row: shift right
+- Same column: shift down
+- Rectangle: swap corners</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Letters are encoded in pairs:</div>
+                <div class="text">HE LL OX → encoded pairs</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Need to figure out the keyword!</li>
+                    <li>X is used to split double letters (LL → LX)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- BACON'S CIPHER -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🥓</span>
+            <span class="code-name">Bacon's Cipher</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Hide messages using two text styles! 5 characters = one letter.</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 THE A/B CODE:</div>
+                <div class="visual-chart">A = AAAAA    N = ABBAB
+B = AAAAB    O = ABBBA
+C = AAABA    P = ABBBB
+D = AAABB    Q = ABAAA
+E = AABAA    R = ABAAB
+...          ...
+
+Use BOLD/normal or UPPER/lower as A/B!</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">"AAAAA AAAAB AAABA":</div>
+                <div class="text">A B C</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Look for two different text styles</li>
+                    <li>Mark one as A, one as B</li>
+                    <li>Group into 5s and decode!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ENIGMA -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">⚙️</span>
+            <span class="code-name">Enigma Machine</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Famous WWII German cipher machine. Cracked by Alan Turing!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 HOW IT WORKED:</div>
+                <div class="visual-chart">┌─────────────────┐
+│  ⚙️ ⚙️ ⚙️ ROTORS  │ ← Spinning wheels
+│  ─────────────  │
+│  PLUGBOARD      │ ← Swapped letters  
+│  ─────────────  │
+│  KEYBOARD       │ ← Type here
+└─────────────────┘
+
+Key changed with EVERY letter typed!
+158,000,000,000,000,000,000 possible settings!</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">A letter never encodes to itself:</div>
+                <div class="text">A could become B, C, D... but never A!</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Alan Turing built early computers to crack it!</li>
+                    <li>Use online Enigma simulators to play with it</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEMPLAR -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">⚔️</span>
+            <span class="code-name">Templar Cipher</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Knights Templar used cross shapes with dots for letters!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 MALTESE CROSS PATTERN:</div>
+                <div class="visual-chart">    ╲ A │ B ╱         ╲ I•│ J•╱
+     ╲  │  ╱           ╲  │  ╱
+   C ──┼── D        K•──┼──L•
+     ╱  │  ╲           ╱  │  ╲
+    ╱ E │ F ╲         ╱ M•│ N•╲
+
+Cross sections + dot = letter position</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Similar to Pigpen:</div>
+                <div class="text">Cross shapes with dots indicate letters</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Draw the Maltese Cross template</li>
+                    <li>Match the shapes to letters</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MARITIME FLAGS -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">🚢</span>
+            <span class="code-name">Maritime Signal Flags</span>
+            <span class="code-level medium">Medium</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Colorful flags used by ships! Each flag = a letter AND a meaning.</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 FLAG MEANINGS:</div>
+                <div class="visual-chart">🔵⬜ = A (Alpha) - "Diver down"
+🔴🔴 = B (Bravo) - "Dangerous cargo"
+🔵⬜🔴⬜🔵 = C (Charlie) - "Yes"
+🟡🔵🟡 = D (Delta) - "Keep clear"
+🔴🔵 = E (Echo) - "Changing course right"
+...
+
+26 letter flags + 10 number flags!</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">Each flag has colors:</div>
+                <div class="text">Red/white stripes, yellow squares, etc.</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Look up International Maritime Signal Flags</li>
+                    <li>Match the colors and patterns!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINGDINGS -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">✌️</span>
+            <span class="code-name">Wingdings</span>
+            <span class="code-level easy">Easy</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Font that turns letters into symbols! Just change the font back!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 SOME WINGDINGS:</div>
+                <div class="visual-chart">In Wingdings font:
+A = ✌    G = ●    M = ☺    S = ♦
+B = 👎   H = ❍    N = ☻    T = ♣
+C = 👍   I = ◯    O = ☼    U = ♠
+D = ☛   J = ◉    P = ✡    V = ♥
+E = ☞   K = ◎    Q = ✿    W = ◆
+F = ☜   L = ⚫   R = ✾    ...</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">To decode:</div>
+                <div class="text">Copy text → Change font to Arial!</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Paste into Word/Google Docs</li>
+                    <li>Change font back to normal!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMNAR TRANSPOSITION -->
+    <div class="code">
+        <div class="code-header">
+            <span class="code-icon">📊</span>
+            <span class="code-name">Columnar Transposition</span>
+            <span class="code-level hard">Hard</span>
+        </div>
+        <div class="code-body">
+            <p class="code-simple">Write in rows, read columns in scrambled order based on keyword!</p>
+            
+            <div class="visual">
+                <div class="visual-title">📊 KEYWORD "CAT" (alphabetize: A=1, C=2, T=3):</div>
+                <div class="visual-chart">  C A T       Column order: A(1), C(2), T(3)
+  ─────
+  H E L       Read columns in order A,C,T:
+  L O W       A column: E O O
+  O R D       C column: H L O  
+              T column: L W D
+              
+Result: EOOHLO LWD</div>
+            </div>
+
+            <div class="example-box">
+                <div class="label">HELLOWORLD with key "CAT":</div>
+                <div class="text">EOOHLO LWD</div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">💡 How to Crack:</div>
+                <ul>
+                    <li>Figure out how many columns (keyword length)</li>
+                    <li>Try different column orderings</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <footer>
