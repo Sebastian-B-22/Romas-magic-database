@@ -774,6 +774,559 @@
             </div>
         </div>
 
+        <!-- POLYBIUS SQUARE -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🏛️</span>
+                <span class="card-title">Polybius Square</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Ancient Greek Cipher</p>
+                <h4>How It Works</h4>
+                <p>Ancient Greek cipher using a 5x5 grid. Each letter becomes two numbers: row then column. Invented by Polybius in 150 BC!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO:</div>
+                    <div class="example-text">23 15 31 31 34</div>
+                </div>
+
+                <h4>The Grid</h4>
+                <p>
+                &nbsp;&nbsp;1 2 3 4 5<br>
+                1: A B C D E<br>
+                2: F G H I K<br>
+                3: L M N O P<br>
+                4: Q R S T U<br>
+                5: V W X Y Z
+                </p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Numbers always come in pairs</li>
+                        <li>First digit = row, second = column</li>
+                        <li>I and J share the same spot (22)</li>
+                        <li>Draw the 5x5 grid to decode</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHONE KEYPAD -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">📱</span>
+                <span class="card-title">Phone Keypad (T9)</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Modern Code</p>
+                <h4>How It Works</h4>
+                <p>Based on old phone keypads! Each number has letters. 2=ABC, 3=DEF, etc. Press multiple times for different letters!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO:</div>
+                    <div class="example-text">44 33 555 555 666</div>
+                </div>
+
+                <h4>The Keypad</h4>
+                <p>2=ABC, 3=DEF, 4=GHI, 5=JKL, 6=MNO, 7=PQRS, 8=TUV, 9=WXYZ</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Count the repeated digits</li>
+                        <li>2 = first letter (A), 22 = second (B), 222 = third (C)</li>
+                        <li>7 and 9 have 4 letters each!</li>
+                        <li>Spaces or dashes separate letters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCYTALE -->
+        <div class="code-card" data-category="transposition">
+            <div class="card-header">
+                <span class="card-icon">📜</span>
+                <span class="card-title">Scytale</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Ancient Spartan Cipher</p>
+                <h4>How It Works</h4>
+                <p>Used by ancient Spartans! Wrap a strip of paper around a rod, write the message, then unwrap. Looks like gibberish until re-wrapped!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELP ME becomes:</div>
+                    <div class="example-text">HMLEEP E</div>
+                </div>
+
+                <h4>The Method</h4>
+                <p>Write letters vertically on wrapped paper, then read horizontally when unwrapped</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Try different "rod widths" (columns)</li>
+                        <li>Write message in columns, read across rows</li>
+                        <li>Or write in rows, read down columns</li>
+                        <li>Usually 3-8 letters per wrap</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BACKWARDS/REVERSE -->
+        <div class="code-card" data-category="transposition">
+            <div class="card-header">
+                <span class="card-icon">🔀</span>
+                <span class="card-title">Reverse Text</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Simple Transposition</p>
+                <h4>How It Works</h4>
+                <p>The simplest code ever - just write everything backwards! Can reverse letters, words, or both!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO WORLD:</div>
+                    <div class="example-text">DLROW OLLEH</div>
+                </div>
+
+                <h4>Variations</h4>
+                <p>Letter reversal, word reversal, or full message reversal</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Try reading it backwards!</li>
+                        <li>Use a mirror for quick reading</li>
+                        <li>Look for common ending patterns (EHT = THE)</li>
+                        <li>Super easy but surprisingly effective</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- KEYBOARD SHIFT -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">⌨️</span>
+                <span class="card-title">Keyboard Cipher</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Modern Substitution</p>
+                <h4>How It Works</h4>
+                <p>Replace each letter with the one next to it on the keyboard! Shift left, right, up, or down on the QWERTY layout.</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO (shifted right):</div>
+                    <div class="example-text">JRPP;</div>
+                </div>
+
+                <h4>QWERTY Layout</h4>
+                <p>Q W E R T Y U I O P<br>
+                A S D F G H J K L<br>
+                Z X C V B N M</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Try shifting all letters left or right on keyboard</li>
+                        <li>Edge letters (Q, P, A, L) are clues</li>
+                        <li>Look for weird punctuation (keyboard edges)</li>
+                        <li>Common shift is 1 key right or left</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DANCING MEN -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">🕺</span>
+                <span class="card-title">Dancing Men</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Literary Cipher</p>
+                <h4>How It Works</h4>
+                <p>From Sherlock Holmes! Stick figures in different poses represent letters. Each pose = one letter. Flags mark end of words!</p>
+                
+                <div class="example">
+                    <div class="example-label">How it looks:</div>
+                    <div class="example-text">Little stick figures dancing in a row</div>
+                </div>
+
+                <h4>The Story</h4>
+                <p>Featured in "The Adventure of the Dancing Men" - Sherlock cracked it!</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Use frequency analysis (most common = E)</li>
+                        <li>Figures with flags = end of word</li>
+                        <li>Find a Dancing Men alphabet chart online</li>
+                        <li>Look for single-letter words (A or I)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIRROR WRITING -->
+        <div class="code-card" data-category="transposition">
+            <div class="card-header">
+                <span class="card-icon">🪞</span>
+                <span class="card-title">Mirror Writing</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Visual Cipher</p>
+                <h4>How It Works</h4>
+                <p>Write text that reads correctly in a mirror! Leonardo da Vinci wrote all his notes this way - possibly to keep them secret!</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO mirrored:</div>
+                    <div class="example-text">OLLƎH (flipped horizontally)</div>
+                </div>
+
+                <h4>Famous User</h4>
+                <p>Leonardo da Vinci - left-handed, wrote right to left!</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Hold it up to a mirror!</li>
+                        <li>Or flip the image horizontally</li>
+                        <li>Some letters look the same mirrored (A, H, I, M, O, T, U, V, W, X, Y)</li>
+                        <li>Practice writing backwards yourself!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- RUNIC ALPHABET -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">ᚱ</span>
+                <span class="card-title">Runic Alphabet</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Ancient Writing System</p>
+                <h4>How It Works</h4>
+                <p>Ancient Viking/Norse alphabet! Used for magic, memorials, and secret messages. There are several types - Elder Futhark is most common.</p>
+                
+                <div class="example">
+                    <div class="example-label">Some runes:</div>
+                    <div class="example-text">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ (F U TH A R K)</div>
+                </div>
+
+                <h4>Elder Futhark</h4>
+                <p>24 runes, named after the first 6: F-U-TH-A-R-K</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Look up Elder Futhark alphabet</li>
+                        <li>Some letters don't exist (no C, Q, X)</li>
+                        <li>Runes are angular (carved in wood/stone)</li>
+                        <li>Often used in fantasy games & movies!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- NULL CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">👀</span>
+                <span class="card-title">Null Cipher (Acrostic)</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Hidden Message Cipher</p>
+                <h4>How It Works</h4>
+                <p>Hide a message inside normal-looking text! Read the first letter of each word, line, or sentence. The rest is just filler!</p>
+                
+                <div class="example">
+                    <div class="example-label">Hidden message:</div>
+                    <div class="example-text">"Have Everyone Loving Pizza" = HELP</div>
+                </div>
+
+                <h4>Variations</h4>
+                <p>First letters, last letters, every Nth letter, first word of each sentence...</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Read first letter of each word</li>
+                        <li>Try first letter of each sentence</li>
+                        <li>Look for awkward or forced phrasing</li>
+                        <li>Try every 2nd, 3rd, or Nth letter</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAYFAIR CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🎭</span>
+                <span class="card-title">Playfair Cipher</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Digraph Cipher</p>
+                <h4>How It Works</h4>
+                <p>Encrypts pairs of letters using a 5x5 keyword grid. Used by the British in WWI! Much harder to crack than simple substitution.</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO with key "MONARCHY":</div>
+                    <div class="example-text">Becomes pair: HE LL OX → encoded pairs</div>
+                </div>
+
+                <h4>Rules</h4>
+                <p>Same row: shift right. Same column: shift down. Rectangle: swap corners.</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Need to know the keyword!</li>
+                        <li>Letters always in pairs</li>
+                        <li>X is used to split double letters</li>
+                        <li>I and J share a cell</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BACON'S CIPHER -->
+        <div class="code-card" data-category="substitution">
+            <div class="card-header">
+                <span class="card-icon">🥓</span>
+                <span class="card-title">Bacon's Cipher</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Steganographic Cipher</p>
+                <h4>How It Works</h4>
+                <p>Hide messages using two different fonts, sizes, or styles! 5 characters encode each letter using "A" and "B" patterns. Created by Francis Bacon!</p>
+                
+                <div class="example">
+                    <div class="example-label">Letter A:</div>
+                    <div class="example-text">AAAAA = A, AAAAB = B, AAABA = C...</div>
+                </div>
+
+                <h4>The System</h4>
+                <p>Like binary but with A and B instead of 0 and 1!</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Look for two different text styles</li>
+                        <li>Bold/normal, italic/regular, UPPER/lower</li>
+                        <li>Mark one style as "A", other as "B"</li>
+                        <li>Group into sets of 5 and decode</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENIGMA -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">⚙️</span>
+                <span class="card-title">Enigma Machine</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Mechanical Cipher</p>
+                <h4>How It Works</h4>
+                <p>Famous WWII German encryption machine! Used rotating wheels and plugboard to create incredibly complex substitutions. Cracked by Alan Turing!</p>
+                
+                <div class="example">
+                    <div class="example-label">Key changes with each letter:</div>
+                    <div class="example-text">AAA might become XYZ (different each time!)</div>
+                </div>
+
+                <h4>Why So Hard</h4>
+                <p>158 million million million possible settings!</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Historically required early computers!</li>
+                        <li>Look for patterns and cribs (known phrases)</li>
+                        <li>A letter never encrypts to itself</li>
+                        <li>Online Enigma simulators exist</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEMPLAR CIPHER -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">⚔️</span>
+                <span class="card-title">Templar Cipher</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Symbol Cipher</p>
+                <h4>How It Works</h4>
+                <p>Used by the Knights Templar! Each letter is represented by a cross shape with dots. Based on the Maltese Cross pattern.</p>
+                
+                <div class="example">
+                    <div class="example-label">Based on cross shapes:</div>
+                    <div class="example-text">Cross sections + dot positions = letters</div>
+                </div>
+
+                <h4>The Pattern</h4>
+                <p>Maltese Cross divided into sections, dots mark the letter position</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Draw the Maltese Cross template</li>
+                        <li>Each section holds multiple letters</li>
+                        <li>Dots indicate which letter in section</li>
+                        <li>Similar to Pigpen in concept</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MARITIME FLAGS -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">🚢</span>
+                <span class="card-title">Maritime Signal Flags</span>
+                <span class="card-difficulty medium">Medium</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Visual Signal System</p>
+                <h4>How It Works</h4>
+                <p>Colorful flags used by ships to communicate! Each flag represents a letter AND has a specific meaning. Still used today!</p>
+                
+                <div class="example">
+                    <div class="example-label">Famous flags:</div>
+                    <div class="example-text">🟨🟥 = Oscar (Man overboard!)</div>
+                </div>
+
+                <h4>The System</h4>
+                <p>26 letter flags, 10 number flags, plus special signals</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Each flag has distinct colors/patterns</li>
+                        <li>Look up the International Maritime Signal Flags</li>
+                        <li>Single flags also have meanings (A = diver down)</li>
+                        <li>Used in sailing and nautical events</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEET SPEAK -->
+        <div class="code-card" data-category="modern">
+            <div class="card-header">
+                <span class="card-icon">💬</span>
+                <span class="card-title">Leet Speak (1337)</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Internet/Gaming Code</p>
+                <h4>How It Works</h4>
+                <p>Replace letters with numbers and symbols that look similar! Born from hacker and gamer culture in the 1990s.</p>
+                
+                <div class="example">
+                    <div class="example-label">HELLO:</div>
+                    <div class="example-text">H3LL0 or |-|3110</div>
+                </div>
+
+                <h4>Common Swaps</h4>
+                <p>A=4, E=3, I=1, O=0, S=5, T=7, L=1, B=8</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Look for number/symbol patterns</li>
+                        <li>3 usually = E, 4 = A, 0 = O</li>
+                        <li>Some use |_| for U, |\/| for M</li>
+                        <li>Context helps - often used in gaming</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- WINGDINGS -->
+        <div class="code-card" data-category="symbol">
+            <div class="card-header">
+                <span class="card-icon">✌️</span>
+                <span class="card-title">Wingdings</span>
+                <span class="card-difficulty easy">Easy</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Font Substitution</p>
+                <h4>How It Works</h4>
+                <p>Type normal letters but display as symbols! Change the font to Wingdings, Webdings, or Symbol and letters become pictures.</p>
+                
+                <div class="example">
+                    <div class="example-label">In Wingdings:</div>
+                    <div class="example-text">A = ✌, B = 👎, H = ☟, etc.</div>
+                </div>
+
+                <h4>How to Use</h4>
+                <p>Type message → change font to Wingdings → symbols appear!</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Copy text into Word/Google Docs</li>
+                        <li>Change font back to Arial or Times</li>
+                        <li>Or look up Wingdings translation chart</li>
+                        <li>There are Wingdings 2 and 3 too!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNAR TRANSPOSITION -->
+        <div class="code-card" data-category="transposition">
+            <div class="card-header">
+                <span class="card-icon">📊</span>
+                <span class="card-title">Columnar Transposition</span>
+                <span class="card-difficulty hard">Hard</span>
+            </div>
+            <div class="card-body">
+                <p class="category">Transposition Cipher</p>
+                <h4>How It Works</h4>
+                <p>Write message in rows, then read columns in a scrambled order based on a keyword. Used in WWI and WWII!</p>
+                
+                <div class="example">
+                    <div class="example-label">With keyword "CAB":</div>
+                    <div class="example-text">Columns read in order: C(3), A(1), B(2)</div>
+                </div>
+
+                <h4>The Method</h4>
+                <p>Keyword letters sorted alphabetically determine column read order</p>
+
+                <div class="tips">
+                    <h5>💡 How to Crack It:</h5>
+                    <ul>
+                        <li>Try different column widths</li>
+                        <li>Look for common letter pairs</li>
+                        <li>Keyword length = number of columns</li>
+                        <li>Anagram the columns to find words</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
     </div>
 </main>
 
