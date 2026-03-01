@@ -264,11 +264,17 @@
 
     <!-- Setup -->
     <div class="setup" id="setup">
-        <h2>📋 Pick Ciphers to Practice</h2>
+        <h2>📋 Step 1: Pick Which Ciphers to Learn!</h2>
+        <p style="color: #888; margin-bottom: 1rem;">Click to select/unselect. Only selected ciphers will appear in the quiz!</p>
         <div class="cipher-select" id="cipherSelect"></div>
-        <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
-        <button class="btn btn-secondary" onclick="selectNone()">Clear</button>
-        <button class="btn btn-primary" onclick="startQuiz()">🚀 Start Quiz!</button>
+        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="selectAll()">✅ Select All</button>
+            <button class="btn btn-secondary" onclick="selectNone()">❌ Clear All</button>
+        </div>
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: #10b981; margin-bottom: 0.5rem;">Step 2: Start!</h3>
+            <button class="btn btn-primary" onclick="startQuiz()" style="font-size: 1.2rem; padding: 1rem 2rem;">🚀 Start Quiz!</button>
+        </div>
     </div>
 
     <!-- Quiz Area -->
