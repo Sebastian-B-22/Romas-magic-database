@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐹 Brownie Clicker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .main-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+        }
+        
+        .counter {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .bps {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .brownie-button {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            border: 8px solid #FFE4B5;
+            cursor: pointer;
+            font-size: 8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            user-select: none;
+        }
+        
+        .brownie-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+        
+        .brownie-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .shop {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .shop h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .upgrade {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        
+        .upgrade:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+            border-color: rgba(255,255,255,0.5);
+        }
+        
+        .upgrade.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .upgrade-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .upgrade-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .upgrade-cost {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .upgrade-owned {
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: #90EE90;
+        }
+        
+        .floating-brownie {
+            position: fixed;
+            font-size: 2em;
+            pointer-events: none;
+            animation: float-up 1s ease-out forwards;
+            z-index: 1000;
+        }
+        
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        
+        .stats-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-section">
+            <h1>🐹 Brownie Clicker</h1>
+            
+            <div class="counter">
+                <span id="brownieCount">0</span> 🍪
+            </div>
+            
+            <div class="bps">
+                per second: <span id="bpsDisplay">0</span> 🍪/s
+            </div>
+            
+            <div class="brownie-button" id="brownieBtn">
+                🐹
+            </div>
+            
+            <div style="font-size: 1.2em; opacity: 0.8;">
+                Click Brownie the guinea pig!
+            </div>
+            
+            <div class="stats">
+                <div class="stats-title">📊 Stats</div>
+                <div>Total Clicks: <span id="totalClicks">0</span></div>
+                <div>Total Earned: <span id="totalEarned">0</span> 🍪</div>
+                <div>Total Spent: <span id="totalSpent">0</span> 🍪</div>
+            </div>
+        </div>
+        
+        <div class="shop">
+            <h2>🛒 Upgrades Shop</h2>
+            <div id="upgradesContainer"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Game state
+        let brownies = 0;
+        let browniesPerSecond = 0;
+        let totalClicks = 0;
+        let totalEarned = 0;
+        let totalSpent = 0;
+        let clickPower = 1;
+        
+        // Upgrade definitions
+        const upgrades = [
+            {
+                id: 'cursor',
+                name: '🖱️ Auto-Clicker',
+                desc: 'Clicks Brownie automatically',
+                baseCost: 50,
+                bps: 0.5,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'feeder',
+                name: '🥕 Auto-Feeder',
+                desc: 'Feeds Brownie automatically',
+                baseCost: 200,
+                bps: 2,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'playground',
+                name: '🎡 Guinea Pig Playground',
+                desc: 'Happy piggies make more brownies!',
+                baseCost: 1000,
+                bps: 10,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'mansion',
+                name: '🏰 Piggy Mansion',
+                desc: 'Luxury living for maximum production',
+                baseCost: 5000,
+                bps: 50,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'factory',
+                name: '🏭 Brownie Factory',
+                desc: 'Industrial brownie production',
+                baseCost: 20000,
+                bps: 200,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'farm',
+                name: '🌾 Guinea Pig Farm',
+                desc: 'A whole farm of brownie-makers!',
+                baseCost: 100000,
+                bps: 1000,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'portal',
+                name: '🌀 Piggy Portal',
+                desc: 'Summon brownies from another dimension',
+                baseCost: 500000,
+                bps: 5000,
+                owned: 0,
+                costMultiplier: 1.15
+            },
+            {
+                id: 'timemachine',
+                name: '⏰ Time Machine',
+                desc: 'Get brownies from the future!',
+                baseCost: 2000000,
+                bps: 20000,
+                owned: 0,
+                costMultiplier: 1.15
+            }
+        ];
+        
+        // DOM elements
+        const brownieBtn = document.getElementById('brownieBtn');
+        const brownieCount = document.getElementById('brownieCount');
+        const bpsDisplay = document.getElementById('bpsDisplay');
+        const upgradesContainer = document.getElementById('upgradesContainer');
+        const totalClicksEl = document.getElementById('totalClicks');
+        const totalEarnedEl = document.getElementById('totalEarned');
+        const totalSpentEl = document.getElementById('totalSpent');
+        
+        // Click Brownie
+        brownieBtn.addEventListener('click', (e) => {
+            brownies += clickPower;
+            totalClicks++;
+            totalEarned += clickPower;
+            
+            // Floating brownie animation
+            const floater = document.createElement('div');
+            floater.className = 'floating-brownie';
+            floater.textContent = '+' + clickPower + ' 🍪';
+            floater.style.left = e.clientX + 'px';
+            floater.style.top = e.clientY + 'px';
+            document.body.appendChild(floater);
+            
+            setTimeout(() => floater.remove(), 1000);
+            
+            updateDisplay();
+        });
+        
+        // Calculate upgrade cost
+        function getUpgradeCost(upgrade) {
+            return Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.owned));
+        }
+        
+        // Buy upgrade
+        function buyUpgrade(upgradeId) {
+            const upgrade = upgrades.find(u => u.id === upgradeId);
+            const cost = getUpgradeCost(upgrade);
+            
+            if (brownies >= cost) {
+                brownies -= cost;
+                totalSpent += cost;
+                upgrade.owned++;
+                browniesPerSecond += upgrade.bps;
+                updateDisplay();
+            }
+        }
+        
+        // Render upgrades
+        function renderUpgrades() {
+            upgradesContainer.innerHTML = '';
+            
+            upgrades.forEach(upgrade => {
+                const cost = getUpgradeCost(upgrade);
+                const canAfford = brownies >= cost;
+                
+                const div = document.createElement('div');
+                div.className = 'upgrade' + (canAfford ? '' : ' disabled');
+                div.onclick = () => buyUpgrade(upgrade.id);
+                
+                div.innerHTML = `
+                    <div class="upgrade-name">${upgrade.name}</div>
+                    <div class="upgrade-desc">${upgrade.desc}</div>
+                    <div class="upgrade-desc">+${upgrade.bps} 🍪/s</div>
+                    <div class="upgrade-cost">Cost: ${formatNumber(cost)} 🍪</div>
+                    ${upgrade.owned > 0 ? `<div class="upgrade-owned">Owned: ${upgrade.owned}</div>` : ''}
+                `;
+                
+                upgradesContainer.appendChild(div);
+            });
+        }
+        
+        // Format large numbers
+        function formatNumber(num) {
+            if (num < 1000) return Math.floor(num);
+            if (num < 1000000) return (num / 1000).toFixed(1) + 'K';
+            if (num < 1000000000) return (num / 1000000).toFixed(1) + 'M';
+            return (num / 1000000000).toFixed(1) + 'B';
+        }
+        
+        // Update display
+        function updateDisplay() {
+            brownieCount.textContent = formatNumber(brownies);
+            bpsDisplay.textContent = formatNumber(browniesPerSecond);
+            totalClicksEl.textContent = formatNumber(totalClicks);
+            totalEarnedEl.textContent = formatNumber(totalEarned);
+            totalSpentEl.textContent = formatNumber(totalSpent);
+            renderUpgrades();
+        }
+        
+        // Auto-generate brownies
+        setInterval(() => {
+            if (browniesPerSecond > 0) {
+                const gain = browniesPerSecond / 10; // 10 times per second for smooth counting
+                brownies += gain;
+                totalEarned += gain;
+                updateDisplay();
+            }
+        }, 100);
+        
+        // Save game (local storage)
+        function saveGame() {
+            const saveData = {
+                brownies,
+                browniesPerSecond,
+                totalClicks,
+                totalEarned,
+                totalSpent,
+                upgrades: upgrades.map(u => ({ id: u.id, owned: u.owned }))
+            };
+            localStorage.setItem('brownieClicker', JSON.stringify(saveData));
+        }
+        
+        // Load game
+        function loadGame() {
+            const saved = localStorage.getItem('brownieClicker');
+            if (saved) {
+                const data = JSON.parse(saved);
+                brownies = data.brownies || 0;
+                browniesPerSecond = data.browniesPerSecond || 0;
+                totalClicks = data.totalClicks || 0;
+                totalEarned = data.totalEarned || 0;
+                totalSpent = data.totalSpent || 0;
+                
+                if (data.upgrades) {
+                    data.upgrades.forEach(savedUpgrade => {
+                        const upgrade = upgrades.find(u => u.id === savedUpgrade.id);
+                        if (upgrade) {
+                            upgrade.owned = savedUpgrade.owned;
+                        }
+                    });
+                }
+                
+                updateDisplay();
+            }
+        }
+        
+        // Auto-save every 5 seconds
+        setInterval(saveGame, 5000);
+        
+        // Load on start
+        loadGame();
+        renderUpgrades();
+    </script>
+</body>
+</html>
