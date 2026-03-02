@@ -207,13 +207,15 @@
         <div id="startScreen" class="start-screen">
             <h2>🏛️ Welcome to Your Greek Journey!</h2>
             <p style="margin: 20px 0; font-size: 1.2em;">
-                You'll learn the Greek alphabet by hearing and matching letters.<br>
-                Each correct answer unlocks the next challenge!
+                Master all 24 letters of the Greek alphabet!<br>
+                Listen carefully and match what you hear.
             </p>
             <p style="font-size: 1em; opacity: 0.9;">
-                📚 Side-by-side Ancient & Modern Greek<br>
-                🎯 Progressive levels from alphabet to sentences<br>
-                🔊 Audio pronunciation for every word
+                🏛️ Learn Ancient Greek alphabet<br>
+                🇬🇷 Learn Modern Greek alphabet<br>
+                🎯 11 progressive levels (5 letters at a time)<br>
+                🔊 Natural Greek pronunciation<br>
+                ✨ Unlock all 24 letters: Α to Ω
             </p>
             <button class="start-btn" onclick="startGame()">Start Learning! 🚀</button>
         </div>
@@ -242,18 +244,32 @@
     </div>
     
     <script>
-        // Greek alphabet data - both Ancient and Modern
+        // Complete Greek alphabet - all 24 letters (both Ancient and Modern)
         const greekAlphabet = [
-            { ancient: 'Α', modern: 'Α', name: 'Alpha', sound: 'alpha' },
-            { ancient: 'Β', modern: 'Β', name: 'Beta', sound: 'beta' },
-            { ancient: 'Γ', modern: 'Γ', name: 'Gamma', sound: 'gamma' },
-            { ancient: 'Δ', modern: 'Δ', name: 'Delta', sound: 'delta' },
-            { ancient: 'Ε', modern: 'Ε', name: 'Epsilon', sound: 'epsilon' },
-            { ancient: 'Ζ', modern: 'Ζ', name: 'Zeta', sound: 'zeta' },
-            { ancient: 'Η', modern: 'Η', name: 'Eta', sound: 'eta' },
-            { ancient: 'Θ', modern: 'Θ', name: 'Theta', sound: 'theta' },
-            { ancient: 'Ι', modern: 'Ι', name: 'Iota', sound: 'iota' },
-            { ancient: 'Κ', modern: 'Κ', name: 'Kappa', sound: 'kappa' }
+            { ancient: 'Α', modern: 'Α', name: 'Alpha', sound: 'άλφα', romanization: 'a' },
+            { ancient: 'Β', modern: 'Β', name: 'Beta', sound: 'βήτα', romanization: 'b' },
+            { ancient: 'Γ', modern: 'Γ', name: 'Gamma', sound: 'γάμμα', romanization: 'g' },
+            { ancient: 'Δ', modern: 'Δ', name: 'Delta', sound: 'δέλτα', romanization: 'd' },
+            { ancient: 'Ε', modern: 'Ε', name: 'Epsilon', sound: 'έψιλον', romanization: 'e' },
+            { ancient: 'Ζ', modern: 'Ζ', name: 'Zeta', sound: 'ζήτα', romanization: 'z' },
+            { ancient: 'Η', modern: 'Η', name: 'Eta', sound: 'ήτα', romanization: 'ē' },
+            { ancient: 'Θ', modern: 'Θ', name: 'Theta', sound: 'θήτα', romanization: 'th' },
+            { ancient: 'Ι', modern: 'Ι', name: 'Iota', sound: 'ιώτα', romanization: 'i' },
+            { ancient: 'Κ', modern: 'Κ', name: 'Kappa', sound: 'κάππα', romanization: 'k' },
+            { ancient: 'Λ', modern: 'Λ', name: 'Lambda', sound: 'λάμδα', romanization: 'l' },
+            { ancient: 'Μ', modern: 'Μ', name: 'Mu', sound: 'μυ', romanization: 'm' },
+            { ancient: 'Ν', modern: 'Ν', name: 'Nu', sound: 'νυ', romanization: 'n' },
+            { ancient: 'Ξ', modern: 'Ξ', name: 'Xi', sound: 'ξι', romanization: 'x' },
+            { ancient: 'Ο', modern: 'Ο', name: 'Omicron', sound: 'όμικρον', romanization: 'o' },
+            { ancient: 'Π', modern: 'Π', name: 'Pi', sound: 'πι', romanization: 'p' },
+            { ancient: 'Ρ', modern: 'Ρ', name: 'Rho', sound: 'ρω', romanization: 'r' },
+            { ancient: 'Σ', modern: 'Σ', name: 'Sigma', sound: 'σίγμα', romanization: 's' },
+            { ancient: 'Τ', modern: 'Τ', name: 'Tau', sound: 'ταυ', romanization: 't' },
+            { ancient: 'Υ', modern: 'Υ', name: 'Upsilon', sound: 'ύψιλον', romanization: 'u/y' },
+            { ancient: 'Φ', modern: 'Φ', name: 'Phi', sound: 'φι', romanization: 'ph' },
+            { ancient: 'Χ', modern: 'Χ', name: 'Chi', sound: 'χι', romanization: 'ch' },
+            { ancient: 'Ψ', modern: 'Ψ', name: 'Psi', sound: 'ψι', romanization: 'ps' },
+            { ancient: 'Ω', modern: 'Ω', name: 'Omega', sound: 'ωμέγα', romanization: 'ō' }
         ];
         
         // Game state
@@ -263,13 +279,19 @@
         let currentLetter = null;
         let isAncient = true; // Start with ancient
         
-        // Levels
+        // Progressive levels - unlock alphabet in chunks of 5
         const levels = [
-            { name: 'Greek Alphabet - Part 1', letters: greekAlphabet.slice(0, 5), type: 'Ancient Greek' },
-            { name: 'Greek Alphabet - Part 1', letters: greekAlphabet.slice(0, 5), type: 'Modern Greek' },
-            { name: 'Greek Alphabet - Part 2', letters: greekAlphabet.slice(5, 10), type: 'Ancient Greek' },
-            { name: 'Greek Alphabet - Part 2', letters: greekAlphabet.slice(5, 10), type: 'Modern Greek' },
-            { name: 'Full Alphabet Review', letters: greekAlphabet, type: 'Both!' }
+            { name: 'Alphabet: Α-Ε', letters: greekAlphabet.slice(0, 5), type: 'Ancient Greek' },
+            { name: 'Alphabet: Α-Ε', letters: greekAlphabet.slice(0, 5), type: 'Modern Greek' },
+            { name: 'Alphabet: Ζ-Κ', letters: greekAlphabet.slice(5, 10), type: 'Ancient Greek' },
+            { name: 'Alphabet: Ζ-Κ', letters: greekAlphabet.slice(5, 10), type: 'Modern Greek' },
+            { name: 'Alphabet: Λ-Ο', letters: greekAlphabet.slice(10, 15), type: 'Ancient Greek' },
+            { name: 'Alphabet: Λ-Ο', letters: greekAlphabet.slice(10, 15), type: 'Modern Greek' },
+            { name: 'Alphabet: Π-Τ', letters: greekAlphabet.slice(15, 20), type: 'Ancient Greek' },
+            { name: 'Alphabet: Π-Τ', letters: greekAlphabet.slice(15, 20), type: 'Modern Greek' },
+            { name: 'Alphabet: Υ-Ω', letters: greekAlphabet.slice(20, 24), type: 'Ancient Greek' },
+            { name: 'Alphabet: Υ-Ω', letters: greekAlphabet.slice(20, 24), type: 'Modern Greek' },
+            { name: 'Full Alphabet Master', letters: greekAlphabet, type: 'Both!' }
         ];
         
         function startGame() {
@@ -332,11 +354,20 @@
         }
         
         function playAudio() {
-            // Use Web Speech API
-            const utterance = new SpeechSynthesisUtterance(currentLetter.name);
-            utterance.lang = 'el-GR'; // Greek
-            utterance.rate = 0.8; // Slower for learning
-            speechSynthesis.speak(utterance);
+            // Use Google Translate's natural-sounding Greek TTS
+            // This sounds WAY better than the robotic computer voice!
+            const greekText = currentLetter.sound; // Use the Greek pronunciation
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=el&client=tw-ob&q=${encodeURIComponent(greekText)}`;
+            
+            const audio = new Audio(audioUrl);
+            audio.play().catch(err => {
+                // Fallback to speech synthesis if Google TTS fails
+                console.log('Google TTS failed, using fallback');
+                const utterance = new SpeechSynthesisUtterance(currentLetter.name);
+                utterance.lang = 'el-GR';
+                utterance.rate = 0.7;
+                speechSynthesis.speak(utterance);
+            });
         }
         
         function checkAnswer(selectedLetter, btn) {
@@ -345,7 +376,7 @@
             
             if (selectedLetter === currentLetter) {
                 btn.classList.add('correct');
-                document.getElementById('feedback').textContent = `✨ Correct! That's ${currentLetter.name}!`;
+                document.getElementById('feedback').textContent = `✨ Correct! That's ${currentLetter.name} (sounds like "${currentLetter.romanization}")`;
                 score++;
                 
                 setTimeout(() => {
@@ -363,13 +394,14 @@
                 }, 2000);
             } else {
                 btn.classList.add('wrong');
-                document.getElementById('feedback').textContent = `Try again! Listen carefully... 🔊`;
+                document.getElementById('feedback').textContent = `Not quite! It's ${currentLetter.name} - sounds like "${currentLetter.romanization}". Listen again! 🔊`;
                 
                 setTimeout(() => {
                     btn.classList.remove('wrong');
                     buttons.forEach(b => b.disabled = false);
+                    document.getElementById('feedback').textContent = '';
                     playAudio();
-                }, 1500);
+                }, 2500);
             }
         }
         
