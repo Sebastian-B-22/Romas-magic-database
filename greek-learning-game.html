@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇬🇷 Greek Learning Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .progress {
+            background: rgba(255,255,255,0.2);
+            height: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #48c6ef 0%, #6f86d6 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .level-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .greek-type-badge {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .greek-type-badge span {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .audio-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .play-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            font-size: 3em;
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .play-button:active {
+            transform: scale(0.95);
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .option-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            padding: 30px;
+            font-size: 2em;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .option-btn.correct {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            animation: pulse 0.5s;
+        }
+        
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            animation: shake 0.5s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .feedback {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            min-height: 40px;
+        }
+        
+        .greek-type {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .start-screen, .level-complete {
+            text-align: center;
+        }
+        
+        .start-btn, .next-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            padding: 20px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .start-btn:hover, .next-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇬🇷 Greek Learning Adventure</h1>
+        <div class="subtitle">Learn Ancient & Modern Greek!</div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+        
+        <div id="startScreen" class="start-screen">
+            <h2>🏛️ Welcome to Your Greek Journey!</h2>
+            <p style="margin: 20px 0; font-size: 1.2em;">
+                You'll learn the Greek alphabet by hearing and matching letters.<br>
+                Each correct answer unlocks the next challenge!
+            </p>
+            <p style="font-size: 1em; opacity: 0.9;">
+                📚 Side-by-side Ancient & Modern Greek<br>
+                🎯 Progressive levels from alphabet to sentences<br>
+                🔊 Audio pronunciation for every word
+            </p>
+            <button class="start-btn" onclick="startGame()">Start Learning! 🚀</button>
+        </div>
+        
+        <div id="gameScreen" style="display: none;">
+            <div class="level-info" id="levelInfo"></div>
+            <div class="greek-type-badge">
+                <span id="greekType"></span>
+            </div>
+            
+            <div class="audio-section">
+                <button class="play-button" id="playBtn" onclick="playAudio()">🔊</button>
+                <p style="margin-top: 15px; font-size: 1.1em;">Click to hear the Greek letter</p>
+            </div>
+            
+            <div class="options" id="options"></div>
+            
+            <div class="feedback" id="feedback"></div>
+        </div>
+        
+        <div id="levelCompleteScreen" class="level-complete" style="display: none;">
+            <h2>🎉 Level Complete!</h2>
+            <p id="levelCompleteText" style="margin: 20px 0; font-size: 1.3em;"></p>
+            <button class="next-btn" onclick="nextLevel()">Next Level ➡️</button>
+        </div>
+    </div>
+    
+    <script>
+        // Greek alphabet data - both Ancient and Modern
+        const greekAlphabet = [
+            { ancient: 'Α', modern: 'Α', name: 'Alpha', sound: 'alpha' },
+            { ancient: 'Β', modern: 'Β', name: 'Beta', sound: 'beta' },
+            { ancient: 'Γ', modern: 'Γ', name: 'Gamma', sound: 'gamma' },
+            { ancient: 'Δ', modern: 'Δ', name: 'Delta', sound: 'delta' },
+            { ancient: 'Ε', modern: 'Ε', name: 'Epsilon', sound: 'epsilon' },
+            { ancient: 'Ζ', modern: 'Ζ', name: 'Zeta', sound: 'zeta' },
+            { ancient: 'Η', modern: 'Η', name: 'Eta', sound: 'eta' },
+            { ancient: 'Θ', modern: 'Θ', name: 'Theta', sound: 'theta' },
+            { ancient: 'Ι', modern: 'Ι', name: 'Iota', sound: 'iota' },
+            { ancient: 'Κ', modern: 'Κ', name: 'Kappa', sound: 'kappa' }
+        ];
+        
+        // Game state
+        let currentLevel = 0;
+        let currentQuestion = 0;
+        let score = 0;
+        let currentLetter = null;
+        let isAncient = true; // Start with ancient
+        
+        // Levels
+        const levels = [
+            { name: 'Greek Alphabet - Part 1', letters: greekAlphabet.slice(0, 5), type: 'Ancient Greek' },
+            { name: 'Greek Alphabet - Part 1', letters: greekAlphabet.slice(0, 5), type: 'Modern Greek' },
+            { name: 'Greek Alphabet - Part 2', letters: greekAlphabet.slice(5, 10), type: 'Ancient Greek' },
+            { name: 'Greek Alphabet - Part 2', letters: greekAlphabet.slice(5, 10), type: 'Modern Greek' },
+            { name: 'Full Alphabet Review', letters: greekAlphabet, type: 'Both!' }
+        ];
+        
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            const level = levels[currentLevel];
+            document.getElementById('levelInfo').textContent = `Level ${currentLevel + 1}: ${level.name}`;
+            
+            // Show which type of Greek clearly
+            let typeText = level.type;
+            if (level.type === 'Ancient Greek') {
+                typeText = '🏛️ ANCIENT GREEK';
+            } else if (level.type === 'Modern Greek') {
+                typeText = '🇬🇷 MODERN GREEK';
+            } else {
+                typeText = '🏛️🇬🇷 BOTH ANCIENT & MODERN';
+            }
+            document.getElementById('greekType').textContent = typeText;
+            
+            // Pick random letter from current level
+            currentLetter = level.letters[Math.floor(Math.random() * level.letters.length)];
+            
+            // Create options (correct + 3 random wrong)
+            let options = [currentLetter];
+            let allLetters = [...greekAlphabet];
+            
+            while (options.length < 4) {
+                let randomLetter = allLetters[Math.floor(Math.random() * allLetters.length)];
+                if (!options.includes(randomLetter)) {
+                    options.push(randomLetter);
+                }
+            }
+            
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+            
+            // Display options
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            options.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = currentLevel % 2 === 0 ? letter.ancient : letter.modern;
+                btn.onclick = () => checkAnswer(letter, btn);
+                optionsDiv.appendChild(btn);
+            });
+            
+            document.getElementById('feedback').textContent = '';
+            
+            // Auto-play on load
+            playAudio();
+            
+            // Update progress
+            updateProgress();
+        }
+        
+        function playAudio() {
+            // Use Web Speech API
+            const utterance = new SpeechSynthesisUtterance(currentLetter.name);
+            utterance.lang = 'el-GR'; // Greek
+            utterance.rate = 0.8; // Slower for learning
+            speechSynthesis.speak(utterance);
+        }
+        
+        function checkAnswer(selectedLetter, btn) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (selectedLetter === currentLetter) {
+                btn.classList.add('correct');
+                document.getElementById('feedback').textContent = `✨ Correct! That's ${currentLetter.name}!`;
+                score++;
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    
+                    if (currentQuestion >= 10) { // 10 questions per level
+                        showLevelComplete();
+                    } else {
+                        buttons.forEach(b => {
+                            b.disabled = false;
+                            b.classList.remove('correct');
+                        });
+                        loadQuestion();
+                    }
+                }, 2000);
+            } else {
+                btn.classList.add('wrong');
+                document.getElementById('feedback').textContent = `Try again! Listen carefully... 🔊`;
+                
+                setTimeout(() => {
+                    btn.classList.remove('wrong');
+                    buttons.forEach(b => b.disabled = false);
+                    playAudio();
+                }, 1500);
+            }
+        }
+        
+        function updateProgress() {
+            const totalQuestions = 10;
+            const progress = (currentQuestion / totalQuestions) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+        
+        function showLevelComplete() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('levelCompleteScreen').style.display = 'block';
+            
+            const text = `You scored ${score} out of ${currentQuestion}!\n\n` +
+                        `You've mastered ${levels[currentLevel].name}!`;
+            document.getElementById('levelCompleteText').textContent = text;
+        }
+        
+        function nextLevel() {
+            currentLevel++;
+            currentQuestion = 0;
+            score = 0;
+            
+            if (currentLevel >= levels.length) {
+                document.getElementById('levelCompleteText').textContent = 
+                    '🎉🏆 Amazing! You completed all levels!\n\nYou can now recognize Greek letters in both Ancient and Modern Greek!';
+                document.querySelector('.next-btn').style.display = 'none';
+            } else {
+                document.getElementById('levelCompleteScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+                loadQuestion();
+            }
+        }
+    </script>
+</body>
+</html>
