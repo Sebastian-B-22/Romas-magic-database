@@ -382,7 +382,7 @@
                 setTimeout(() => {
                     currentQuestion++;
                     
-                    if (currentQuestion >= 10) { // 10 questions per level
+                    if (currentQuestion >= 6) { // 6 questions per level - quick progression!
                         showLevelComplete();
                     } else {
                         buttons.forEach(b => {
@@ -406,7 +406,7 @@
         }
         
         function updateProgress() {
-            const totalQuestions = 10;
+            const totalQuestions = 6;
             const progress = (currentQuestion / totalQuestions) * 100;
             const progressBar = document.getElementById('progressBar');
             progressBar.style.width = progress + '%';
@@ -417,9 +417,26 @@
             document.getElementById('gameScreen').style.display = 'none';
             document.getElementById('levelCompleteScreen').style.display = 'block';
             
-            const text = `You scored ${score} out of ${currentQuestion}!\n\n` +
-                        `You've mastered ${levels[currentLevel].name}!`;
+            const totalLettersLearned = Math.min((currentLevel + 1) * 5, 24);
+            const nextLevelInfo = currentLevel + 1 < levels.length 
+                ? `\n\nNext up: ${levels[currentLevel + 1].name}`
+                : '\n\n🏆 You mastered ALL 24 Greek letters!';
+            
+            const text = `🎉 Level ${currentLevel + 1} Complete!\n\n` +
+                        `Score: ${score}/${currentQuestion}\n` +
+                        `Letters mastered so far: ${totalLettersLearned}/24` +
+                        nextLevelInfo;
             document.getElementById('levelCompleteText').textContent = text;
+            
+            // Show/hide next button
+            const nextBtn = document.querySelector('.next-btn');
+            if (currentLevel + 1 >= levels.length) {
+                nextBtn.textContent = '🎉 Play Again?';
+                nextBtn.onclick = () => location.reload();
+            } else {
+                nextBtn.textContent = `Continue to Level ${currentLevel + 2} ➡️`;
+                nextBtn.style.display = 'block';
+            }
         }
         
         function nextLevel() {
@@ -427,15 +444,14 @@
             currentQuestion = 0;
             score = 0;
             
-            if (currentLevel >= levels.length) {
-                document.getElementById('levelCompleteText').textContent = 
-                    '🎉🏆 Amazing! You completed all levels!\n\nYou can now recognize Greek letters in both Ancient and Modern Greek!';
-                document.querySelector('.next-btn').style.display = 'none';
-            } else {
-                document.getElementById('levelCompleteScreen').style.display = 'none';
-                document.getElementById('gameScreen').style.display = 'block';
-                loadQuestion();
-            }
+            document.getElementById('levelCompleteScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            // Reset progress bar for new level
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressBar').textContent = '0%';
+            
+            loadQuestion();
         }
     </script>
 </body>
