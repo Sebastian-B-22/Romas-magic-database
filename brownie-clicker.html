@@ -200,11 +200,11 @@
             <h1>🐹 Brownie Clicker</h1>
             
             <div class="counter">
-                <span id="brownieCount">0</span> 🍪
+                <span id="brownieCount">0</span> 🍫
             </div>
             
             <div class="bps">
-                per second: <span id="bpsDisplay">0</span> 🍪/s
+                per second: <span id="bpsDisplay">0</span> 🍫/s
             </div>
             
             <div class="brownie-button" id="brownieBtn">
@@ -217,8 +217,8 @@
             <div class="stats">
                 <div class="stats-title">📊 Stats</div>
                 <div>Total Clicks: <span id="totalClicks">0</span></div>
-                <div>Total Earned: <span id="totalEarned">0</span> 🍪</div>
-                <div>Total Spent: <span id="totalSpent">0</span> 🍪</div>
+                <div>Total Earned: <span id="totalEarned">0</span> 🍫</div>
+                <div>Total Spent: <span id="totalSpent">0</span> 🍫</div>
             </div>
         </div>
         
@@ -331,7 +331,7 @@
             // Floating brownie animation
             const floater = document.createElement('div');
             floater.className = 'floating-brownie';
-            floater.textContent = '+' + clickPower + ' 🍪';
+            floater.textContent = '+' + clickPower + ' 🍫';
             floater.style.left = e.clientX + 'px';
             floater.style.top = e.clientY + 'px';
             document.body.appendChild(floater);
@@ -375,8 +375,8 @@
                 div.innerHTML = `
                     <div class="upgrade-name">${upgrade.name}</div>
                     <div class="upgrade-desc">${upgrade.desc}</div>
-                    <div class="upgrade-desc">+${upgrade.bps} 🍪/s</div>
-                    <div class="upgrade-cost">Cost: ${formatNumber(cost)} 🍪</div>
+                    <div class="upgrade-desc">+${upgrade.bps} 🍫/s</div>
+                    <div class="upgrade-cost">Cost: ${formatNumber(cost)} 🍫</div>
                     ${upgrade.owned > 0 ? `<div class="upgrade-owned">Owned: ${upgrade.owned}</div>` : ''}
                 `;
                 
