@@ -63,13 +63,12 @@
         }
         
         .brownie-button {
-            width: 250px;
-            height: 250px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
             background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
             border: 8px solid #FFE4B5;
             cursor: pointer;
-            font-size: 8em;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -77,6 +76,10 @@
             transition: transform 0.1s, box-shadow 0.1s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             user-select: none;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            background-image: url('brownie-photo.jpg');
         }
         
         .brownie-button:hover {
@@ -205,7 +208,6 @@
             </div>
             
             <div class="brownie-button" id="brownieBtn">
-                🐹
             </div>
             
             <div style="font-size: 1.2em; opacity: 0.8;">
@@ -453,6 +455,37 @@
         // Load on start
         loadGame();
         renderUpgrades();
+        
+        // Secret cheat code!
+        let typedKeys = '';
+        document.addEventListener('keypress', (e) => {
+            typedKeys += e.key.toLowerCase();
+            
+            // Keep only last 10 characters
+            if (typedKeys.length > 10) {
+                typedKeys = typedKeys.slice(-10);
+            }
+            
+            // Check for "brownie" password
+            if (typedKeys.includes('brownie')) {
+                brownies += 100000000000; // 100 billion!
+                totalEarned += 100000000000;
+                
+                // Show celebration
+                const floater = document.createElement('div');
+                floater.className = 'floating-brownie';
+                floater.textContent = '🎉 CHEAT CODE! +100 BILLION! 🎉';
+                floater.style.left = '50%';
+                floater.style.top = '50%';
+                floater.style.fontSize = '3em';
+                document.body.appendChild(floater);
+                
+                setTimeout(() => floater.remove(), 2000);
+                
+                typedKeys = ''; // Reset
+                updateDisplay();
+            }
+        });
     </script>
 </body>
 </html>
