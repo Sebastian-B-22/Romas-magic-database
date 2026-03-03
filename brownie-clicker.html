@@ -214,6 +214,10 @@
                 Click Brownie the guinea pig!
             </div>
             
+            <button onclick="resetGame()" style="margin-top: 20px; padding: 10px 20px; font-size: 1em; background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                🔄 Reset Game
+            </button>
+            
             <div class="stats">
                 <div class="stats-title">📊 Stats</div>
                 <div>Total Clicks: <span id="totalClicks">0</span></div>
@@ -451,6 +455,24 @@
         
         // Auto-save every 5 seconds
         setInterval(saveGame, 5000);
+        
+        // Reset game
+        function resetGame() {
+            if (confirm('Are you sure you want to reset? This will delete ALL your progress!')) {
+                localStorage.removeItem('brownieClicker');
+                brownies = 0;
+                browniesPerSecond = 0;
+                totalClicks = 0;
+                totalEarned = 0;
+                totalSpent = 0;
+                
+                // Reset all upgrades
+                upgrades.forEach(u => u.owned = 0);
+                
+                updateDisplay();
+                alert('Game reset! Starting fresh! 🐹');
+            }
+        }
         
         // Load on start
         loadGame();
